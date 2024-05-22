@@ -20,8 +20,9 @@ import { add_object_to_array, add_property } from '../utils/utils'
       const new_user = await prisma.user.create({
         data: {
           name: body.name,
+          last_name: body.last_name,
           email: body.email ?? '',
-          ci: body.ci,
+          telephone: body.telephone ?? '',
           password: await bcrypt.hash(body.password, 10),
           role: body.role,
         },

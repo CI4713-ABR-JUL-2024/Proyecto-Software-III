@@ -2,9 +2,10 @@ import { z } from 'zod'
 
 const user_create_object_body = z.object({
   name: z.string(),
+  last_name: z.string(),
   email: z.string().email(),
   role: z.string().optional(),
-  ci: z.string(),
+  telephone: z.string(),
   password: z.string().min(8),
 })
 

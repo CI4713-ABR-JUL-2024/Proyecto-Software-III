@@ -1,8 +1,9 @@
 export interface user_body_create {
     name: string
+    last_name: string
     email: string
     role?: string
-    ci: string
+    telephone: string
     password: string
     speciality? : string
   }
