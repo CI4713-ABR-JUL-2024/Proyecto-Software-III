@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { loginSchema } from "@/zodSchema/login";
+import { loginSchema, TLoginResponse } from "@/zodSchema/login";
 
 import { useCookies } from 'react-cookie';
 
@@ -20,7 +20,7 @@ export default function LoginForm() {
     resolver: zodResolver(loginSchema),
   });
 
-  async function redirect_token(data : FormData){
+  async function redirect_token(data : TLoginResponse){
     let expires = new Date()
     console.log(data);
     expires.setTime(expires.getTime() + (500000))
@@ -35,12 +35,8 @@ export default function LoginForm() {
     const r = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/auth',{
       method: "POST" ,
       body : JSON.stringify({email : data.email, password : data.password}) })
-      .then((res) => {
-        console.log(res)
-        if (res.status == 200){
-          redirect_token(data);
-        };
-      })
+        // if res.status is not 200  throw an error before res.json()
+      .then((res) => res.json())
       .then((data) => {
         if (data != undefined){
           console.log(data);
