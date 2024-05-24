@@ -51,12 +51,21 @@ export default function LoginForm() {
         <div>
           <div>
             {/* Form Body */}
-            <div>
-              <h1 className="text-2xl font-semibold text-gray-900">
-                Welcome back!
-              </h1>
+            <div className="flex flex-col justify-center h-[100vh]">
+              <div className="flex justify-center">
+                <h1 className="text-4xl font-bold text-gray-900 mx-auto"
+                style={{ color: "#3A4FCC" }}
+                >
+                  ¡Bienvenido!
+                </h1>
+              </div>
+              <div className="flex justify-center">
+                  <p className="text-black-600 mt-2">
+                     Inicia sesión con tu cuenta
+                  </p>
+              </div>
               <form
-                className="mt-12"
+                className="mt-6 grid gap-4  w-[40vw] mx-auto shadow-2xl p-12 rounded-2xl"
                 action=""
                 method="POST"
                 onSubmit={handleSubmit(onSubmit)}
@@ -68,7 +77,7 @@ export default function LoginForm() {
                     id="email"
                     name="email"
                     type="text"
-                    className="peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:border-rose-600 focus:outline-none"
+                    className="peer h-10 rounded-md	w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:border-blue-600 focus:outline-none"
                     placeholder="john@doe.com"
                     autoComplete="off"
                   />
@@ -79,7 +88,7 @@ export default function LoginForm() {
                   )}
                   <label
                     htmlFor="email"
-                    className="absolute -top-3.5 left-0 text-sm text-gray-600 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-gray-600"
+                    className="absolute -top-3.5 pl-3 left-0 text-sm text-gray-600 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-gray-600"
                   >
                     Email address
                   </label>
@@ -92,7 +101,7 @@ export default function LoginForm() {
                     id="password"
                     type="password"
                     name="password"
-                    className="peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:border-rose-600 focus:outline-none"
+                    className="peer h-10 rounded-md	w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:border-blue-600 focus:outline-none"
                     placeholder="Password"
                     autoComplete="off"
                   />
@@ -103,7 +112,7 @@ export default function LoginForm() {
                   )}
                   <label
                     htmlFor="password"
-                    className="absolute -top-3.5 left-0 text-sm text-gray-600 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-gray-600"
+                    className="absolute -top-3.5 pl-3 left-0 text-sm text-gray-600 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-gray-600"
                   >
                     Password
                   </label>
@@ -112,8 +121,9 @@ export default function LoginForm() {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  disabled={!isDirty || !isValid || isSubmitting}
-                  className="mt-20 block w-full cursor-pointer rounded bg-rose-500 px-4 py-2 text-center font-semibold text-white hover:bg-rose-400 focus:outline-none focus:ring focus:ring-rose-500 focus:ring-opacity-80 focus:ring-offset-2 disabled:opacity-70"
+                  disabled={false}
+                  className="mt-10 block w-2/3 mx-auto cursor-pointer rounded bg-blue-500 px-4 py-2 text-center font-semibold text-white hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-500 focus:ring-opacity-80 focus:ring-offset-2 disabled:opacity-70"
+                  style={{ backgroundColor: "#3A4FCC" }}
                 >
                   {isSubmitting ? (
                     <div role="status">
@@ -128,9 +138,22 @@ export default function LoginForm() {
                       </svg>
                     </div>
                   ) : (
-                    "Sign In"
+                    "Iniciar sesión"
                   )}
                 </button>
+
+                {/* Register Link */}
+                <p className="text-center mt-4 text-gray-600">
+                  ¿No tienes una cuenta?{" "}
+                  <a
+                    href="/register"
+                    className="text-blue-500 hover:underline"
+                    style={{ color: "#3A4FCC" }}
+                  >
+                    Regístrate
+                  </a>
+                </p>
+                
               </form>
             </div>
           </div>
