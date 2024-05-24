@@ -18,16 +18,6 @@ const Register = () => {
 
   return (
     <main>
-      <h1
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "20vh",
-        }}
-      >
-        PROYECTO SOFTWARE III
-      </h1>
       <RegisterForm />
     </main>
   );
