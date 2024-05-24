@@ -22,16 +22,41 @@ export default function RegisterForm() {
     //console.log(data);
     const {name,email,password,role} = data;
     const user = {name,email,password,role};
+    console.log(user)
     const ci = "1234567";
     //console.log(user);
+    const A = { name : "Adelina", email : "adelina@mail.co", ci : "26.825.129", password : "12345678", role : "ROL"};
+    console.log(A);
+    const F = "{\r\n    \"name\":\"ana\",\r\n    \"email\": \"ana20@gmail.com\",\r\n    \"password\": \"12345678\",\r\n    \"ci\": \"26.326.568\",\r\n    \"role\": \"Medic\"\r\n}";
+
+    const r = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/user',{
+      method: "POST",body : JSON.stringify(A),})
+      .then((res) => {
+        console.log(res);
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+      });
+
+    const r1 = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/user',{
+      method: "POST",body : F,})
+      .then((res) => {
+        console.log(res);
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+      });
+
     const response = await fetch(
-        new URL('api/user', process.env.NEXT_PUBLIC_BASE_URL),
+        new URL('/api/user', process.env.NEXT_PUBLIC_BASE_URL),
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ name, email, ci, password, role}),
+          body: JSON.stringify({ name : name, email : email, ci : ci, password : password, role : role}),
         },
       )
   

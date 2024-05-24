@@ -15,8 +15,7 @@ import { add_object_to_array, add_property } from '../utils/utils'
   
   export const create_user = async (body: user_body_create) => {
     try {
-  
-  
+
       const new_user = await prisma.user.create({
         data: {
           name: body.name,

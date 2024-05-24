@@ -5,10 +5,13 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { loginSchema } from "@/zodSchema/login";
 
+import { useCookies } from 'react-cookie';
+
 type FormData = z.infer<typeof loginSchema>;
 
 export default function LoginForm() {
   const router = useRouter();
+  const [cookies, setCookie] = useCookies(['access_token']);
   const {
     handleSubmit,
     register,
@@ -21,12 +24,30 @@ export default function LoginForm() {
     console.log(isSubmitting);
     console.log(data);
     // Replace this with a server action or fetch an API endpoint to authenticate
+    fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/auth',{
+      method: "POST" ,
+      body : JSON.stringify({email : "adelina@mail.co", password : "12345678"}) })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+        let expires = new Date()
+        expires.setTime(expires.getTime() + (500000))
+        setCookie('access_token', data.accessToken, { path: '/',  expires})
+      });
+
+    //const cookies = new Cookies();
+    //cookies.set('myCat', 'Pacman', { path: '/' });
+    //console.log(cookies.get('myCat')); // Pacman
+
+
     await new Promise<void>((resolve) => {
       setTimeout(() => {
         resolve();
       }, 2000); // 2 seconds in milliseconds
     });
-    router.push("/register");
+    router.push("/profile");
   }
 
   return (

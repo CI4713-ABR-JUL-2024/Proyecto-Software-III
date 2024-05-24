@@ -10,6 +10,7 @@ export async function POST(request: NextRequest) {
     const updatedUser = await userController.update_user_password(request)
     return NextResponse.json(updatedUser, { status: 200 })
   } catch (error) {
+    console.log(error)
     const handle_err: error_object = handle_error_http_response(
       new Error('User not found'),
       '0005',

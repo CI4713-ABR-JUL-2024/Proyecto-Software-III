@@ -10,13 +10,18 @@ import { userService } from '../services/user';
 
  const post_user = async (req: NextRequest) => {
   try {
-    // console.log('Llego al controlador')
+    console.log('Llego al controlador')
+    console.log(req)
     const body = await req.json()
+    console.log(body)
     const data = userValidator.validator_user_create(body)
+    console.log(data)
     const new_user = await userService.create_user(data)
+    console.log(new_user)
 
     return new_user
   } catch (error: any) {
+    console.log(error)
     const handle_err: error_object = handle_error_http_response(error, '0000')
     throw new custom_error(
       handle_err.error_message,
@@ -148,11 +153,16 @@ import { userService } from '../services/user';
   req: NextRequest,
 ) => {
   try {
+    console.log(req)
     // console.log({ params })
     const body = await req.json()
+    console.log("body")
+    console.log(body)
 
     // Then use it like this
     let accessToken = headers().get('Authorization')
+    console.log("token")
+    console.log(accessToken)
 
     if (!body) {
       const handle_err: error_object = handle_error_http_response(new Error("Body not found on request"), '0100')
