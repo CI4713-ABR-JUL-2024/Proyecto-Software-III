@@ -1,17 +1,17 @@
-'use client';
+"use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { loginSchema, TLoginResponse } from "@/zodSchema/login";
 
-import { useCookies } from 'react-cookie';
+import { useCookies } from "react-cookie";
 
 type FormData = z.infer<typeof loginSchema>;
 
 export default function LoginForm() {
   const router = useRouter();
-  const [cookies, setCookie] = useCookies(['access_token']);
+  const [cookies, setCookie] = useCookies(["access_token"]);
   const {
     handleSubmit,
     register,
@@ -20,48 +20,36 @@ export default function LoginForm() {
     resolver: zodResolver(loginSchema),
   });
 
-  async function redirect_token(data : TLoginResponse){
-    let expires = new Date()
-    console.log(data);
-    expires.setTime(expires.getTime() + (500000))
-    setCookie('access_token', data.accessToken, { path: '/',  expires})
+  async function redirect_token(data: TLoginResponse) {
+    let expires = new Date();
+    setCookie("access_token", data.accessToken, { path: "/", expires });
     router.push("/profile");
   }
 
   async function onSubmit(data: FormData) {
-    console.log(isSubmitting);
-    // Replace this with a server action or fetch an API endpoint to authenticate
-
-    const r = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/auth',{
-      method: "POST" ,
-      body : JSON.stringify({email : data.email, password : data.password}) })
-        // if res.status is not 200  throw an error before res.json()
-      .then((res) => res.json())
-      .then((data) => {
-        if (data != undefined){
-          console.log(data);
-          redirect_token(data);
+    const r = await fetch(process.env.NEXT_PUBLIC_BASE_URL + "/api/auth", {
+      method: "POST",
+      body: JSON.stringify({ email: data.email, password: data.password }),
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Ocurrió un error en la autenticación");
         }
-        
+        return res.json();
+      })
+      .then((data) => {
+        redirect_token(data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
       });
-
-    //const cookies = new Cookies();
-    //cookies.set('myCat', 'Pacman', { path: '/' });
-    //console.log(cookies.get('myCat')); // Pacman
-
-
-    await new Promise<void>((resolve) => {
-      setTimeout(() => {
-        resolve();
-      }, 2000); // 2 seconds in milliseconds
-    });
   }
 
   return (
     <div>
       <div>
-        <div >
-          <div >
+        <div>
+          <div>
             {/* Form Body */}
             <div>
               <h1 className="text-2xl font-semibold text-gray-900">
