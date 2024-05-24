@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { changeSchema } from "@/zodSchema/changePassword";
 import { getSession } from 'next-auth/react';
-
+import { useCookies } from 'react-cookie';
 // this is the type of the object that the form will return
 type changeData = z.infer<typeof changeSchema>;
 /*type ChangePasswordValues ={
@@ -13,6 +13,9 @@ type changeData = z.infer<typeof changeSchema>;
   newPassword: string;
   compareNewPassword: string;
 }*/
+
+
+
 export default function ChangePassword() {
   const {
     handleSubmit,
@@ -22,10 +25,8 @@ export default function ChangePassword() {
     resolver: zodResolver(changeSchema),
   });
   //const handleSubmit = useForm<typeofvalidator_user_update_password_body>()
-const [oldPassword, setOldPassword] = useState('');
-const [newPassword, setNewPassword] = useState('');
-const [compareNewPassword, setConfirmPassword] = useState('');
-const [token, setToken] = useState('')
+const [cookies, setCookie] = useCookies(['access_token']);
+
 // Asegúrate de que esta función se ejecute cuando se haga clic en el botón
 async function onSubmit(data: changeData) {
   try {
@@ -33,15 +34,17 @@ async function onSubmit(data: changeData) {
     const session = await getSession() as {user: {accessToken?: string}};
 
     console.log(data)
+    console.log(cookies.access_token)
+    
     const response = await fetch(
       new URL('api/changePassword', process.env.NEXT_PUBLIC_BASE_URL),
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization-token': `Bearer ${session?.user?.accessToken}`,
+          'Authorization': `Bearer ${cookies.access_token}`,
         },
-        body: JSON.stringify({ oldPassword, newPassword, compareNewPassword }
+        body: JSON.stringify({ oldPassword : data.oldPassword, newPassword : data.newPassword, compareNewPassword : data.compareNewPassword }
         ),
       }
     );
@@ -61,31 +64,33 @@ async function onSubmit(data: changeData) {
 }
 
   return (
-    <form>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+    >
       <div style={{ marginBottom: '10px' }}>
         <label style={{ marginRight: '5px' }}>
           Contraseña actual
         </label>
         :
-        <input type="password" name="oldPassword" style={{ borderRadius: '5px', color: 'black' }} />
+        <input {...register("oldPassword")} type="password" name="oldPassword" style={{ borderRadius: '5px', color: 'black' }} />
       </div>
       <div style={{ marginBottom: '10px' }}>
         <label style={{ marginRight: '5px' }}>
           Nueva contraseña
         </label>
         :
-        <input type="password" name="newPassword" style={{ borderRadius: '5px', color: 'black' }} />
+        <input {...register("newPassword")} type="password" name="newPassword" style={{ borderRadius: '5px', color: 'black' }} />
       </div>
       <div style={{ marginBottom: '10px' }}>
         <label style={{ marginRight: '5px' }}>
           Confirmar nueva contraseña
         </label>
         :
-        <input type="password" name="compareNewPassword" style={{ borderRadius: '5px', color: 'black' }} />
+        <input {...register("compareNewPassword")} type="password" name="compareNewPassword" style={{ borderRadius: '5px', color: 'black' }} />
       </div>
       <div>
 
-      <button type="button" onClick={() => onSubmit({ oldPassword, newPassword, compareNewPassword })}>
+      <button type="submit" >
         Cambiar contraseña
       </button>
       </div>
