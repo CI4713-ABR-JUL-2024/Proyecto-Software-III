@@ -19,7 +19,7 @@ type FormData = z.infer<typeof loginSchema>;
 
 const Profile = () => {
   const router = useRouter();
-  const [cookies, setCookie] = useCookies(['access_token'])
+  const [cookies, setCookie,removeCookie] = useCookies(['access_token'])
   const {
     handleSubmit,
     register,
@@ -27,7 +27,49 @@ const Profile = () => {
   } = useForm<FormData>({
     resolver: zodResolver(loginSchema),
   });
-  const [photos, setPhotos] = useState([]);
+  const [name, setName] = useState("");
+  const [last_name, set_last_name] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [newPassword,setNewPassword] = useState("");
+  useEffect(() => {
+    fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/user',{
+      method: "GET" })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        setName(data[0].name);
+        setEmail(data[0].email);
+        set_last_name(data[0].last_name)
+        setPassword(data[0].password)
+        setRole(data[0].role)
+        setPhone(data[0].telephone)        
+      });
+  }, []);
+  async function redirectChangePassword(){
+    router.push("/change");
+  }
+  async function logOut(){
+    removeCookie('access_token', { path: '/', domain: 'localhost' });
+    router.push("/");
+  }
+  async function onChangePassword() {
+    const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/changePassword',{
+      method: "POST" , headers : {
+                "Authorization": "Bearer "+cookies.access_token,
+                "type" : "text"} , // se pasa la contrasena encriptada
+      body : JSON.stringify({oldPassword : password, newPassword : newPassword, compareNewPassword : newPassword}) , })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);        
+      });
+  }
+  /*CHANGE PASSWORD
   useEffect(() => {
     console.log(cookies.access_token)
     console.log("Bearer "+cookies.access_token)
@@ -44,7 +86,7 @@ const Profile = () => {
         
         setPhotos(data);
       });
-  }, []);
+  }, []);*/
   /*GET USERS
   useEffect(() => {
     fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/user',{
@@ -153,18 +195,11 @@ const Profile = () => {
             <div
               className="text-base font-semibold text-slate-700 mt-3 truncate duration-300"
             >
-              <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 rounded">
+              <button onClick={logOut} className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 rounded">
                 CERRAR SESIÓN
               </button>
             </div>
 
-        </div>
-        <div
-          className="text-base font-semibold text-slate-700 mt-3 truncate duration-300"
-        >
-          <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-10 rounded">
-            CERRAR SESIÓN
-          </button>
         </div>
       </div>
     </div>
@@ -195,26 +230,26 @@ const Profile = () => {
       top : "90%",
       left : "50%",
       transform : "translate(-50%, 90%)"}}>
-      Nombre Apellido
+      {name} {last_name}
       </div>
 
       <table style={{borderSpacing: "30px",transform : "translate(-0%, 140%)"}}>
       <tbody>
       <tr>
       <td style={{width : "40%", paddingTop : "2%"}} >Rol</td>
-      <td style={{width : "40%", paddingTop : "2%"}}>ROL</td>
+      <td style={{width : "40%", paddingTop : "2%"}}> {role} </td>
       </tr>
       <tr>
       <td style={{width : "40%", paddingTop : "2%"}}>Correo electrónico</td>
-      <td style={{width : "40%", paddingTop : "2%"}}>CORREO</td>
+      <td style={{width : "40%", paddingTop : "2%"}}> {email} </td>
       </tr>
       <tr>
       <td style={{width : "40%", paddingTop : "2%"}}>Número de teléfono</td>
-      <td style={{width : "40%", paddingTop : "2%"}}>NUM</td>
+      <td style={{width : "40%", paddingTop : "2%"}}> {phone} </td>
       </tr>
       <tr>
       <td style={{width : "40%", paddingTop : "2%"}}>Contraseña</td>
-      <td style={{width : "40%", paddingTop : "2%"}}>PASSWORD  <button><FaPen style={{fontSize : "15px"}}/></button>  </td>
+      <td style={{width : "40%", paddingTop : "2%"}}> ******** <button onClick={redirectChangePassword}><FaPen style={{fontSize : "15px"}}/></button>  </td>
       </tr>
       </tbody>
       </table>

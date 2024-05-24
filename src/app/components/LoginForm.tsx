@@ -20,21 +20,32 @@ export default function LoginForm() {
     resolver: zodResolver(loginSchema),
   });
 
+  async function redirect_token(data : FormData){
+    let expires = new Date()
+    expires.setTime(expires.getTime() + (500000))
+    setCookie('access_token', data.accessToken, { path: '/',  expires})
+    router.push("/profile");
+  }
+
   async function onSubmit(data: FormData) {
     console.log(isSubmitting);
-    console.log(data);
     // Replace this with a server action or fetch an API endpoint to authenticate
-    fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/auth',{
+
+    const r = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/auth',{
       method: "POST" ,
-      body : JSON.stringify({email : "adelina@mail.co", password : "12345678"}) })
+      body : JSON.stringify({email : data.email, password : data.password}) })
       .then((res) => {
-        return res.json();
+        console.log(res)
+        if (res.status == 200){
+          redirect_token(data);
+        };
       })
       .then((data) => {
-        console.log(data);
-        let expires = new Date()
-        expires.setTime(expires.getTime() + (500000))
-        setCookie('access_token', data.accessToken, { path: '/',  expires})
+        if (data != undefined){
+          console.log(data);
+          redirect_token(data);
+        }
+        
       });
 
     //const cookies = new Cookies();
@@ -47,7 +58,6 @@ export default function LoginForm() {
         resolve();
       }, 2000); // 2 seconds in milliseconds
     });
-    router.push("/profile");
   }
 
   return (
