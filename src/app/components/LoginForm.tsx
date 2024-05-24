@@ -11,7 +11,7 @@ type FormData = z.infer<typeof loginSchema>;
 
 export default function LoginForm() {
   const router = useRouter();
-  const [cookies, setCookie] = useCookies(["access_token"]);
+  const [cookies, setCookie] = useCookies(["access_token","id"]);
   const {
     handleSubmit,
     register,
@@ -22,7 +22,9 @@ export default function LoginForm() {
 
   async function redirect_token(data: TLoginResponse) {
     let expires = new Date();
+    console.log(data);
     setCookie("access_token", data.accessToken, { path: "/", expires });
+    setCookie("id", data.id, { path: "/", expires });
     router.push("/profile");
   }
 

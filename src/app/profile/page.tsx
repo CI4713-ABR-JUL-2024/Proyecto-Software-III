@@ -19,7 +19,7 @@ type FormData = z.infer<typeof loginSchema>;
 
 const Profile = () => {
   const router = useRouter();
-  const [cookies, setCookie,removeCookie] = useCookies(['access_token'])
+  const [cookies, setCookie,removeCookie] = useCookies(['access_token','id'])
   const {
     handleSubmit,
     register,
@@ -35,7 +35,9 @@ const Profile = () => {
   const [email, setEmail] = useState("");
   const [newPassword,setNewPassword] = useState("");
   useEffect(() => {
-    fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/user',{
+    console.log(cookies.access_token)
+    if (cookies.access_token != undefined){
+      fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/user/'+cookies.id,{
       method: "GET" , headers : {
                 "Authorization": "Bearer "+cookies.access_token,
                 "type" : "text"}})
@@ -43,13 +45,19 @@ const Profile = () => {
         return res.json();
       })
       .then((data) => {
-        setName(data[0].name);
-        setEmail(data[0].email);
-        set_last_name(data[0].last_name)
-        setPassword(data[0].password)
-        setRole(data[0].role)
-        setPhone(data[0].telephone)        
+        console.log(data);
+        setName(data.name);
+        setEmail(data.email);
+        set_last_name(data.last_name)
+        setPassword(data.password)
+        setRole(data.role)
+        setPhone(data.telephone)        
       });
+    }
+    else{
+      router.push("/");
+    }
+    
   }, []);
   async function redirectChangePassword(){
     router.push("/change");
