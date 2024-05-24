@@ -18,15 +18,11 @@ export default function RegisterForm() {
   });
 
   async function onSubmit(data: FormData) {
-    console.log(isSubmitting);
     //console.log(data);
-    const {name,email,password,role,telephone,last_Name,ci} = data;
+    const {name,email,password,role,telephone,last_Name} = data;
     const user = {name,email,password,role};
-    console.log(user)
-    console.log(telephone)
-    console.log(ci)
 
-    const a = { name : name, last_name : last_Name, telephone: telephone, email : email, ci : ci, password : password, role : role};
+    const a = { name : name, last_name : last_Name, telephone: telephone, email : email, password : password, role : role};
     console.log(a)
     const r = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/user',{
       method: "POST",body : JSON.stringify(a),
@@ -138,29 +134,7 @@ export default function RegisterForm() {
                 </div>
 
                 {/* CI Input */}
-                <div className="relative mt-10">
-                  <input
-                    {...register("ci", { required: true })}
-                    id="ci"
-                    name="ci"
-                    type="text"
-                    className="peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:border-rose-600 focus:outline-none"
-                    placeholder="10.281.156"
-                    autoComplete="off"
-                  />
-                  {errors?.ci && (
-                    <p className="text-red-600 text-sm">
-                      {errors?.ci?.message}
-                    </p>
-                  )}
-                  <label
-                    htmlFor="ci"
-                    className="absolute -top-3.5 left-0 text-sm text-gray-600 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-gray-600"
-                  >
-                    Cédula de Identidad
-                  </label>
-                </div>
-
+                
                 {/* Email Input */}
                 <div className="relative mt-10">
                   <input

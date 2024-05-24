@@ -8,7 +8,6 @@ export const registerSchema = z.object({
   last_Name: z.string(),
   telephone: z.string(),
   role: z.string(),
-  ci: z.string().max(8),
 });
 
 export type User = z.infer<typeof registerSchema>;
