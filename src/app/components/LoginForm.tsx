@@ -45,7 +45,7 @@ export default function LoginForm() {
       })
       .catch((error) => {
         console.error("Error:", error);
-        setErrorMessage("El correo electrónico o la contraseña es inválida."); // Set the error message
+        setErrorMessage("*Incorrect email address or password"); // Set the error message
       });
   }
 
@@ -92,6 +92,11 @@ export default function LoginForm() {
                     Email address
                   </label>
                 </div>
+                {errors?.email && (
+                    <p className="text-red-600 text-sm">
+                      {errors?.email?.message}
+                    </p>
+                  )}
 
                 {/* Password Input */}
                 <div className="relative mt-10">
@@ -111,6 +116,11 @@ export default function LoginForm() {
                     Password
                   </label>
                 </div>
+                {errors?.password && (
+                    <p className="text-red-600 text-sm">
+                      {errors?.password?.message}
+                    </p>
+                  )}
                 {errorMessage && <p className="text-red-600 text-sm">{errorMessage}</p>}
                 {/* Submit Button */}
                 <button
