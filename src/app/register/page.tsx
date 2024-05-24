@@ -4,9 +4,10 @@ import RegisterForm from '../components/RegisterForm'
 
 type RegisterValues = {
   name: string;
-  lastName: string;
+  last_Name: string;
+  telephone: string;
   email: string;
-  phone: string;
+  ci: string;
   password: string;
   confirmPassword: string;
   role: string;

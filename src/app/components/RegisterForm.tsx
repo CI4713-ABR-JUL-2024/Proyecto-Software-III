@@ -20,7 +20,7 @@ export default function RegisterForm() {
   async function onSubmit(data: FormData) {
     console.log(isSubmitting);
     //console.log(data);
-    const {name,email,password,role} = data;
+    const {name,email,password,role,telephone,last_Name} = data;
     const user = {name,email,password,role};
     console.log(user)
     const ci = "1234567";
@@ -56,11 +56,12 @@ export default function RegisterForm() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ name : name, email : email, ci : ci, password : password, role : role}),
+          body: JSON.stringify({ name : name, last_Name : last_Name, telephone: telephone, email : email, ci : ci, password : password, role : role}),
         },
       )
   
       if (response.ok) {
+        console.log('data')
         console.log('Usuario creado correctamente')
         router.push('/')
       } else {
@@ -123,21 +124,21 @@ export default function RegisterForm() {
                 {/* Last Name Input */}
                 <div className="relative mt-10">
                   <input
-                    {...register("lastName", { required: true })}
-                    id="lastName"
-                    name="lastName"
+                    {...register("last_Name", { required: true })}
+                    id="last_Name"
+                    name="last_Name"
                     type="text"
                     className="peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:border-rose-600 focus:outline-none"
                     placeholder="Shek"
                     autoComplete="off"
                   />
-                  {errors?.lastName && (
+                  {errors?.last_Name && (
                     <p className="text-red-600 text-sm">
-                      {errors?.lastName?.message}
+                      {errors?.last_Name?.message}
                     </p>
                   )}
                   <label
-                    htmlFor="lastName"
+                    htmlFor="last_Name"
                     className="absolute -top-3.5 left-0 text-sm text-gray-600 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-gray-600"
                   >
                     Apellido
@@ -243,7 +244,7 @@ export default function RegisterForm() {
                 {/* Role Input */}
                 <div className="relative mt-10">
                   <input
-                    {...register("phone", { required: true })}
+                    {...register("telephone", { required: true })}
                     id="phone"
                     name="phone"
                     type="text"
@@ -251,9 +252,9 @@ export default function RegisterForm() {
                     placeholder="1111111111"
                     autoComplete="off"
                   />
-                  {errors?.phone && (
+                  {errors?.telephone && (
                     <p className="text-red-600 text-sm">
-                      {errors?.phone?.message}
+                      {errors?.telephone?.message}
                     </p>
                   )}
                   <label
