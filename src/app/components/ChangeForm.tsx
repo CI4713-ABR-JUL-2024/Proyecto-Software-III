@@ -64,37 +64,38 @@ async function onSubmit(data: changeData) {
 }
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-    >
-      <div style={{ marginBottom: '10px' }}>
-        <label style={{ marginRight: '5px' }}>
-          Contraseña actual
-        </label>
-        :
-        <input {...register("oldPassword")} type="password" name="oldPassword" style={{ borderRadius: '5px', color: 'black' }} />
-      </div>
-      <div style={{ marginBottom: '10px' }}>
-        <label style={{ marginRight: '5px' }}>
-          Nueva contraseña
-        </label>
-        :
-        <input {...register("newPassword")} type="password" name="newPassword" style={{ borderRadius: '5px', color: 'black' }} />
-      </div>
-      <div style={{ marginBottom: '10px' }}>
-        <label style={{ marginRight: '5px' }}>
-          Confirmar nueva contraseña
-        </label>
-        :
-        <input {...register("compareNewPassword")} type="password" name="compareNewPassword" style={{ borderRadius: '5px', color: 'black' }} />
-      </div>
-      <div>
+    <div className="flex items-center justify-center">
+      <div className="w-auto h-auto bg-slate-300 rounded-lg p-8 shadow-lg shadow-slate-600">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <div className="mb-8 grid grid-cols-2 gap-4" >
+            <label className="font-bold text-lg text-center">
+              Contraseña actual:
+            </label>
+            <input {...register("oldPassword")} type="password" name="oldPassword" className=" rounded-md" />
+          </div>
+          <div className="mb-8 grid grid-cols-2 gap-4">
+            <label className="font-bold text-lg text-center">
+              Nueva contraseña:
+            </label>
+            <input {...register("newPassword")} type="password" name="newPassword" className=" rounded-md" />
+          </div>
+          <div className="mb-12 grid grid-cols-2 gap-4">
+            <label className="font-bold text-lg text-center">
+              Confirmar nueva contraseña:
+            </label>
+            <input {...register("compareNewPassword")} type="password" name="compareNewPassword" className=" rounded-md" />
+          </div>
+          <div className="flex items-center justify-center">
 
-      <button type="submit" >
-        Cambiar contraseña
-      </button>
+          <button type="submit" className=" bg-blue-500 text-white rounded-md p-2 shadow-md shadow-slate-700 hover:bg-blue-400 mb-4 text-lg font-bold">
+            Cambiar contraseña
+          </button>
+          </div>
+        </form>
       </div>
-    </form>
+    </div>
   );
 };
 
