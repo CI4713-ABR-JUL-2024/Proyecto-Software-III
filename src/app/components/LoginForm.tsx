@@ -4,12 +4,13 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { loginSchema, TLoginResponse } from "@/zodSchema/login";
-
+import { useState } from "react";
 import { useCookies } from "react-cookie";
 
 type FormData = z.infer<typeof loginSchema>;
 
 export default function LoginForm() {
+  const [errorMessage, setErrorMessage] = useState(""); // State variable for error message
   const router = useRouter();
   const [cookies, setCookie] = useCookies(["access_token"]);
   const {
@@ -42,6 +43,7 @@ export default function LoginForm() {
       })
       .catch((error) => {
         console.error("Error:", error);
+        setErrorMessage("El correo electrónico o la contraseña es inválida."); // Set the error message
       });
   }
 
@@ -81,11 +83,6 @@ export default function LoginForm() {
                     placeholder="john@doe.com"
                     autoComplete="off"
                   />
-                  {errors?.email && (
-                    <p className="text-red-600 text-sm">
-                      {errors?.email?.message}
-                    </p>
-                  )}
                   <label
                     htmlFor="email"
                     className="absolute -top-3.5 pl-3 left-0 text-sm text-gray-600 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-gray-600"
@@ -105,11 +102,6 @@ export default function LoginForm() {
                     placeholder="Password"
                     autoComplete="off"
                   />
-                  {errors?.password && (
-                    <p className="text-red-600 text-sm">
-                      {errors?.password?.message}
-                    </p>
-                  )}
                   <label
                     htmlFor="password"
                     className="absolute -top-3.5 pl-3 left-0 text-sm text-gray-600 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-gray-600"
@@ -117,7 +109,7 @@ export default function LoginForm() {
                     Password
                   </label>
                 </div>
-
+                {errorMessage && <p className="text-red-600 text-sm">{errorMessage}</p>}
                 {/* Submit Button */}
                 <button
                   type="submit"
