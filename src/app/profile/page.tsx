@@ -36,7 +36,9 @@ const Profile = () => {
   const [newPassword,setNewPassword] = useState("");
   useEffect(() => {
     fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/user',{
-      method: "GET" })
+      method: "GET" , headers : {
+                "Authorization": "Bearer "+cookies.access_token,
+                "type" : "text"}})
       .then((res) => {
         return res.json();
       })
@@ -52,6 +54,11 @@ const Profile = () => {
   async function redirectChangePassword(){
     router.push("/change");
   }
+
+  async function redirectProfile(){
+    router.push("/profile");
+  }
+
   async function logOut(){
     removeCookie('access_token', { path: '/', domain: 'localhost' });
     router.push("/");
@@ -187,7 +194,7 @@ const Profile = () => {
             <div
               className="font-semibold text-slate-700 mt-3 truncate duration-300"
             >
-              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded">
+              <button onClick={redirectProfile} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded">
                 PERFIL
               </button>
             </div>

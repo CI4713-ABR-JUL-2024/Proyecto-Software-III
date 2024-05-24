@@ -22,6 +22,7 @@ export default function LoginForm() {
 
   async function redirect_token(data : FormData){
     let expires = new Date()
+    console.log(data);
     expires.setTime(expires.getTime() + (500000))
     setCookie('access_token', data.accessToken, { path: '/',  expires})
     router.push("/profile");
