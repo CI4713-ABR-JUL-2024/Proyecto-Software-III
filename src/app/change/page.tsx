@@ -4,7 +4,7 @@ import ChangeForm from "../components/ChangeForm";
 
 const changePassword = () => {
   return (
-    <main>
+    <main className="h-screen">
       <h1
         style={{
           display: "flex",
