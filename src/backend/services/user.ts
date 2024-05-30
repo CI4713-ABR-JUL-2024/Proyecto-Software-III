@@ -215,6 +215,25 @@ import { add_object_to_array, add_property } from '../utils/utils'
       )
     }
   }
+
+const getSelfUser = async (token: string) => {
+  const userWithoutPass = verifyJwt(token)
+
+  if (!userWithoutPass) {
+    const handle_err: error_object = handle_error_http_response(
+      new Error('Unauthorized'),
+      '0005',
+    )
+    throw new custom_error(
+      handle_err.error_message,
+      handle_err.error_message_detail,
+      handle_err.error_code,
+      handle_err.status,
+    )
+  }
+
+  return userWithoutPass
+}
   
 export const userService = {
     create_user,
@@ -223,4 +242,5 @@ export const userService = {
     delete_my_user,
     update_my_user,
     update_my_user_password,
+    getSelfUser,
 }

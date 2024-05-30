@@ -153,16 +153,13 @@ import { userService } from '../services/user';
   req: NextRequest,
 ) => {
   try {
-    console.log(req)
-    // console.log({ params })
+    
     const body = await req.json()
-    console.log("body")
-    console.log(body)
+  
 
     // Then use it like this
     let accessToken = headers().get('Authorization')
-    console.log("token")
-    console.log(accessToken)
+  
 
     if (!body) {
       const handle_err: error_object = handle_error_http_response(new Error("Body not found on request"), '0100')
@@ -199,6 +196,25 @@ import { userService } from '../services/user';
   }
 }
 
+const getSelfUser = async (req: NextRequest) => {
+
+  // Then use it like this
+  let accessToken = headers().get('Authorization')
+
+  if (!accessToken) {
+    const handle_err: error_object = handle_error_http_response(new Error("Unauthorized"), '0101')
+    throw new custom_error(
+      handle_err.error_message,
+      handle_err.error_message_detail,
+      handle_err.error_code,
+      handle_err.status,
+    )
+  }
+
+  const selfUser = await userService.getSelfUser(accessToken)
+
+  return selfUser
+}
 
  export const userController = {
     post_user,
@@ -206,5 +222,6 @@ import { userService } from '../services/user';
     get_users,
     update_user,
     delete_user,
-    update_user_password
+    update_user_password,
+    getSelfUser
 }
