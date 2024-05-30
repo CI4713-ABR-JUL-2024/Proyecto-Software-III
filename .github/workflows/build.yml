@@ -4,7 +4,7 @@ run-name: Checking current build
 on  :
     push:
         branches: 
-            [main, develop/*]
+            [main]
           
     pull_request:
         types: [opened, reopened]
