@@ -9,13 +9,21 @@ import { loginSchema } from "@/zodSchema/login";
 import { useState, useEffect } from 'react';
 
 import { FaRegUser, FaPen, FaCircle} from "react-icons/fa";
+import { IconType } from "react-icons";
 
 import Select from "react-dropdown-select";
 
 
 
+interface ActionProps {
+    props : Array<IconType>,
+    id : Int,
+    onClick : Any,
+    message : string,
+}
 
-const Actions = ({props, id, onClick, message}) => {
+
+const Actions = ({props, id, onClick, message} : ActionProps) => {
   const {buttonProp} = props;
   const {idUser} = id;
   const handleClick = onClick;
@@ -30,7 +38,21 @@ const Actions = ({props, id, onClick, message}) => {
   );
 }
 
-const Table = ({props, onClick}) => {
+
+interface propsInterface {
+  header: Array<string>,
+  info: Array<Array<string>>,
+  buttons: Array<IconType>,
+  buttons_message : Array<string>,
+}
+
+
+interface TableProps {
+    props : propsInterface,
+    onClick : Any,
+}
+
+const Table = ({props, onClick} : TableProps) => {
   const tableProps = props;
   var persons = {};
   const [currentAmount, setCurrentAmount] = useState(5);
