@@ -119,7 +119,7 @@ return (
                     onChange={(e) => { setUserType(e.target.value) }}
                     className=" invalid:text-gray-400  border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2.5"
                     required
-                    value = {role}
+                    value = {userType}
                 >
                     <option disabled className="text-gray-400" value="">Seleccione el tipo de usuario</option>
                     <option value="interno">Interno</option>
