@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { registerSchema } from "@/zodSchema/register";
 import { useState } from "react";
-
+import RegisterSuccessModal from "./RegisterSuccessModal";
 type FormData = z.infer<typeof registerSchema>;
 
 export default function RegisterForm() {
@@ -20,6 +20,8 @@ export default function RegisterForm() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  // constante para mostrar el modal de éxito
+  const [showModal, setShowModal] = useState(false);
 
   async function onSubmit(data: FormData) {
     //console.log(data);
@@ -34,45 +36,18 @@ export default function RegisterForm() {
       })
       .then((res) => {
         if (res.status == 200){
-          router.push('/')
+          setShowModal(true);
         }
         return res.json();
       })
       .then((data) => {
         if (data!=undefined){
-          router.push('/')
+          setShowModal(true);
         }
         console.log(data);
       });
 
-    /*const response = await fetch(
-        new URL('/api/user', process.env.NEXT_PUBLIC_BASE_URL),
-        {
-          method: 'POST',
-          body: JSON.stringify(a),
-        },
-      )
-  
-      if (response.ok) {
-        console.log('data')
-        console.log('Usuario creado correctamente')
-        router.push('/')
-      } else {
-        const data = await response.json()
-        console.error(data.error_message)
-      }*/
-
     }
-
-    // Replace this with a server action or fetch an API endpoint to authenticate
- //   await new Promise<void>((resolve) => {
-    //  setTimeout(() => {
-   //     resolve();
-   //   }, 2000); // 2 seconds in milliseconds
-   // });
-   // router.push("");
-
-  
 
 return (
     <div>
@@ -366,7 +341,6 @@ return (
                     "Crear cuenta"
                   )}
                 </button>
-
                 {/* Login Link */}
                 <p className="text-center mt-4 text-gray-600 col-span-2">
                   ¿Ya tienes una cuenta?{" "}
@@ -378,7 +352,11 @@ return (
                     Inicia sesión
                   </a>
                 </p>
+                {showModal && (
+                <RegisterSuccessModal title = "¡Registro exitoso!" message="Usuario creado correctamente" />
+              )}
               </form>
+
             </div>
           </div>
         </div>
