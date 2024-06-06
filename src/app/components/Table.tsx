@@ -48,7 +48,7 @@ interface propsInterface {
 
 interface TableProps {
     props : propsInterface,
-    onClick : Any,
+    onClick : any,
 }
 
 const Table = ({props, onClick} : TableProps) => {
