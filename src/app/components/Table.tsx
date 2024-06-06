@@ -23,8 +23,8 @@ interface ActionProps {
 
 
 const Actions = ({props, id, onClick, message} : ActionProps) => {
-  const {buttonProp} = props;
-  const {idUser} = id;
+  const buttonProp = props;
+  const idUser = id;
   const handleClick = onClick;
   return (
   <>
