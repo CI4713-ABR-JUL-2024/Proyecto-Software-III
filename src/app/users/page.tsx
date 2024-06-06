@@ -1,15 +1,11 @@
 'use client';
 import { FaPen, FaTrash } from "react-icons/fa";
 import Table from "../components/Table";
-import { useRouter } from "next/navigation";
-import { useCookies } from 'react-cookie';
 import { IoSearchCircle } from "react-icons/io5";
 import { useState } from "react";
 import Sidebar from "../components/Sidebar"
 
 export default function UsersTable() {
-    const router = useRouter();
-    const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'id']);
     const [searchVal, setSearchVal] = useState("");
     const [addUser, setAddUser] = useState(false);
     const [name, setName] = useState('');
@@ -53,7 +49,7 @@ export default function UsersTable() {
 
 return (
     <main className="flex">
-        <Sidebar role="Admin" />
+        <Sidebar role="admin" />
         <div className="m-10 flex flex-col w-full">
             <div className="flex justify-between w-full p-4">
                 <h3 className="text-2xl font-bold text-[#3A4FCC]">Perfiles de Usuarios</h3>
