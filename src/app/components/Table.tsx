@@ -15,10 +15,10 @@ import Select from "react-dropdown-select";
 
 
 interface ActionProps {
-    props : Array<IconType>,
-    id : Int,
-    onClick : Any,
-    message : string,
+  props: Array<IconType>,
+  id: number,
+  onClick: any,
+  message: string,
 }
 
 
