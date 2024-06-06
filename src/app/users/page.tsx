@@ -115,11 +115,11 @@ return (
                     value={role}
                 >
                     <option disabled className="text-gray-400" value="">Seleccione un rol</option>
-                    <option value="gerenteGeneral">Gerente General</option>
-                    <option value="gerenteOp">Gerente de Operaciones</option>
-                    <option value="gerenteCuentas">Sub-Gerente de Cuentas</option>
-                    <option value="analistaCuentas">Analista de Cuentas</option>
-                    <option value="admin">Administrador de Sistemas</option>
+                    <option value="Gerente General">Gerente General</option>
+                    <option value="Gerente de Operaciones">Gerente de Operaciones</option>
+                    <option value="Sub-Gerente de Cuentas">Sub-Gerente de Cuentas</option>
+                    <option value="Analista de Cuentas">Analista de Cuentas</option>
+                    <option value="Administrador de Sistemas">Administrador de Sistemas</option>
                 </select>
                 <select
                     id = "userType"
