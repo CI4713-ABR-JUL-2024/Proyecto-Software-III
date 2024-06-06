@@ -20,6 +20,7 @@ export default function RegisterForm() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [role, setRole] = useState("");
   // constante para mostrar el modal de éxito
   const [showModal, setShowModal] = useState(false);
 
@@ -271,15 +272,21 @@ return (
 
                 {/* Role Input */}
                 <div className="relative mt-5">
-                  <input
+                  <select
                     {...register("role", { required: true })}
                     id="role"
                     name="role"
-                    type="text"
+                    onChange={(e) => { setRole(e.target.value) }}
                     className="peer h-10 rounded-md	w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:border-blue-600 focus:outline-none"
-                    placeholder="Admin"
-                    autoComplete="off"
-                  />
+                    value={role}
+                  >
+                    <option disabled className="text-gray-400" value="">Seleccione un rol</option>
+                    <option value="Gerente General">Gerente General</option>
+                    <option value="Gerente de Operaciones">Gerente de Operaciones</option>
+                    <option value="Sub-Gerente de Cuentas">Sub-Gerente de Cuentas</option>
+                    <option value="Analista de Cuentas">Analista de Cuentas</option>
+                    <option value="Administrador de Sistemas">Administrador de Sistemas</option>
+                  </select>
                   {errors?.role && (
                     <p className="text-red-600 text-sm">
                       {errors?.role?.message}
@@ -291,6 +298,7 @@ return (
                   >
                     Rol
                   </label>
+                
                 </div>
 
                 {/* Phone Input */}
