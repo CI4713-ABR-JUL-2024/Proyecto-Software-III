@@ -19,14 +19,25 @@ export default function UsersTable() {
     // ejemplo de como se veria la info de la tabla
     const tableProp = {
         header : ["Correo","Nombre","Apellido","Rol","Tipo de Usuario"] , 
-        info: [["adelina@mail.co", "Adelina", "Figueira", "Admin", "User"],
-            ["adelina@mail.co", "Rosario", "Figueira", "Admin", "User"]],
+        info: [["adelina1@mail.co", "Adelina", "Figueira", "Admin", "User"],
+            ["adelina2@mail.co", "Rosario", "Figueira", "Admin", "User"],
+            ["adelina3@mail.co", "Rosario", "Figueira", "Admin", "User"],
+            ["adelina4@mail.co", "Rosario", "Figueira", "Admin", "User"],
+            ["adelina5@mail.co", "Rosario", "Figueira", "Admin", "User"],
+            ["adelina6@mail.co", "Rosario", "Figueira", "Admin", "User"],
+            ["adelina7@mail.co", "Rosario", "Figueira", "Admin", "User"],
+            ["adelina8@mail.co", "Rosario", "Figueira", "Admin", "User"],
+            ["adelina9@mail.co", "Rosario", "Figueira", "Admin", "User"],
+            ["adelina10@mail.co", "Rosario", "Figueira", "Admin", "User"],
+            ["adelina11@mail.co", "Rosario", "Figueira", "Admin", "User"],
+            ["adelina12@mail.co", "Rosario", "Figueira", "Admin", "User"],
+            ["adelina13@mail.co", "Rosario", "Figueira", "Admin", "User"]],
         buttons:[FaPen,FaTrash], 
         buttons_message:["Edit","Delete"]}
     const [userTable, setUserTable] = useState(tableProp);
 
 
-    const handleClick = (e,id) => {
+    const handleClick = (e: any,id: any) => {
         //e number of button on list
         //id position of user in info list
         console.log(e);
