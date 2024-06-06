@@ -1,13 +1,6 @@
 'use client';
 import React from 'react'
-import Button from '../components/Button'
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { loginSchema } from "@/zodSchema/login";
-import { useState, useEffect } from 'react';
-
+import { useState} from 'react';
 import { FaRegUser, FaPen, FaCircle} from "react-icons/fa";
 import { IconType } from "react-icons";
 
@@ -18,7 +11,7 @@ interface ActionProps {
   props: Array<IconType>,
   id: number,
   onClick: any,
-  message: string,
+  message: string[],
 }
 
 
@@ -74,12 +67,12 @@ const Table = ({props, onClick} : TableProps) => {
   ];
   
 
-  const handlePages = (p) => {
+  const handlePages = (p: Array<Array<string>>) => {
     var counter = 0;
     var counterPage = 1;
-    var get = {};
+    var get = [];
     for (let i = 0; i < p.length; i++) {
-      if (counter<currentAmount){
+      if (counter < currentAmount) {
         get[i] = counterPage;
       }
       counter+=1
@@ -91,15 +84,15 @@ const Table = ({props, onClick} : TableProps) => {
     return get;
   }
   var getPages = handlePages(props.info);
-  const handleClick = (e,id) => {
+  const handleClick = (e: any,id: any) => {
     onClick(e,id);
   };
-  const changeCurrent = (e) =>{
+  const changeCurrent = (e: any) =>{
     const value = e.target.innerHTML;
     setCurrentPage(Number(value));
   }
 
-  const setValues = (e) => {
+  const setValues = (e: any) => {
     const l = e[0].label;
     if (l == "5"){
       setCurrentAmount(5);
@@ -113,7 +106,7 @@ const Table = ({props, onClick} : TableProps) => {
     
   }
 
-  const getButtonsUsingForLoop = (start,num) => {
+  const getButtonsUsingForLoop = (start: number, num: number) => {
     const array = []
 
     for(var i = start; i <= num; i++){
@@ -129,7 +122,7 @@ const Table = ({props, onClick} : TableProps) => {
     return array
   }
 
-  const directionalButton = (name) => {
+  const directionalButton = (name: string) => {
     const array = [];
     if (currentPage > 1 && name=="PREV"){
       array.push(<button key={name} className="bg-white-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" style={{padding : "20px",marginTop : "2%" ,marginLeft:"2%"}} onClick={() => setCurrentPage(currentPage-1)}>{name}</button>)
@@ -141,13 +134,13 @@ const Table = ({props, onClick} : TableProps) => {
   }
 
   const customStyles = {
-  option: (provided, state) => ({
-    ...provided,
-    borderBottom: '1px dotted pink',
-    color: state.isSelected ? 'red' : 'blue',
-    padding: 20,
-  })
-}
+    option: (provided: any, state: any) => ({
+      ...provided,
+      borderBottom: '1px dotted pink',
+      color: state.isSelected ? 'red' : 'blue',
+      padding: 20,
+    })
+  }
 
   return (
     <>
@@ -183,8 +176,9 @@ const Table = ({props, onClick} : TableProps) => {
       {directionalButton("NEXT")}
 
       <Select
-      style={{marginTop : "40px", marginLeft : "25%"}} options={options} onChange={(values) => setValues(values)} 
-      placeholder = "5"
+        style={{marginTop : "40px", marginLeft : "25%"}} options={options} onChange={(values) => setValues(values)} 
+        placeholder = "5"
+        values={[]}
       />
       </div>
 
@@ -228,7 +222,7 @@ const AA = () => {
     buttons_message:["Edit","Cancel","Boton","Boton","Boton"]}
 
 
-  const handleClick = (e,id) => {
+  const handleClick = (e: any,id: any) => {
     //e number of button on list
     //id position of user in info list
     console.log(e);
