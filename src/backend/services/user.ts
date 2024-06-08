@@ -12,6 +12,7 @@ import {
   user_body_update_password,
 } from '../interfaces/user';
 import { add_object_to_array, add_property } from '../utils/utils';
+import { TUpdateUserRole } from '../validators/user';
 
 export const create_user = async (body: user_body_create) => {
   try {
@@ -90,8 +91,24 @@ export const list_users = async (
   }
 };
 
-export const delete_my_user = async (id: number) => {
+export const delete_my_user = async (id: number, token: string) => {
   try {
+    const userWithoutPass = verifyJwt(token);
+
+    const { role_name } = userWithoutPass;
+    if (role_name !== `admin`) {
+      const handle_err: error_object = handle_error_http_response(
+        new Error('Only admin user can delete another users'),
+        '0005'
+      );
+      throw new custom_error(
+        handle_err.error_message,
+        handle_err.error_message_detail,
+        handle_err.error_code,
+        handle_err.status
+      );
+    }
+
     const delete_user = await prisma.user.delete({
       where: {
         id: id,
@@ -144,7 +161,7 @@ export const update_my_user_password = async (
 
     if (!userWithoutPass) {
       const handle_err: error_object = handle_error_http_response(
-        new Error('Unauthorized'),
+        new Error('No autorizado'),
         '0005'
       );
       throw new custom_error(
@@ -216,7 +233,7 @@ const getSelfUser = async (token: string) => {
 
   if (!userWithoutPass) {
     const handle_err: error_object = handle_error_http_response(
-      new Error('Unauthorized'),
+      new Error('No autorizado'),
       '0005'
     );
     throw new custom_error(
@@ -230,6 +247,51 @@ const getSelfUser = async (token: string) => {
   return userWithoutPass;
 };
 
+const updateUserRole = async (
+  data: TUpdateUserRole,
+  userId: string,
+  token: string
+) => {
+  const userWithoutPass = verifyJwt(token);
+
+  if (!userWithoutPass) {
+    const handle_err: error_object = handle_error_http_response(
+      new Error('No autorizado'),
+      '0005'
+    );
+    throw new custom_error(
+      handle_err.error_message,
+      handle_err.error_message_detail,
+      handle_err.error_code,
+      handle_err.status
+    );
+  }
+
+  const { role_name } = userWithoutPass;
+  if (role_name !== `admin`) {
+    const handle_err: error_object = handle_error_http_response(
+      new Error(
+        'Solo los usuarios de tipo admin pueden actualizar roles de usuarios'
+      ),
+      '0005'
+    );
+    throw new custom_error(
+      handle_err.error_message,
+      handle_err.error_message_detail,
+      handle_err.error_code,
+      handle_err.status
+    );
+  }
+  const userUpdated = await prisma.user.update({
+    where: { id: parseInt(userId) },
+    data: {
+      role_name: data.role,
+    },
+  });
+
+  return userUpdated;
+};
+
 export const userService = {
   create_user,
   read_user,
@@ -238,4 +300,5 @@ export const userService = {
   update_my_user,
   update_my_user_password,
   getSelfUser,
+  updateUserRole,
 };

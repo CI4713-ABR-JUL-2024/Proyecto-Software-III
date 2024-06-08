@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { roleEnum } from '../interfaces/role';
 
 const user_create_object_body = z.object({
   name: z.string(),
@@ -48,9 +49,19 @@ export const validator_user_data = (body: any) => {
   return its_validated;
 };
 
+const updateUserRole = z.object({
+  role: z.enum(roleEnum),
+});
+
+export type TUpdateUserRole = z.infer<typeof updateUserRole>;
+
+const validatorUpdateUserRole = (body: TUpdateUserRole) =>
+  updateUserRole.parse(body);
+
 export const userValidator = {
   validator_user_create,
   validator_user_update,
   validator_user_update_password_body,
   validator_user_data,
+  validatorUpdateUserRole,
 };
