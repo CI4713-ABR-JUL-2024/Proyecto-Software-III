@@ -3,7 +3,8 @@ import { FaPen, FaTrash } from "react-icons/fa";
 import Table from "../components/Table";
 import { IoSearchCircle } from "react-icons/io5";
 import { useState } from "react";
-import Sidebar from "../components/Sidebar"
+import Sidebar from "../components/Sidebar";
+import EditRoleModal from "../components/EditRoleModal";
 
 export default function UsersTable() {
     const [searchVal, setSearchVal] = useState("");
@@ -40,6 +41,10 @@ export default function UsersTable() {
     const handleClick = (e: any,id: any) => {
         //e number of button on list
         //id position of user in info list
+        if (e === 0) {
+            console.log("Se quiere editar el usuario", id);
+        }
+
         console.log(e);
         //rellenar con el manejo del click hecho dependiendo del boton y el usuario 
     };
@@ -115,11 +120,10 @@ return (
                     value={role}
                 >
                     <option disabled className="text-gray-400" value="">Seleccione un rol</option>
-                    <option value="Gerente General">Gerente General</option>
-                    <option value="Gerente de Operaciones">Gerente de Operaciones</option>
-                    <option value="Sub-Gerente de Cuentas">Sub-Gerente de Cuentas</option>
-                    <option value="Analista de Cuentas">Analista de Cuentas</option>
-                    <option value="Administrador de Sistemas">Administrador de Sistemas</option>
+                    <option value="general_management">Gerente General</option>
+                    <option value="operations_management">Gerente de Operaciones</option>
+                    <option value="account_submanagement">Sub-Gerente de Cuentas</option>
+                    <option value="account_analyst">Analista de Cuentas</option>
                 </select>
                 <select
                     id = "userType"
