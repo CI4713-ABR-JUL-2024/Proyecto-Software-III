@@ -43,7 +43,7 @@ export default function RegisterForm() {
       })
       .then((data) => {
         if (data!=undefined){
-          setShowModal(true);
+          setShowModal(false);
         }
         console.log(data);
       });
