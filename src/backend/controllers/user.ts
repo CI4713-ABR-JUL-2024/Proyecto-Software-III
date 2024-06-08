@@ -14,7 +14,9 @@ const post_user = async (req: NextRequest) => {
 
     const data = userValidator.validator_user_create(body);
 
-    const new_user = await userService.create_user(data);
+    const accessToken = headers().get('Authorization');
+
+    const new_user = await userService.create_user(data, accessToken);
 
     return new_user;
   } catch (error: any) {

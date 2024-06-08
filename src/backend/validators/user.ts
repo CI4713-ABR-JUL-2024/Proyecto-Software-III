@@ -7,7 +7,10 @@ const user_create_object_body = z.object({
   email: z.string().email(),
   telephone: z.string(),
   password: z.string().min(8),
+  role_name: z.enum(roleEnum).optional(),
 });
+
+export type TUser_create_object_body = z.infer<typeof user_create_object_body>;
 
 export const validator_user_create = (body: unknown) => {
   const its_validated = user_create_object_body.parse(body);

@@ -12,10 +12,35 @@ import {
   user_body_update_password,
 } from '../interfaces/user';
 import { add_object_to_array, add_property } from '../utils/utils';
-import { TUpdateUserRole } from '../validators/user';
+import { TUpdateUserRole, TUser_create_object_body } from '../validators/user';
 
-export const create_user = async (body: user_body_create) => {
+export const create_user = async (
+  body: TUser_create_object_body,
+  token: string | null
+) => {
   try {
+    let userWithToken;
+    if (token) {
+      userWithToken = verifyJwt(token);
+    }
+
+    const isAdmin = userWithToken?.role_name === 'admin';
+
+    if (isAdmin && !body.role_name) {
+      const handle_err: error_object = handle_error_http_response(
+        new Error(
+          'El nombre del role es requerido para crear un usuario desde admin'
+        ),
+        '0000'
+      );
+      throw new custom_error(
+        handle_err.error_message,
+        handle_err.error_message_detail,
+        handle_err.error_code,
+        handle_err.status
+      );
+    }
+
     const new_user = await prisma.user.create({
       data: {
         name: body.name,
@@ -23,7 +48,7 @@ export const create_user = async (body: user_body_create) => {
         email: body.email ?? '',
         telephone: body.telephone ?? '',
         password: await bcrypt.hash(body.password, 10),
-        role_name: 'not_assigned', // default value for new users
+        role_name: isAdmin ? body.role_name : 'not_assigned', // default value for new users
       },
     });
 
