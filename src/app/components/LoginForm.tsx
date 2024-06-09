@@ -23,7 +23,7 @@ export default function LoginForm() {
 
   async function redirect_token(data: TLoginResponse) {
     let today = new Date();
-    let expires = today.getDate() + 3;
+    let expires = new Date(today.setDate(today.getDate() + 3));
 
     console.log(data);
     setCookie("access_token", data.accessToken, { path: "/", expires });

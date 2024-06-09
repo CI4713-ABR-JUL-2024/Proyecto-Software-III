@@ -113,7 +113,7 @@ export default function UsersTable() {
             console.log("aqui3")
             return;
         }
-        const filterBySearch = tableProp.info.filter((item) => { // Specify the type of 'item' as an array of strings
+        const filterBySearch = tableProp.info.filter((item: any[]) => { // Specify the type of 'item' as an array of strings
             const lowercaseItem = item.map((str) => str.toLowerCase()); // Convert each string in the item array to lowercase
             if (lowercaseItem.includes(searchVal.toLowerCase())) {
                 return item;
