@@ -22,12 +22,12 @@ export default function LoginForm() {
   });
 
   async function redirect_token(data: TLoginResponse) {
-    let expires = new Date();
-    let today = expires.getDate() + 3;
+    let today = new Date();
+    let expires = today.getDate() + 3;
 
     console.log(data);
-    setCookie("access_token", data.accessToken, { path: "/", today });
-    setCookie("id", data.id, { path: "/", today });
+    setCookie("access_token", data.accessToken, { path: "/", expires });
+    setCookie("id", data.id, { path: "/", expires });
     router.push("/profile");
   }
 
