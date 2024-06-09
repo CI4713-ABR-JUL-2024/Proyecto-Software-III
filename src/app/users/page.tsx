@@ -2,11 +2,28 @@
 import { FaPen, FaTrash } from "react-icons/fa";
 import Table from "../components/Table";
 import { IoSearchCircle } from "react-icons/io5";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import EditRoleModal from "../components/EditRoleModal";
+import { useCookies } from 'react-cookie';
+import { useRouter } from 'next/navigation';
+import { list } from "postcss";
+
+const roleMapping: { [key: string]: string } = {
+    'admin': "Administrador",
+    'general_management': 'Gerente General',
+    'operations_management': 'Gerente de Operaciones',
+    'account_submanagement': 'Subgerente de Cuentas',
+    'account_analyst': 'Analista de Cuentas',
+    'not_assigned': 'No asignado',
+  };
+  
+  function getRoleName(roleKey: string) {
+    return roleMapping[roleKey] || 'Rol no encontrado';
+  };
 
 export default function UsersTable() {
+    const router = useRouter();
     const [searchVal, setSearchVal] = useState("");
     const [addUser, setAddUser] = useState(false);
     const [name, setName] = useState('');
@@ -15,26 +32,66 @@ export default function UsersTable() {
     const [userType, setUserType] = useState('');
     const [email, setEmail] = useState('');
     const [errorCreatingUser, setErrorCreatingUser] = useState(false);
-    // const [userList, setUserList] = useState([]);
+    const [cookies, setCookie] = useCookies(['access_token'	]);
+    const [userList, setUserList] = useState<any>([]);
+    
+    console.log(cookies.access_token);
+
+    useEffect(() => {
+        //console.log(cookies.access_token);
+        if (cookies.access_token != undefined) {
+            fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/user',{
+                method: "GET" , 
+                headers : {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${cookies.access_token}`,
+                },
+            })
+            .then(res => {
+
+                return res.json();
+            }).then(data => {
+                console.log("ESTA ES LA DATA ");
+                console.log(data);
+                const list = listToArrayOfArrays(data);
+                setUserList((userList: any[]) => [...userList, list]);
+                console.log("userList");
+            }).catch(error => {
+                console.error('error', error);
+            });
+        } else {
+            console.error('No hay token de acceso');
+            router.push('/');
+        }
+    }, []);
 
     // ejemplo de como se veria la info de la tabla
+    console.log(userList);
+    function listToArrayOfArrays(list: any) : string[][]{ 
+        var array : string[][] = [];
+     list.map((item: any) => {
+            array.push([
+                item.email.toString(),
+                item.name.toString(),
+                item.last_name.toString(),
+                getRoleName(item.role_name),
+                item.telephone.toString() 
+            ]);
+            
+        });
+        //console.log("array");
+        //console.log(array);
+        return array;
+    }
+    
+
     const tableProp = {
-        header : ["Correo","Nombre","Apellido","Rol","Tipo de Usuario"] , 
-        info: [["adelina1@mail.co", "Adelina", "Figueira", "Admin", "User"],
-            ["adelina2@mail.co", "Rosario", "Figueira", "Admin", "User"],
-            ["adelina3@mail.co", "Rosario", "Figueira", "Admin", "User"],
-            ["adelina4@mail.co", "Rosario", "Figueira", "Admin", "User"],
-            ["adelina5@mail.co", "Rosario", "Figueira", "Admin", "User"],
-            ["adelina6@mail.co", "Rosario", "Figueira", "Admin", "User"],
-            ["adelina7@mail.co", "Rosario", "Figueira", "Admin", "User"],
-            ["adelina8@mail.co", "Rosario", "Figueira", "Admin", "User"],
-            ["adelina9@mail.co", "Rosario", "Figueira", "Admin", "User"],
-            ["adelina10@mail.co", "Rosario", "Figueira", "Admin", "User"],
-            ["adelina11@mail.co", "Rosario", "Figueira", "Admin", "User"],
-            ["adelina12@mail.co", "Rosario", "Figueira", "Admin", "User"],
-            ["adelina13@mail.co", "Rosario", "Figueira", "Admin", "User"]],
-        buttons:[FaPen,FaTrash], 
+        header : ["Correo","Nombre","Apellido","Rol","Telefono"] , 
+        info: [userList],
+        buttons:[FaPen,FaTrash],
         buttons_message:["Edit","Delete"]}
+    console.log("tableProp");
+    console.log(tableProp.info);
     const [userTable, setUserTable] = useState(tableProp);
 
 
@@ -52,13 +109,15 @@ export default function UsersTable() {
     function handleSearchClick() {
         if (searchVal === "") {
             setUserTable(tableProp);
+            console.log("aqui3")
             return;
         }
-        const filterBySearch = tableProp.info.filter((item) => {
+        const filterBySearch = tableProp.info.filter((item) => { // Specify the type of 'item' as an array of strings
             const lowercaseItem = item.map((str) => str.toLowerCase()); // Convert each string in the item array to lowercase
             if (lowercaseItem.includes(searchVal.toLowerCase())) {
                 return item;
             }
+            return null; // Add a default return statement
         });
         setUserTable({header: tableProp.header, info: filterBySearch, buttons: tableProp.buttons, buttons_message: tableProp.buttons_message});
     }
@@ -155,7 +214,7 @@ return (
             </div>
             }
             {errorCreatingUser && <p className="text-red-500">Por favor completa todos los campos necesarios.</p>}
-            <Table props={userTable} onClick={handleClick} />
+            <Table props={tableProp} onClick={handleClick} />
         </div>
     </main>
 );

@@ -3,6 +3,7 @@ import React from 'react'
 import { useState} from 'react';
 import { FaRegUser, FaPen, FaCircle} from "react-icons/fa";
 import { IconType } from "react-icons";
+import { useEffect } from 'react';
 
 import Select from "react-dropdown-select";
 
@@ -51,6 +52,10 @@ const Table = ({props, onClick} : TableProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   var pageNumber = Math.ceil(props.info.length/currentAmount);
 
+  useEffect(() => {
+      console.log("props")
+      console.log(props);
+    });  
   const options = [
     {
       value: 1,

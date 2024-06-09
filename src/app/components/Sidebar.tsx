@@ -34,7 +34,7 @@ export default function Sidebar(props: { role: string }) {
                     >
                         Perfil
                     </button>
-                    {role === "Administrador de Sistemas" &&
+                    {role === 'admin' &&
                         <button
                             className="w-[-webkit-fill-available] hover:bg-[#3A4FCC] hover:text-white font-bold py-2 px-4 rounded-full"
                             onClick={viewUsers}

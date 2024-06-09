@@ -25,10 +25,10 @@ export default function RegisterForm() {
   const [showModal, setShowModal] = useState(false);
 
   async function onSubmit(data: FormData) {
-    const {name,email,password,role,telephone,last_Name} = data;
-    const user = {name,email,password,role};
+    const {name,email,password,telephone,last_Name} = data;
+    const user = {name,email,password};
   
-    const a = { name : name, last_name : last_Name, telephone: telephone, email : email, password : password, role : role};
+    const a = { name : name, last_name : last_Name, telephone: telephone, email : email, password : password};
     console.log('a')
     console.log(a)
   

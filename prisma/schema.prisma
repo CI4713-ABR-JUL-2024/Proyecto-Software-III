@@ -21,5 +21,14 @@ model User {
   email    String   @unique
   password String
   telephone String   @unique
-  role     String?
+  role     Role? @relation(fields: [role_name], references: [name])
+  role_name String?
 }
+
+
+model Role{
+  name String @id
+  description String?
+  user User[]
+}
+
