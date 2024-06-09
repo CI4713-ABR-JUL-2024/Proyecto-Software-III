@@ -90,7 +90,7 @@ const Profile = () => {
   }
 
 
-
+  /*
   async function onChangePassword() {
     const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/changePassword',{
       method: "POST" , headers : {
@@ -104,7 +104,7 @@ const Profile = () => {
         console.log(data);        
       });
   }
-  
+  */
   return (
     <main className="flex">
     <Sidebar role={role}/>
