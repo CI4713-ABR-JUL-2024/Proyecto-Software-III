@@ -21,5 +21,30 @@ model User {
   email    String   @unique
   password String
   telephone String   @unique
-  role     String?
+  role     Role? @relation(fields: [role_name], references: [name])
+  role_name String?
 }
+
+
+model Role{
+  name String @id
+  description String?
+  user User[]
+}
+
+model Project {
+  id          Int      @id @default(autoincrement())
+  description String
+  start       DateTime
+  end         DateTime
+}
+
+model Log {
+  id      Int      @id @default(autoincrement())
+  user    String
+  module  String
+  event   String
+  date    DateTime
+  time    DateTime
+}
+
