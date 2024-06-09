@@ -7,14 +7,11 @@ import { changeSchema } from "@/zodSchema/changePassword";
 import { getSession } from 'next-auth/react';
 import { useCookies } from 'react-cookie';
 import SuccessModal from "./SuccessModal";
+import { RiContactsBookUploadFill } from "react-icons/ri";
 
 // this is the type of the object that the form will return
 type changeData = z.infer<typeof changeSchema>;
-/*type ChangePasswordValues ={
-  oldPassword: string;
-  newPassword: string;
-  compareNewPassword: string;
-}*/
+
 
 
 
@@ -27,47 +24,46 @@ export default function ChangePassword() {
     resolver: zodResolver(changeSchema),
   });
   //const handleSubmit = useForm<typeofvalidator_user_update_password_body>()
-  const [cookies, setCookie] = useCookies(['access_token']);
+  const [cookies, setCookie] = useCookies(['access_token'	]);
   const [passwordChanged, setPasswordChanged] = useState(false);
   const [errorMessage, setErrorMessage] = useState(""); // State variable for error message
 
 // Asegúrate de que esta función se ejecute cuando se haga clic en el botón
 async function onSubmit(data: changeData) {
-  try {
-    
-    const session = await getSession() as {user: {accessToken?: string}};
+  // Obtén el token de autenticación del localStorage
+  /*
+  console.log("cookies")
+  console.log(cookies.access_token)
+  */
 
-    console.log(data)
-    console.log(cookies.access_token)
-    
-    const response = await fetch(
-      new URL('api/changePassword', process.env.NEXT_PUBLIC_BASE_URL),
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${cookies.access_token}`,
-        },
-        body: JSON.stringify({ oldPassword : data.oldPassword, newPassword : data.newPassword, compareNewPassword : data.compareNewPassword }
-        ),
+    try {  
+      const response = await fetch(
+        new URL(`api/changePassword`, process.env.NEXT_PUBLIC_BASE_URL),
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${cookies.access_token}`,
+          },
+          body: JSON.stringify({ oldPassword : data.oldPassword, newPassword : data.newPassword, compareNewPassword : data.compareNewPassword }),
+        }
+      );
+
+      if (response.ok) {
+        console.log('Clave cambiada correctamente');
+        setPasswordChanged(true); 
+      } else {
+        const errorData = await response.json();
+        console.error(errorData.error_message);
       }
-    );
-
-    if (response.ok) {
-      console.log('Clave cambiada correctamente');
-      // Aquí puedes agregar lógica adicional, como mostrar un mensaje de éxito al usuario
-      setPasswordChanged(true); 
-    } else {
-      const errorData = await response.json();
-      console.error(errorData.error_message);
-      // Aquí puedes manejar el caso de error, por ejemplo, mostrando un mensaje de error al usuario
+    } catch (error) {
+      console.error('Error al procesar la solicitud:', error);
+      setErrorMessage("Error al cambiar la contraseña. Verifique que la contraseña actual sea correcta e intentélo de nuevo.");
     }
-  } catch (error) {
-    console.error('Error al procesar la solicitud:', error);
-    // Maneja cualquier otro error que pueda ocurrir durante la solicitud
-    setErrorMessage("Error al cambiar la contraseña. Verifique que la contraseña actual sea correcta e intentélo de nuevo.");
-  }
+
 }
+
+
 
   return (
     <div className="flex items-center justify-center">

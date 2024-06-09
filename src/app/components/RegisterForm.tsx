@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { registerSchema } from "@/zodSchema/register";
 import { useState } from "react";
-
+import RegisterSuccessModal from "./RegisterSuccessModal";
 type FormData = z.infer<typeof registerSchema>;
 
 export default function RegisterForm() {
@@ -20,58 +20,42 @@ export default function RegisterForm() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [role, setRole] = useState("");
+  // constante para mostrar el modal de éxito
+  const [showModal, setShowModal] = useState(false);
 
   async function onSubmit(data: FormData) {
-    //console.log(data);
-    const {name,email,password,role,telephone,last_Name} = data;
-    const user = {name,email,password,role};
-
-    const a = { name : name, last_name : last_Name, telephone: telephone, email : email, password : password, role : role};
+    const {name,email,password,telephone,last_Name} = data;
+    const user = {name,email,password};
+  
+    const a = { name : name, last_name : last_Name, telephone: telephone, email : email, password : password};
     console.log('a')
     console.log(a)
-    const r = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/user',{
-      method: "POST",body : JSON.stringify(a),
-      })
-      .then((res) => {
-        if (res.status == 200){
-          router.push('/')
-        }
-        return res.json();
-      })
-      .then((data) => {
-        if (data!=undefined){
-          router.push('/')
-        }
-        console.log(data);
-      });
-
-    /*const response = await fetch(
-        new URL('/api/user', process.env.NEXT_PUBLIC_BASE_URL),
+  
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/user`,
         {
-          method: 'POST',
-          body: JSON.stringify(a),
-        },
-      )
+          method: "POST",
+          body : JSON.stringify(a),
+        }
+      );
   
       if (response.ok) {
-        console.log('data')
-        console.log('Usuario creado correctamente')
-        router.push('/')
+        console.log('Usuario creado correctamente');
+        setShowModal(true);
+        const data = await response.json();
+        console.log(data);
       } else {
-        const data = await response.json()
-        console.error(data.error_message)
-      }*/
-
+        // Lanza un error si el estado de la respuesta no es 200
+        throw new Error('Error en el registro de usuario');
+      }
+    } catch (error) {
+      // Captura cualquier error que ocurra durante la solicitud
+      console.error(error);
+      setShowModal(false);
     }
-
-    // Replace this with a server action or fetch an API endpoint to authenticate
- //   await new Promise<void>((resolve) => {
-    //  setTimeout(() => {
-   //     resolve();
-   //   }, 2000); // 2 seconds in milliseconds
-   // });
-   // router.push("");
-
+  }
   
 
 return (
@@ -294,17 +278,23 @@ return (
                   </label>
                 </div>
 
-                {/* Role Input */}
+                {/* Role Input 
                 <div className="relative mt-5">
-                  <input
+                  <select
                     {...register("role", { required: true })}
                     id="role"
                     name="role"
-                    type="text"
+                    onChange={(e) => { setRole(e.target.value) }}
                     className="peer h-10 rounded-md	w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:border-blue-600 focus:outline-none"
-                    placeholder="Admin"
-                    autoComplete="off"
-                  />
+                    value={role}
+                  >
+                    <option disabled className="text-gray-400" value="">Seleccione un rol</option>
+                    <option value="Gerente General">Gerente General</option>
+                    <option value="Gerente de Operaciones">Gerente de Operaciones</option>
+                    <option value="Sub-Gerente de Cuentas">Sub-Gerente de Cuentas</option>
+                    <option value="Analista de Cuentas">Analista de Cuentas</option>
+                    <option value="Administrador de Sistemas">Administrador de Sistemas</option>
+                  </select>
                   {errors?.role && (
                     <p className="text-red-600 text-sm">
                       {errors?.role?.message}
@@ -316,8 +306,9 @@ return (
                   >
                     Rol
                   </label>
+                
                 </div>
-
+                */}
                 {/* Phone Input */}
                 <div className="relative mt-5">
                   <input
@@ -366,7 +357,6 @@ return (
                     "Crear cuenta"
                   )}
                 </button>
-
                 {/* Login Link */}
                 <p className="text-center mt-4 text-gray-600 col-span-2">
                   ¿Ya tienes una cuenta?{" "}
@@ -378,7 +368,11 @@ return (
                     Inicia sesión
                   </a>
                 </p>
+                {showModal && (
+                <RegisterSuccessModal title = "¡Registro exitoso!" message="Usuario creado correctamente" />
+              )}
               </form>
+
             </div>
           </div>
         </div>
