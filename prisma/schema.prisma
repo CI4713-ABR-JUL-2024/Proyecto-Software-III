@@ -23,6 +23,7 @@ model User {
   telephone String   @unique
   role     Role? @relation(fields: [role_name], references: [name])
   role_name String?
+  log Log[]
 }
 
 
@@ -41,7 +42,8 @@ model Project {
 
 model Log {
   id      Int      @id @default(autoincrement())
-  user    String
+  user   User     @relation(fields: [user_id], references: [id])
+  user_id Int
   module  String
   event   String
   date    DateTime
