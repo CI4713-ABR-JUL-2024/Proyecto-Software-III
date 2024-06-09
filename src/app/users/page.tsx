@@ -31,6 +31,7 @@ export default function UsersTable() {
     const [role, setRole] = useState('');
     const [telephone, setTelephone] = useState('');
     const [email, setEmail] = useState('');
+    const [userPassword, setUserPassword] = useState('12345678'); // Default password for new users
     const [errorCreatingUser, setErrorCreatingUser] = useState(false);
     const [cookies, setCookie] = useCookies(['access_token'	]);
     const [userList, setUserList] = useState<any>([]);
@@ -137,6 +138,7 @@ export default function UsersTable() {
                     last_name: surname,
                     role_name: role,
                     telephone: telephone,
+                    password: userPassword,
                 }),
             });
             const data = await response.json();
@@ -229,6 +231,7 @@ return (
                         setAddUser(false);
                         console.log(email, name, surname, role, telephone);
                         if (errorCreatingUser) setErrorCreatingUser(false);
+                        createUser();
                     }}
                 >
                     Crear
