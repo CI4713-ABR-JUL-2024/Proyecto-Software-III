@@ -35,10 +35,10 @@ export default function UsersTable() {
     const [cookies, setCookie] = useCookies(['access_token'	]);
     const [userList, setUserList] = useState<any>([]);
     
-    console.log(cookies.access_token);
 
     useEffect(() => {
-        //console.log(cookies.access_token);
+        console.log("TOKEN")
+        console.log(cookies.access_token);
         if (cookies.access_token != undefined) {
             fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/user',{
                 method: "GET" , 
@@ -54,8 +54,11 @@ export default function UsersTable() {
                 console.log("ESTA ES LA DATA ");
                 console.log(data);
                 const list = listToArrayOfArrays(data);
-                setUserList((userList: any[]) => [...userList, list]);
+                console.log("LISTA AAA");
+                console.log(list);
+                setUserList(list);
                 console.log("userList");
+                console.log(userList);
             }).catch(error => {
                 console.error('error', error);
             });
@@ -66,10 +69,9 @@ export default function UsersTable() {
     }, []);
 
     // ejemplo de como se veria la info de la tabla
-    console.log(userList);
-    function listToArrayOfArrays(list: any) : string[][]{ 
+    function listToArrayOfArrays(list: any) : string[][] { 
         var array : string[][] = [];
-     list.map((item: any) => {
+        list.map((item: any) => {
             array.push([
                 item.email.toString(),
                 item.name.toString(),
@@ -79,19 +81,18 @@ export default function UsersTable() {
             ]);
             
         });
-        //console.log("array");
-        //console.log(array);
+        console.log("arrayOf");
+        console.log(array);
         return array;
     }
     
 
     const tableProp = {
         header : ["Correo","Nombre","Apellido","Rol","Telefono"] , 
-        info: [userList],
+        info: userList,
         buttons:[FaPen,FaTrash],
         buttons_message:["Edit","Delete"]}
-    console.log("tableProp");
-    console.log(tableProp.info);
+
     const [userTable, setUserTable] = useState(tableProp);
 
 
