@@ -59,7 +59,9 @@ export default function UsersTable() {
                 const list = listToArrayOfArrays(data);
                 //console.log("LISTA AAA");
                 //console.log(list);
+               
                 setUserList(list);
+               
                 //console.log("userList");
                 //console.log(userList);
             }).catch(error => {
@@ -76,6 +78,7 @@ export default function UsersTable() {
         var array : string[][] = [];
         list.map((item: any) => {
             array.push([
+                item.id.toString(),
                 item.email.toString(),
                 item.name.toString(),
                 item.last_name.toString(),
@@ -218,6 +221,7 @@ return (
                     <option value="account_submanagement">Sub-Gerente de Cuentas</option>
                     <option value="account_analyst">Analista de Cuentas</option>
                 </select>
+                //TODO : AQUI TIENEN UN TYPO que prob haga que no funcione el form
                 <input 
                     id="teleohone"
                     type="number"
