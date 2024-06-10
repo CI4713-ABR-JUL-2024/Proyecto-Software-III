@@ -11,13 +11,13 @@ import { compareSync } from "bcrypt";
 
 type RoleData = z.infer<typeof roleSchema>;
 
-export default function EditRoleModal({ isOpen, setIsOpen, userId }) {
+export default function EditRoleModal({ isOpen, setIsOpen, userId }: { isOpen: boolean, setIsOpen: React.Dispatch<React.SetStateAction<boolean>>, userId: string | null }) {
   const [role, setRole] = useState("");
   const [cookies, setCookie] = useCookies(['access_token'	]);
 
   console.log('entro por el user', userId);
 
-  async function onClick(e, data: string) {
+  async function onClick(e: React.MouseEvent<HTMLButtonElement>, data: string) {
     e.preventDefault();
     console.log('entro por el click', data);
     try {

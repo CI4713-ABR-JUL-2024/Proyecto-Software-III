@@ -34,7 +34,7 @@ export default function UsersTable() {
     const [userPassword, setUserPassword] = useState('12345678'); // Default password for new users
     const [errorCreatingUser, setErrorCreatingUser] = useState(false);
     const [cookies, setCookie] = useCookies(['access_token'	]);
-    const [userId, setUserId] = useState(null);
+    const [userId, setUserId] = useState<string | null>(''); // Provide a default value of an empty string
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [userList, setUserList] = useState<any>([]);
     
