@@ -7,6 +7,7 @@ import { roleSchema } from "@/zodSchema/role";
 import { getSession } from 'next-auth/react';
 import { useCookies } from 'react-cookie';
 import Modal from 'react-modal';
+import { compareSync } from "bcrypt";
 
 type RoleData = z.infer<typeof roleSchema>;
 
@@ -35,7 +36,10 @@ export default function EditRoleModal({ isOpen, setIsOpen, userId }) {
   
       if (response.ok) {
         console.log('Rol cambiado correctamente');
-        console.log('role nuevo', data);
+        //console.log('role nuevo', data);
+        console.log('userId', userId);
+        console.log('token', cookies.access_token);
+        console.log('response', response);
         setIsOpen(false);
       } else {
         const errorData = await response.json();
@@ -47,8 +51,9 @@ export default function EditRoleModal({ isOpen, setIsOpen, userId }) {
   }
 
   return (
-    <Modal isOpen={isOpen} onRequestClose={() => 
-      setIsOpen(false)}
+    <Modal 
+      isOpen={isOpen} 
+      onRequestClose={() => setIsOpen(false)} ariaHideApp={false}
       style={{content: {width: '55vw', height: '55vh', margin: 'auto'}}}
     >
       <div className="flex flex-col justify-center h-[40vh]">
@@ -63,7 +68,7 @@ export default function EditRoleModal({ isOpen, setIsOpen, userId }) {
         >
           <select
             id = "role"
-            onChange={(e) => { setRole(e.target.value), console.log('role', e.target.value)}}
+            onChange={(e) => { setRole(e.target.value)}}
             className="border invalid:text-black-400 border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2.5 w-full text-xl"
             required
             value={role}
