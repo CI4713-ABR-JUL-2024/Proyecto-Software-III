@@ -34,6 +34,8 @@ export default function UsersTable() {
     const [userPassword, setUserPassword] = useState('12345678'); // Default password for new users
     const [errorCreatingUser, setErrorCreatingUser] = useState(false);
     const [cookies, setCookie] = useCookies(['access_token'	]);
+    const [userId, setUserId] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [userList, setUserList] = useState<any>([]);
     
 
@@ -101,10 +103,16 @@ export default function UsersTable() {
         //e number of button on list
         //id position of user in info list
         if (e === 0) {
+            setUserId(id);
+            setIsModalOpen(true);
             console.log("Se quiere editar el usuario", id);
+        } 
+
+        if (e === 1) {
+            console.log("Se quiere eliminar el usuario", id);
         }
 
-        console.log(e);
+        //console.log(e);
         //rellenar con el manejo del click hecho dependiendo del boton y el usuario 
     };
 
@@ -240,6 +248,9 @@ return (
             }
             {errorCreatingUser && <p className="text-red-500">Por favor completa todos los campos necesarios.</p>}
             <Table props={tableProp} onClick={handleClick} />
+        </div>
+        <div>
+            <EditRoleModal userId={userId} isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
         </div>
     </main>
 );
