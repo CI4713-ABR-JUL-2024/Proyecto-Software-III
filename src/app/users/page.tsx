@@ -94,7 +94,7 @@ export default function UsersTable() {
     
 
     const tableProp = {
-        header : ["Correo","Nombre","Apellido","Rol","Telefono"] , 
+        header : ["ID","Correo","Nombre","Apellido","Rol","Telefono"] , 
         info: userList,
         buttons:[FaPen,FaTrash],
         buttons_message:["Edit","Delete"]}
@@ -221,9 +221,9 @@ return (
                     <option value="account_submanagement">Sub-Gerente de Cuentas</option>
                     <option value="account_analyst">Analista de Cuentas</option>
                 </select>
-                //TODO : AQUI TIENEN UN TYPO que prob haga que no funcione el form
+
                 <input 
-                    id="teleohone"
+                    id="telephone"
                     type="number"
                     value={telephone}
                     placeholder="Teléfono"

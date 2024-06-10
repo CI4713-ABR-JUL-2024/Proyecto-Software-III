@@ -160,23 +160,7 @@ const Table = ({props, onClick} : TableProps) => {
       </tr>
 
       {tableProps.info.map((info,j) =>{
-        /**
-         * No pueden tomar la posición de la de la lista como el id de los items
-         * ya que no siempre la posición sera el id de lo que esta registrado en db
-         * por ejemplo si tienes los usuario con id 1,7,9 porque por alguna razón se eliminaron
-         * los otros usuarios, entonces la lista de usuarios sera [1,7,9] pero la posición de la lista
-         * seria 1,2,3 no van a poder hacer peticiones con los usuarios de id 7 y 9.
-         * 
-         * Pueden seguir usando la función listToArrayOfArrays pero SIEMPRE colocando en la primera
-         * posición del array el id del usuario.
-         * 
-         * para que todos sigan esta convención y funcione esta tabla de manera correcta.
-         * 
-         * La otra opción que es un mucho mas cara en tiempo es que en vez de hacer un array
-         * de arrays, fuera un array de objetos genéricos, y entonces no se tendría que buscar
-         * por posición si no por valores de key, bien sea id, name , amount lo que sea.
-         * 
-         */
+        
         if (getPages[j] == currentPage){
           return (<tr key={"tr2"+j}>
           {info.map((value,i) => <td key={"info_"+i+"_"+j} style={{width : "8%", paddingTop : "2%", border: "1px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> {value} </td>)}
