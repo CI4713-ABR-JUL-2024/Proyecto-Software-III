@@ -17,7 +17,7 @@ export const update_project = async (id: number, data: ProjectUpdateInput) => {
     });
 
     if (!read_project) {
-      throw new Error('Project does not exist');
+      throw new Error('El proyecto no existe');
     }
 
     const updated_project = await prisma.project.update({

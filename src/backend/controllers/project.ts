@@ -55,7 +55,7 @@ const delete_project = async (
   try {
     let id = parseInt(params.id);
     await projectService.delete_project(id);
-    return { message: 'Project deleted successfully' };
+    return { message: 'Proyecto eliminado correctamente' };
   } catch (error: any) {
     const handle_err: error_object = handle_error_http_response(error, '0000');
     throw new custom_error(
