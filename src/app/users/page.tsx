@@ -261,7 +261,7 @@ return (
             <Table props={tableProp} onClick={handleClick} />
         </div>
         <div>
-            <EditRoleModal userId={userId} isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
+            <EditRoleModal userId={userId} isOpen={isModalOpen} setIsOpen={setIsModalOpen} setRefreshList={setRefreshList}/>
             <DeleteUserModal userId={userId} isOpen={isDeleteModalOpen} setIsOpen={setIsDeleteModalOpen} userList={userJson} setRefreshList={setRefreshList}/>
         </div>
     </main>
