@@ -19,8 +19,9 @@ export default function DeleteUserModal({ isOpen, setIsOpen, userId, userList }:
     e.preventDefault();
     console.log('entro por el click', userId);
     try {
+
       const response = await fetch(
-        new URL(`api/userRole/${userId}`, process.env.NEXT_PUBLIC_BASE_URL),
+        new URL(`api/user/${userId}`, process.env.NEXT_PUBLIC_BASE_URL),
         {
           method: 'DELETE',
           headers: {
