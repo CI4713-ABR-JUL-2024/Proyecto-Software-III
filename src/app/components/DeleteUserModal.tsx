@@ -8,7 +8,7 @@ import Modal from 'react-modal';
 
 type RoleData = z.infer<typeof roleSchema>;
 
-export default function DeleteUserModal({ isOpen, setIsOpen, userId, userList }: { isOpen: boolean, setIsOpen: React.Dispatch<React.SetStateAction<boolean>>, userId: string | null, userList: any}) {
+export default function DeleteUserModal({ isOpen, setIsOpen, userId, userList, setRefreshList }: { isOpen: boolean, setIsOpen: React.Dispatch<React.SetStateAction<boolean>>, userId: string | null, userList: any, setRefreshList: React.Dispatch<React.SetStateAction<boolean>>}) {
   const [name, setName] = useState('');
   const [lastName, setLastName] = useState('');
   const [cookies, setCookie] = useCookies(['access_token'	]);
@@ -38,6 +38,7 @@ export default function DeleteUserModal({ isOpen, setIsOpen, userId, userList }:
         console.log('token', cookies.access_token);
         console.log('response', response);
         setIsOpen(false);
+        setRefreshList(true);
       } else {
         const errorData = await response.json();
         console.error(errorData.error_message);

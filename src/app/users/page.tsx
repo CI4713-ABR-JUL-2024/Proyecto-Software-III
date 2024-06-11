@@ -40,6 +40,7 @@ export default function UsersTable() {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [userList, setUserList] = useState<any>([]);
     const [userJson, setUserJson] = useState<any>();
+    const [refreshList, setRefreshList] = useState<boolean>(false);
     
 
     useEffect(() => {
@@ -74,7 +75,8 @@ export default function UsersTable() {
             console.error('No hay token de acceso');
             router.push('/');
         }
-    }, []);
+        setRefreshList(false);
+    }, [refreshList]);
 
     // ejemplo de como se veria la info de la tabla
     function listToArrayOfArrays(list: any) : string[][] { 
@@ -260,7 +262,7 @@ return (
         </div>
         <div>
             <EditRoleModal userId={userId} isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
-            <DeleteUserModal userId={userId} isOpen={isDeleteModalOpen} setIsOpen={setIsDeleteModalOpen} userList={userJson}/>
+            <DeleteUserModal userId={userId} isOpen={isDeleteModalOpen} setIsOpen={setIsDeleteModalOpen} userList={userJson} setRefreshList={setRefreshList}/>
         </div>
     </main>
 );
