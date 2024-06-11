@@ -8,6 +8,7 @@ import EditRoleModal from "../components/EditRoleModal";
 import { useCookies } from 'react-cookie';
 import { useRouter } from 'next/navigation';
 import { list } from "postcss";
+import DeleteUserModal from "../components/DeleteUserModal";
 
 const roleMapping: { [key: string]: string } = {
     'admin': "Administrador",
@@ -36,7 +37,9 @@ export default function UsersTable() {
     const [cookies, setCookie] = useCookies(['access_token'	]);
     const [userId, setUserId] = useState<string | null>(''); // Provide a default value of an empty string
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [userList, setUserList] = useState<any>([]);
+    const [userJson, setUserJson] = useState<any>();
     
 
     useEffect(() => {
@@ -59,7 +62,7 @@ export default function UsersTable() {
                 const list = listToArrayOfArrays(data);
                 //console.log("LISTA AAA");
                 //console.log(list);
-               
+                setUserJson(data);
                 setUserList(list);
                
                 //console.log("userList");
@@ -112,6 +115,8 @@ export default function UsersTable() {
         } 
 
         if (e === 1) {
+            setUserId(id);
+            setIsDeleteModalOpen(true);
             console.log("Se quiere eliminar el usuario", id);
         }
 
@@ -255,6 +260,7 @@ return (
         </div>
         <div>
             <EditRoleModal userId={userId} isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
+            <DeleteUserModal userId={userId} isOpen={isDeleteModalOpen} setIsOpen={setIsDeleteModalOpen} userList={userJson}/>
         </div>
     </main>
 );

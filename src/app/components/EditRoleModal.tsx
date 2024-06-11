@@ -1,13 +1,10 @@
 'use client';
-import { zodResolver } from "@hookform/resolvers/zod";
 import {useState} from 'react';
-import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { roleSchema } from "@/zodSchema/role";
-import { getSession } from 'next-auth/react';
 import { useCookies } from 'react-cookie';
 import Modal from 'react-modal';
-import { compareSync } from "bcrypt";
+
 
 type RoleData = z.infer<typeof roleSchema>;
 
