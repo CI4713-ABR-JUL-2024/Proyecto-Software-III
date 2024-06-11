@@ -5,7 +5,7 @@ export interface ProjectUpdateInput {
 }
 
 export interface ProjectCreateInput {
-  description?: string;
-  start?: Date;
-  end?: Date;
+  description: string;
+  start: Date;
+  end: Date;
 }
