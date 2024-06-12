@@ -1,18 +1,30 @@
+import { ProjectStatus } from '@prisma/client';
 import { z } from 'zod';
 
 const project_update_object_body = z.object({
   description: z.string().optional(),
   start: z.date().optional(),
   end: z.date().optional(),
+  status: z.nativeEnum(ProjectStatus).optional(),
 }).refine(data => {
   // Si start o end no están definidos, la validación pasa
   if (!data.start || !data.end) return true;
   // Si start es después de end, la validación falla
   return data.start < data.end;
+
+
 }, {
   // Mensaje de error personalizado
   message: "El tiempo de inicio debe ser menor al tiempo de fin",
-});
+}).refine(data => {
+  // Si status no está definido, la validación pasa
+  if (!data.status) return true;
+  // Si status no es uno de los valores permitidos, la validación falla
+  return ["ACTIVE", "INACTIVE"].includes(data.status)
+  }, {
+    // Mensaje de error personalizado
+    message: "El status debe ser 'ACTIVE' o 'INACTIVE'",
+    });
 
 const project_create_object_body = z.object({
   description: z.string(),

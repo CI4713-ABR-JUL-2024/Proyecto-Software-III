@@ -52,9 +52,12 @@ export const delete_project = async (id: number,token: string ) => {
   try {
     const userWithoutPass = verifyJwt(token);
 
-    await prisma.project.delete({
+    await prisma.project.update({
       where: {
         id: id,
+      },
+      data: {
+        status: 'DELETED',
       },
     });
     const body_log = {
@@ -76,7 +79,13 @@ export const delete_project = async (id: number,token: string ) => {
  */
 export const get_all_projects = async () => {
   try {
-    const projects = await prisma.project.findMany();
+    const projects = await prisma.project.findMany({
+      where: {
+        status: {
+          in: ['ACTIVE', 'INACTIVE'],
+        },
+      },
+    });
     return projects;
   } catch (error) {
     throw error;
