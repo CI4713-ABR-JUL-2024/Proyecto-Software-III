@@ -1,0 +1,129 @@
+'use client';
+import { FaPen, FaTrash, FaPrint, FaFilePdf,FaPlay } from "react-icons/fa";
+import Table from "../components/Table";
+import { IoSearchCircle } from "react-icons/io5";
+import { useState } from "react";
+import Sidebar from "../components/Sidebar"
+
+export default function ProjectsTable() {
+  const [searchVal, setSearchVal] = useState("");
+  const [addProject, setAddProject] = useState(false);
+  const [id, setId] = useState('');
+  const [descripcion, setDescripcion] = useState('');
+  const [inicio, setInicio] = useState('');
+  const [cierre, setCierre] = useState('');
+  const [errorCreatingProject, setErrorCreatingProject] = useState(false);
+  // const [userList, setUserList] = useState([]);
+
+  // ejemplo de como se veria la info de la tabla
+  const tableProp = {
+      header : ["Id","Descripción","Incio","Cierre"] , 
+      info: [["1", "Proyecto 1", "10/08/2021", "15/08/2023"]
+            ],
+      buttons:[FaPen,FaTrash,FaPrint,FaFilePdf,FaPlay], 
+      buttons_message:["Editar","Eliminar","Imprimir","Generar","Deshabilitar"]}
+  const [projectTable, setProjectTable] = useState(tableProp);
+
+
+  const handleClick = (e: any,id: any) => {
+      //e number of button on list
+      //id position of user in info list
+      console.log(e);
+      //rellenar con el manejo del click hecho dependiendo del boton y el usuario 
+  };
+
+  function handleSearchClick() {
+      if (searchVal === "") {
+          setProjectTable(tableProp);
+          return;
+      }
+      const filterBySearch = tableProp.info.filter((item) => {
+          const lowercaseItem = item.map((str) => str.toLowerCase()); // Convert each string in the item array to lowercase
+          if (lowercaseItem.includes(searchVal.toLowerCase())) {
+              return item;
+          }
+      });
+      setProjectTable({header: tableProp.header, info: filterBySearch, buttons: tableProp.buttons, buttons_message: tableProp.buttons_message});
+  }return (
+    <main className="flex">
+        <Sidebar role="admin" />
+        <div className="m-10 flex flex-col w-full">
+            <div className="flex justify-between w-full p-4">
+                <h3 className="text-2xl font-bold text-[#3A4FCC]">Portafolio de Proyetos de OKRs</h3>
+                <div className="flex w-1/3"> 
+                    <input
+                        type="text"
+                        placeholder="Buscar proyecto"
+                        className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        onChange={e => setSearchVal(e.target.value)}
+                    />
+                    <button>
+                        <IoSearchCircle className="text-[#3A4FCC] w-10 h-10" onClick={handleSearchClick} />
+                    </button>
+                    <button onClick={() => setAddProject(true)}
+                        className="ml-5 bg-[#3A4FCC] text-white font-bold py-2 px-4 rounded-full">Crear Proyecto</button>
+                </div>
+            </div>
+            {addProject && <div className="flex p-5">
+
+                <input 
+                    id="id"
+                    type="text"
+                    value={id}
+                    placeholder="id del proyecto"
+                    className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2.5"
+                    onChange={(e) => { setId(e.target.value) }}
+                    required
+                />
+                <input 
+                    id="descripcion"
+                    type="text"
+                    value={descripcion}
+                    placeholder="Descripción del proyecto"
+                    className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2.5" 
+                    onChange={(e) => { setDescripcion(e.target.value) }}
+                    required
+                />
+                <input 
+                    id="inicio"
+                    type="text"
+                    value={inicio}
+                    placeholder="Fecha de inicio"
+                    className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2.5"
+                    onChange={(e) => { setInicio(e.target.value) }}
+                    required
+                />
+                <input 
+                    id="cierre"
+                    type="text"
+                    value={cierre}
+                    placeholder="Fecha de cierre"
+                    className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2.5"
+                    onChange={(e) => { setCierre(e.target.value) }}
+                    required
+                />
+               
+                <button
+                    type="submit"
+                    className="bg-[#3A4FCC] text-white font-bold py-2 px-5 rounded-full"
+                    onClick={() => {
+                        if (!id || !descripcion || !inicio || !cierre) {
+                            console.error("Por favor completa todos los campos.");
+                            setErrorCreatingProject(true);
+                            return;
+                        }
+                        setAddProject(false);
+                        console.log(id, descripcion, inicio, cierre);
+                        if (errorCreatingProject) setErrorCreatingProject(false);
+                    }}
+                >
+                    Crear
+                </button>
+            </div>
+            }
+            {errorCreatingProject && <p className="text-red-500">Por favor completa todos los campos necesarios.</p>}
+            <Table props={projectTable} onClick={handleClick} />
+        </div>
+    </main>
+);
+}
