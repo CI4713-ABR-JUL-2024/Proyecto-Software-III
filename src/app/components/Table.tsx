@@ -9,7 +9,7 @@ import Select from "react-dropdown-select";
 
 interface ActionProps {
   props: Array<IconType>,
-  id: number,
+  id: any,
   onClick: any,
   message: string[],
 }
@@ -158,7 +158,7 @@ const Table = ({props, onClick} : TableProps) => {
         if (getPages[j] == currentPage){
           return (<tr key={"tr2"+j}>
           {info.map((value,i) => <td key={"info_"+i+"_"+j} style={{width : "8%", paddingTop : "2%", border: "1px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> {value} </td>)}
-          <td style={{width : "8%", paddingTop : "2%", border: "2px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> <Actions props={tableProps.buttons} id={j} message={tableProps.buttons_message} onClick={handleClick}/> </td>
+          <td style={{width : "8%", paddingTop : "2%", border: "2px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> <Actions props={tableProps.buttons} id={info} message={tableProps.buttons_message} onClick={handleClick}/> </td>
           </tr>);
         }
         }

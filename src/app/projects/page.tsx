@@ -1,9 +1,5 @@
 'use client';
-import { FaPen, FaTrash, FaPrint, FaFilePdf,FaPlay } from "react-icons/fa";
-import Table from "../components/Table";
-import { IoSearchCircle } from "react-icons/io5";
 import { use, useState } from "react";
-import Sidebar from "../components/Sidebar"
 import CreateProject from "../components/CreateProject";
 import { useEffect } from "react";
 import ProjectsTable from "../components/GetProjects";

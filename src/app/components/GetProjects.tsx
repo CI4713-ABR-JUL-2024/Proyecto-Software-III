@@ -5,7 +5,10 @@ import { IoSearchCircle } from "react-icons/io5";
 import { use, useState } from "react";
 import Sidebar from "../components/Sidebar"
 import CreateProject from "../components/CreateProject";
-import { useEffect } from "react";
+import { useRef } from "react";
+import { useReactToPrint } from "react-to-print";
+import { PrintProject } from "./PrintProject";
+import { Content } from "next/font/google";
 
 type ProjectsTableProps = {
     projectInfo: string[][];
@@ -18,6 +21,12 @@ export default function ProjectsTable({ projectInfo }: ProjectsTableProps) {
   const [inicio, setInicio] = useState('');
   const [cierre, setCierre] = useState('');
   const [errorCreatingProject, setErrorCreatingProject] = useState(false);
+  const [currentProject, setCurrentProject] = useState<string[]>();
+
+  const componentRef = useRef<HTMLDivElement>(null);
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
     
   console.log(projectInfo);
   const p = [["1","Proyecto 1","2024-06-11T00:00:00.000Z","2024-06-11T00:00:00.000Z"],["2", "Proyecto 2","2024-06-11T00:00:00.000Z","2024-06-11T00:00:00.000Z"]]
@@ -29,11 +38,28 @@ export default function ProjectsTable({ projectInfo }: ProjectsTableProps) {
       buttons_message:["Editar","Eliminar","Imprimir","Generar","Deshabilitar"]}
   const [projectTable, setProjectTable] = useState(tableProp);
 
-
-  const handleClick = (e: any,id: any) => {
+  const handleClick = (e: any,id: string[]) => {
       //e number of button on list
       //id position of user in info list
-      console.log(e);
+      //console.log(e);
+      if(e == 0){
+        console.log("Editar");
+      }
+      if(e == 1){
+        console.log("Eliminar");
+      }
+        if(e == 2){
+            //setCurrentProject(id);
+            //handlePrint();
+            window.print();
+        }
+        if(e == 3){
+            console.log("Generar");
+        }
+        if(e == 4){
+            console.log("Deshabilitar");
+        }
+
       //rellenar con el manejo del click hecho dependiendo del boton y el usuario 
   };
 
