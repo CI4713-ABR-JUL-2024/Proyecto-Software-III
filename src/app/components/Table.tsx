@@ -33,7 +33,7 @@ const Actions = ({props, id, onClick, message} : ActionProps) => {
 
 interface propsInterface {
   header: Array<string>,
-  info: Array<Array<string>>,
+  info: Array<Array<any>>,
   buttons: Array<IconType>,
   buttons_message : Array<string>,
 }

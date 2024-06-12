@@ -14,6 +14,8 @@ export default function UsersTable() {
     const [userType, setUserType] = useState('');
     const [email, setEmail] = useState('');
     const [errorCreatingUser, setErrorCreatingUser] = useState(false);
+
+    console.log("UsersTable")
     // const [userList, setUserList] = useState([]);
 
     // ejemplo de como se veria la info de la tabla

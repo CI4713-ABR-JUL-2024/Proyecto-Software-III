@@ -16,6 +16,10 @@ export default function Sidebar(props: { role: string }) {
         router.push("/users");
     }
 
+    async function viewProjects(){
+        router.push("/projects");
+    }
+
     async function logOut(){
     removeCookie('access_token', { path: '/', domain: 'localhost' });
     router.push("/");
@@ -40,6 +44,14 @@ export default function Sidebar(props: { role: string }) {
                             onClick={viewUsers}
                         >
                             Perfiles de Usuarios
+                        </button>
+                    }
+                    {
+                        <button
+                            className="w-[-webkit-fill-available] hover:bg-[#3A4FCC] hover:text-white font-bold py-2 px-4 rounded-full"
+                            onClick={viewUsers}
+                        >
+                            Proyectos
                         </button>
                     }
                     {/* <button className="w-[-webkit-fill-available] hover:bg-[#3A4FCC] hover:text-white font-bold py-2 px-4 rounded-full">Ayuda</button> */}
