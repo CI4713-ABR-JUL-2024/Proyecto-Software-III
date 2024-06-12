@@ -1,6 +1,6 @@
 import prisma from '../../../prisma/prisma';
 import { verifyJwt } from '../helpers/jwt';
-import { ProjectUpdateInput } from '../interfaces/project';
+import { ProjectUpdateInput, ProjectCreateInput } from '../interfaces/project';
 import { create_log } from './log';
 
 /**
@@ -70,10 +70,36 @@ export const delete_project = async (id: number,token: string ) => {
   }
 };
 
+/**
+ * Retrieve all projects
+ * @returns A promise that resolves to an array of project objects.
+ */
+export const get_all_projects = async () => {
+  try {
+    const projects = await prisma.project.findMany();
+    return projects;
+  } catch (error) {
+    throw error;
+  }
+};
 
-
+/**
+ * Create a new project
+ * @param data - The project data to create a new project.
+ * @returns A promise that resolves to the created project object.
+ */
+export const create_project = async (data: ProjectCreateInput) => {
+  try {
+    const project = await prisma.project.create({ data });
+    return project;
+  } catch (error) {
+    throw error;
+  }
+};
 
 export const projectService = {
   update_project,
   delete_project,
+  get_all_projects,
+  create_project,
 };
