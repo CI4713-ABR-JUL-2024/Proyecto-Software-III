@@ -3,6 +3,7 @@ import { projectService } from '../services/project';
 import { projectValidator } from '../validators/project';
 import { custom_error, handle_error_http_response } from '../utils/error_handler';
 import { error_object } from '../interfaces/error';
+import { headers } from 'next/headers';
 
 /**
  * Updates a project.
@@ -18,6 +19,7 @@ const update_project = async (
 ): Promise<any> => {
   try {
     const body = await req.json();
+    const accessToken : any= headers().get('Authorization');
     let id = parseInt(params.id);
     if (body.start) {
       body.start = new Date(body.start);
@@ -26,7 +28,7 @@ const update_project = async (
       body.end = new Date(body.end);
     }
     const data = projectValidator.validator_project_update(body);
-    const updated_project = await projectService.update_project(id, data);
+    const updated_project = await projectService.update_project(id, data,accessToken);
     return updated_project;
   } catch (error: any) {
     const handle_err: error_object = handle_error_http_response(error, '0000');
@@ -54,7 +56,8 @@ const delete_project = async (
 ) => {
   try {
     let id = parseInt(params.id);
-    await projectService.delete_project(id);
+    const accessToken : any = headers().get('Authorization');
+    await projectService.delete_project(id,accessToken);
     return { message: 'Proyecto eliminado correctamente' };
   } catch (error: any) {
     const handle_err: error_object = handle_error_http_response(error, '0000');
