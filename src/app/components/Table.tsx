@@ -31,6 +31,24 @@ const Actions = ({props, id, onClick, message} : ActionProps) => {
   );
 }
 
+interface DateProp {
+  id: number,
+  pos : number,
+  onClick: any,
+}
+
+const DateSelector = ({pos,id,onClick} : DateProp) => {
+  const handleClick = onClick;
+  const position = pos;
+  const idUser = id;
+  return(
+  <>
+  <input type="date" id="dateselected" name="dateselected" onChange={(date) => handleClick([pos,date.target.value],id)}
+  placeholder="Select date"/>
+  </>
+  );
+}
+
 
 interface propsInterface {
   header: Array<string>,
@@ -160,10 +178,20 @@ const Table = ({props, onClick} : TableProps) => {
       </tr>
 
       {tableProps.info.map((info,j) =>{
+        
         if (getPages[j] == currentPage){
           return (<tr key={"tr2"+j}>
-          {info.map((value,i) => <td key={"info_"+i+"_"+j} style={{width : "8%", paddingTop : "2%", border: "1px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> {value} </td>)}
-          <td style={{width : "8%", paddingTop : "2%", border: "2px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> <Actions props={tableProps.buttons} id={j} message={tableProps.buttons_message} onClick={handleClick}/> </td>
+          {info.map((value,i) => 
+            
+            {if (value != "date"){
+              return (<td key={"info_"+i+"_"+j} style={{width : "8%", paddingTop : "2%", border: "1px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> {value} </td>)
+            }
+            else{
+              return (<td key={"date_"+i+"_"+j} style={{width : "8%", paddingTop : "2%", border: "1px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> <DateSelector pos={i} id={parseInt(info[0])} onClick={handleClick}/> </td>)
+            }
+            }
+          )}
+          <td style={{width : "8%", paddingTop : "2%", border: "2px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> <Actions props={tableProps.buttons} id={parseInt(info[0])} message={tableProps.buttons_message} onClick={handleClick}/> </td>
           </tr>);
         }
         }
@@ -200,46 +228,25 @@ const Table = ({props, onClick} : TableProps) => {
 // id es el numero de posicion del usuario en la lista info (para saber a que usuario se le desea aplicar algun cambio)
 // la funcion handleClick se crea en la pagina donde se use el componente, y al haber un evento, se reciben los valores
 // del boton y del usuario
+// Para tener un selector de fecha en la tabla, pasar el string date
+//Al modificar este valor, se recibe en la funcion handleClick el e = [posDateSelector,dateSelected] id = fila de la tabla
 const AA = () => {
   const tableProp = {
     header : ["Correo","Nombre","Apellido","Rol","Tipo de Usuario"] , 
-    info : [["adelina@mail.co","Adelina","Figueira","Admin","User"],["adelina@mail.co","Rosario","Figueira","Admin","User"]],
+    info : [["adelina@mail.co","Adelina","date","Admin","User"],["adelina@mail.co","Rosario","Figueira","Admin","User"]],
     buttons:[FaPen,FaCircle], 
     buttons_message:["Edit","Cancel"]}
-
-  const tableR = {
-    header : ["Correo","Nombre","Apellido","Rol","Tipo de Usuario"] , 
-    info : [["adelina@mail.co","Adelina","Figueira","Admin","User"],["adelina@mail.co","Rosario","Figueira","Admin","User"],
-      ["adelina@mail.co","Rosario","Figueira","Admin","User"],["adelina@mail.co","Rosario","Figueira","Admin","User"],
-      ["adelina@mail.co","Rosario","Figueira","Admin","User"],["adelina@mail.co","Rosario","Figueira","Admin","User"],
-      ["adelina@mail.co","Rosario","Figueira","Admin","User"],["adelina@mail.co","Rosario","Figueira","Admin","User"],
-      ["adelina@mail.co","Rosario","Figueira","Admin","User"],["adelina@mail.co","Rosario","Figueira","Admin","User"],
-      ["adelina@mail.co","Rosario","Figueira","Admin","User"],["adelina@mail.co","Rosario","Figueira","Admin","User"],
-      ["adelina@mail.co","Rosario","Figueira","Admin","User"]],
-    buttons:[FaPen,FaCircle,FaRegUser], 
-    buttons_message:["Edit","Cancel","User"]}
-
-  const propsc = {
-    header : ["Correo","Nombre","Apellido","Rol","Tipo de Usuario","Columna","Columna"] , 
-    info : [["adelina@mail.co","Adelina","Figueira","Admin","User","User","User"],
-      ["adelina@mail.co","Rosario","Figueira","Admin","User","User","User"]],
-    buttons:[FaPen,FaCircle,FaRegUser,FaRegUser,FaRegUser], 
-    buttons_message:["Edit","Cancel","Boton","Boton","Boton"]}
-
 
   const handleClick = (e: any,id: any) => {
     //e number of button on list
     //id position of user in info list
     console.log(e);
+    console.log(id);
     //rellenar con el manejo del click hecho dependiendo del boton y el usuario 
   };
   return (
     <main>
     <Table props={tableProp} onClick={handleClick}/>
-    <Table props={tableR} onClick={handleClick}/>
-    <div style={{width : "70%"}}>
-    <Table props={propsc} onClick={handleClick}/>
-    </div>
     </main>
   );
 }

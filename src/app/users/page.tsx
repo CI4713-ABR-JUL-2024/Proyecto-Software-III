@@ -8,6 +8,7 @@ import EditRoleModal from "../components/EditRoleModal";
 import { useCookies } from 'react-cookie';
 import { useRouter } from 'next/navigation';
 import { list } from "postcss";
+import DeleteUserModal from "../components/DeleteUserModal";
 
 const roleMapping: { [key: string]: string } = {
     'admin': "Administrador",
@@ -29,16 +30,22 @@ export default function UsersTable() {
     const [name, setName] = useState('');
     const [surname, setSurname] = useState('');
     const [role, setRole] = useState('');
-    const [userType, setUserType] = useState('');
+    const [telephone, setTelephone] = useState('');
     const [email, setEmail] = useState('');
+    const [userPassword, setUserPassword] = useState('12345678'); // Default password for new users
     const [errorCreatingUser, setErrorCreatingUser] = useState(false);
     const [cookies, setCookie] = useCookies(['access_token'	]);
+    const [userId, setUserId] = useState<string | null>(''); // Provide a default value of an empty string
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [userList, setUserList] = useState<any>([]);
+    const [userJson, setUserJson] = useState<any>();
+    const [refreshList, setRefreshList] = useState<boolean>(false);
     
 
     useEffect(() => {
-        console.log("TOKEN")
-        console.log(cookies.access_token);
+        //console.log("TOKEN")
+        //console.log(cookies.access_token);
         if (cookies.access_token != undefined) {
             fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/user',{
                 method: "GET" , 
@@ -51,14 +58,16 @@ export default function UsersTable() {
 
                 return res.json();
             }).then(data => {
-                console.log("ESTA ES LA DATA ");
-                console.log(data);
+                //console.log("ESTA ES LA DATA ");
+                //console.log(data);
                 const list = listToArrayOfArrays(data);
-                console.log("LISTA AAA");
-                console.log(list);
+                //console.log("LISTA AAA");
+                //console.log(list);
+                setUserJson(data);
                 setUserList(list);
-                console.log("userList");
-                console.log(userList);
+               
+                //console.log("userList");
+                //console.log(userList);
             }).catch(error => {
                 console.error('error', error);
             });
@@ -66,13 +75,15 @@ export default function UsersTable() {
             console.error('No hay token de acceso');
             router.push('/');
         }
-    }, []);
+        setRefreshList(false);
+    }, [refreshList]);
 
     // ejemplo de como se veria la info de la tabla
     function listToArrayOfArrays(list: any) : string[][] { 
         var array : string[][] = [];
         list.map((item: any) => {
             array.push([
+                item.id.toString(),
                 item.email.toString(),
                 item.name.toString(),
                 item.last_name.toString(),
@@ -81,14 +92,14 @@ export default function UsersTable() {
             ]);
             
         });
-        console.log("arrayOf");
-        console.log(array);
+        //console.log("arrayOf");
+        //console.log(array);
         return array;
     }
     
 
     const tableProp = {
-        header : ["Correo","Nombre","Apellido","Rol","Telefono"] , 
+        header : ["ID","Correo","Nombre","Apellido","Rol","Telefono"] , 
         info: userList,
         buttons:[FaPen,FaTrash],
         buttons_message:["Edit","Delete"]}
@@ -100,17 +111,24 @@ export default function UsersTable() {
         //e number of button on list
         //id position of user in info list
         if (e === 0) {
+            setUserId(id);
+            setIsModalOpen(true);
             console.log("Se quiere editar el usuario", id);
+        } 
+
+        if (e === 1) {
+            setUserId(id);
+            setIsDeleteModalOpen(true);
+            console.log("Se quiere eliminar el usuario", id);
         }
 
-        console.log(e);
+        //console.log(e);
         //rellenar con el manejo del click hecho dependiendo del boton y el usuario 
     };
 
     function handleSearchClick() {
         if (searchVal === "") {
             setUserTable(tableProp);
-            console.log("aqui3")
             return;
         }
         const filterBySearch = tableProp.info.filter((item: any[]) => { // Specify the type of 'item' as an array of strings
@@ -122,6 +140,31 @@ export default function UsersTable() {
         });
         setUserTable({header: tableProp.header, info: filterBySearch, buttons: tableProp.buttons, buttons_message: tableProp.buttons_message});
     }
+
+    async function createUser() {
+        console.log("entro a crear usuario")
+        try {
+            const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/user', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${cookies.access_token}`,
+                },
+                body: JSON.stringify({
+                    email: email,
+                    name: name,
+                    last_name: surname,
+                    role_name: role,
+                    telephone: telephone,
+                    password: userPassword,
+                }),
+            });
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error('Error al crear usuario', error);
+        }
+    }   
 
 return (
     <main className="flex">
@@ -185,29 +228,29 @@ return (
                     <option value="account_submanagement">Sub-Gerente de Cuentas</option>
                     <option value="account_analyst">Analista de Cuentas</option>
                 </select>
-                <select
-                    id = "userType"
-                    onChange={(e) => { setUserType(e.target.value) }}
-                    className=" invalid:text-gray-400  border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2.5"
+
+                <input 
+                    id="telephone"
+                    type="number"
+                    value={telephone}
+                    placeholder="Teléfono"
+                    className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2.5"
+                    onChange={(e) => { setTelephone(e.target.value) }}
                     required
-                    value = {userType}
-                >
-                    <option disabled className="text-gray-400" value="">Seleccione el tipo de usuario</option>
-                    <option value="interno">Interno</option>
-                    <option value="externo">Externo</option>
-                </select>
+                />
                 <button
                     type="submit"
                     className="bg-[#3A4FCC] text-white font-bold py-2 px-5 rounded-full"
                     onClick={() => {
-                        if (!userType || !role || !email || !name || !surname) {
+                        if (!telephone || !role || !email || !name || !surname) {
                             console.error("Por favor completa todos los campos.");
                             setErrorCreatingUser(true);
                             return;
                         }
                         setAddUser(false);
-                        console.log(email, name, surname, role, userType);
+                        console.log(email, name, surname, role, telephone);
                         if (errorCreatingUser) setErrorCreatingUser(false);
+                        createUser();
                     }}
                 >
                     Crear
@@ -216,6 +259,10 @@ return (
             }
             {errorCreatingUser && <p className="text-red-500">Por favor completa todos los campos necesarios.</p>}
             <Table props={tableProp} onClick={handleClick} />
+        </div>
+        <div>
+            <EditRoleModal userId={userId} isOpen={isModalOpen} setIsOpen={setIsModalOpen} setRefreshList={setRefreshList}/>
+            <DeleteUserModal userId={userId} isOpen={isDeleteModalOpen} setIsOpen={setIsDeleteModalOpen} userList={userJson} setRefreshList={setRefreshList}/>
         </div>
     </main>
 );
