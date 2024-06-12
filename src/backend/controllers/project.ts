@@ -4,6 +4,7 @@ import { projectValidator } from '../validators/project';
 import { custom_error, handle_error_http_response } from '../utils/error_handler';
 import { error_object } from '../interfaces/error';
 import { headers } from 'next/headers';
+import { ProjectStatus } from '@prisma/client';
 
 /**
  * Updates a project.
@@ -26,6 +27,13 @@ const update_project = async (
     }
     if (body.end) {
       body.end = new Date(body.end);
+    }
+    if (body.status) {
+      if (Object.values(ProjectStatus).includes(body.status.toUpperCase())) {
+          body.status = ProjectStatus[body.status.toUpperCase() as keyof typeof ProjectStatus];
+      } else {
+          throw new Error(`Status ${body.status} no es válido`);
+      }
     }
     const data = projectValidator.validator_project_update(body);
     const updated_project = await projectService.update_project(id, data,accessToken);

@@ -13,6 +13,12 @@ datasource db {
   url      = env("POSTGRES_PRISMA_URL")
 }
 
+enum ProjectStatus {
+  ACTIVE
+  INACTIVE
+  DELETED
+}
+
 
 model User {
   id       Int      @id @default(autoincrement())
@@ -38,6 +44,7 @@ model Project {
   description String
   start       DateTime
   end         DateTime
+  status      ProjectStatus @default(ACTIVE)
 }
 
 model Log {
