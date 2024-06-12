@@ -47,6 +47,5 @@ model Log {
   module  String
   event   String
   date    DateTime
-  time    DateTime
 }
 
