@@ -235,6 +235,8 @@ const AA = () => {
     buttons:[FaPen,FaCircle,FaRegUser,FaRegUser,FaRegUser], 
     buttons_message:["Edit","Cancel","Boton","Boton","Boton"]}
 
+  const role="admin";
+
 
   const handleClick = (e: any,id: any) => {
     //e number of button on list
@@ -244,10 +246,10 @@ const AA = () => {
   };
   return (
     <main>
-    <Table props={tableProp} onClick={handleClick}/>
-    <Table props={tableR} onClick={handleClick}/>
+    <Table role={role} props={tableProp} onClick={handleClick}/>
+    <Table role={role} props={tableR} onClick={handleClick}/>
     <div style={{width : "70%"}}>
-    <Table props={propsc} onClick={handleClick}/>
+    <Table role={role} props={propsc} onClick={handleClick}/>
     </div>
     </main>
   );
