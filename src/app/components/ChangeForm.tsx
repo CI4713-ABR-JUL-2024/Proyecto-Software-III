@@ -82,7 +82,7 @@ async function onSubmit(data: changeData) {
             />
             {errors?.oldPassword && (
               <p className="text-red-600 text-sm">
-                {errors?.oldPassword?.message}
+                Contraseña inválida. <br/> Verifique que la contraseña actual sea correcta.
               </p>
             )}
           </div>
@@ -97,7 +97,7 @@ async function onSubmit(data: changeData) {
             />
             {errors?.newPassword && (
               <p className="text-red-600 text-sm">
-                {errors?.newPassword?.message}
+                La nueva contraseña debe tener al menos 8 caracteres.
               </p>
             )}
           </div>
@@ -112,12 +112,12 @@ async function onSubmit(data: changeData) {
             />
             {errors?.compareNewPassword && (
               <p className="text-red-600 text-sm">
-                {errors?.compareNewPassword?.message}
+                La nueva contraseña debe tener al menos 8 caracteres.
               </p>
             )}
           </div>
           <div className="flex items-center justify-center flex-col">
-            {errorMessage && <p className="text-red-600 text-sm p-3">{errorMessage}</p>}
+            {errorMessage && <p className="text-red-600 text-sm p-3">Verifique que las contraseñas sean válidas.</p>}
             <button type="submit" className=" bg-blue-500 text-white rounded-md p-2 shadow-md shadow-slate-700 hover:bg-blue-400 mb-4 text-lg font-bold p-[10px] w-[-webkit-fill-available]">
               Cambiar contraseña
               </button>
