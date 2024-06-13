@@ -18,7 +18,7 @@ export default function RegisterErrorModal(props: { title:string, message: strin
           >
             <div className="relative w-auto my-6 mx-auto max-w-3xl">
               {/*content*/}
-              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none w-[500px]">
+              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                 {/*header*/}
                 <div className="flex items-center justify-between p-5 border-b border-solid border-blueGray-200 rounded-t flex-col ">
                     <svg className="h-20 w-20 text-red-500" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -33,7 +33,7 @@ export default function RegisterErrorModal(props: { title:string, message: strin
                 </div>
                 {/*body*/}
                 <div className="relative p-6 flex justify-center items-center">
-                  <p className="my-4 text-blueGray-500 text-lg leading-relaxed text-xl ">
+                  <p className="my-4 text-blueGray-500 leading-relaxed text-xl ">
                     {props.message}
                   </p>
                 </div>
