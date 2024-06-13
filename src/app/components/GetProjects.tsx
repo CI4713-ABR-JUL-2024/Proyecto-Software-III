@@ -10,12 +10,15 @@ import { useReactToPrint } from "react-to-print";
 import { PrintProject } from "./PrintProject";
 import { Content } from "next/font/google";
 import { useCookies } from 'react-cookie';
+import { useRouter } from "next/navigation";
+
 
 type ProjectsTableProps = {
     projectInfo: string[][];
   };
 
 export default function ProjectsTable({ projectInfo }: ProjectsTableProps) {
+  const router = useRouter();
   const [cookies, setCookie,removeCookie] = useCookies(['access_token','id']);
   const [searchVal, setSearchVal] = useState("");
   const [addProject, setAddProject] = useState(false);
