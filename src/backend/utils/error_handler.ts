@@ -56,6 +56,14 @@ const error_message_dict: error_message_dictionary = {
   '0004': 'Error borrando usuario',
   '0005': 'Error modificando contraseña de usuario ',
   '0006': 'Error modificando role de usuario',
+  '0007': 'Error obteniendo roles',
+  '0008': 'Error creando rol',
+  '0009': 'Error modificando rol',
+  '0010': 'Error borrando rol',
+  '0011': 'Error obteniendo proyectos',
+  '0012': 'Error creando proyecto',
+  '0013': 'Error modificando proyecto',
+  '0014': 'Error borrando proyecto',
 };
 
 function get_message_for_code(code: string): string {
