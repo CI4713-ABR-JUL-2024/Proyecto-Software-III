@@ -64,6 +64,7 @@ const error_message_dict: error_message_dictionary = {
   '0012': 'Error creando proyecto',
   '0013': 'Error modificando proyecto',
   '0014': 'Error borrando proyecto',
+  '0015': 'Error obteniendo logs',
 };
 
 function get_message_for_code(code: string): string {

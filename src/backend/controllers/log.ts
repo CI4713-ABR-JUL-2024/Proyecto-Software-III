@@ -28,7 +28,7 @@ const get_logs = async (req: NextRequest) => {
         'Si se envía un campo de búsqueda, se debe enviar un texto de búsqueda'
       );
     }
-
+    const accessToken : any = headers().get('Authorization');
     if (search_field != null && search_text != null) {
       let search_fields = [];
       let search_texts = [];
@@ -38,15 +38,27 @@ const get_logs = async (req: NextRequest) => {
       search_texts = search_text.toString().includes(',')
         ? search_text.toString().split(',')
         : [search_text.toString()];
-
-      logs = await logService.list_logs(search_fields, search_texts);
+      for (let i = 0; i < search_fields.length; i++) {
+        if (search_fields[i] !== 'id' &&
+          search_fields[i] !== 'module' && 
+          search_fields[i] !== 'event' && 
+          search_fields[i] !== 'date') {
+          throw new Error('El campo de búsqueda no es válido');
+        }
+      }
+      if (search_fields.length !== search_texts.length) {
+        throw new Error(
+          'La cantidad de campos de búsqueda y textos de búsqueda no coinciden'
+        );
+      }
+      logs = await logService.list_logs(accessToken, search_fields, search_texts);
     } else {
-      logs = await logService.list_logs();
+      logs = await logService.list_logs(accessToken);
     }
 
     return logs;
   } catch (error) {
-    const handle_err: error_object = handle_error_http_response(error, '0001');
+    const handle_err: error_object = handle_error_http_response(error, '0015');
     throw new custom_error(
       handle_err.error_message,
       handle_err.error_message_detail,
