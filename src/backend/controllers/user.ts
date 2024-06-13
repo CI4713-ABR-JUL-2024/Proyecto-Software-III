@@ -16,8 +16,6 @@ const post_user = async (req: NextRequest) => {
 
     const accessToken = headers().get('Authorization');
 
-    console.log(data);
-
     const new_user = await userService.create_user(data, accessToken);
 
     return new_user;
