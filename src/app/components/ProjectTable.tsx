@@ -21,13 +21,13 @@ const Actions = ({role,props, id, onClick, message} : ActionProps) => {
   const idUser = id;
   const userRole = role;
   const handleClick = onClick;
-  
+
   return (
   <>
   <div>
   {props.map((B,j) => {
     if (role === "admin") {
-      return (<button onClick={() => handleClick(j,id)} key={"button"+j} style={{padding : "10px"}} title={message[j]}> {userRole} <B/></button>)
+      return (<button onClick={() => handleClick(j,id)} key={"button"+j} style={{padding : "10px"}} title={message[j]}> <B/></button>)
     }
   }
   
