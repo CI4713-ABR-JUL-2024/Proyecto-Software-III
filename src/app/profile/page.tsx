@@ -7,9 +7,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { loginSchema } from "@/zodSchema/login";
 import { useState, useEffect } from 'react';
-
 import { FaRegUser, FaPen, FaCircle} from "react-icons/fa";
-
 import { useCookies } from 'react-cookie';
 
 //M123456#
@@ -19,6 +17,18 @@ import Sidebar from '../components/Sidebar'
 
 type FormData = z.infer<typeof loginSchema>;
 
+const roleMapping: { [key: string]: string } = {
+  'admin': "Administrador",
+  'general_management': 'Gerente General',
+  'operations_management': 'Gerente de Operaciones',
+  'account_submanagement': 'Subgerente de Cuentas',
+  'account_analyst': 'Analista de Cuentas',
+  'not_assigned': 'No asignado',
+};
+
+function getRoleName(roleKey: string) {
+  return roleMapping[roleKey] || 'Rol no encontrado';
+};
 
 const Profile = () => {
   const router = useRouter();
@@ -37,6 +47,7 @@ const Profile = () => {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [newPassword,setNewPassword] = useState("");
+
   useEffect(() => {
     console.log(cookies.access_token)
     if (cookies.access_token != undefined){
@@ -44,18 +55,21 @@ const Profile = () => {
       method: "GET" , headers : {
                 "Authorization": "Bearer "+cookies.access_token,
                 "type" : "text"}})
-      .then((res) => {
+      .then(res => {
         return res.json();
       })
-      .then((data) => {
+      .then(data => {
         console.log(data);
         setName(data.name);
         setEmail(data.email);
         set_last_name(data.last_name)
         setPassword(data.password)
-        setRole(data.role)
+        setRole(data.role_name)
         setPhone(data.telephone)        
-      });
+      }).catch(error => {
+        console.error('error', error);
+      
+      })
     }
     else{
       router.push("/");
@@ -74,6 +88,9 @@ const Profile = () => {
     removeCookie('access_token', { path: '/', domain: 'localhost' });
     router.push("/");
   }
+
+
+  /*
   async function onChangePassword() {
     const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/changePassword',{
       method: "POST" , headers : {
@@ -87,10 +104,10 @@ const Profile = () => {
         console.log(data);        
       });
   }
-  
+  */
   return (
     <main className="flex">
-    <Sidebar role="Admin"/>
+    <Sidebar role={role}/>
 
     <div className="m-10 flex flex-col w-full">
             <div className="flex flex-col space-y-15 w-full p-4">
@@ -110,7 +127,7 @@ const Profile = () => {
                   <tbody>
                   <tr>
                   <td  >Rol</td>
-                  <td > {role} </td>
+                  <td > {getRoleName(role)} </td>
                   </tr>
                   <tr>
                   <td >Correo electrónico</td>

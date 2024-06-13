@@ -30,6 +30,7 @@ model User {
   role     Role? @relation(fields: [role_name], references: [name])
   role_name String?
   log Log[]
+
 }
 
 
@@ -38,6 +39,7 @@ model Role{
   description String?
   user User[]
 }
+
 
 model Project {
   id          Int      @id @default(autoincrement())
@@ -55,4 +57,3 @@ model Log {
   event   String
   date    DateTime
 }
-

@@ -1,0 +1,37 @@
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - POSTGRESDB_USER=postgres
+      - POSTGRESDB_ROOT_PASSWORD=1234
+      - POSTGRESDB_DATABASE=postgres
+      - POSTGRESDB_LOCAL_PORT=5432
+      - POSTGRESDB_DOCKER_PORT=5432      
+      - POSTGRES_PRISMA_URL=postgresql://postgres:1234@db/db?schema=public
+      - NODE_LOCAL_PORT=3000
+      - NODE_DOCKER_PORT=3000
+      - JWT_SECRET="turing0210"
+      - NEXTAUTH_SECRET="turing0210"
+      - NEXTAUTH_URL=http://localhost:3000
+      - NEXT_PUBLIC_BASE_URL=http://localhost:3000 
+    depends_on:
+      db:
+        condition: service_healthy
+              
+  db:
+    image: "postgres:latest"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=1234
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+volumes:
+  db-data:

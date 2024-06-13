@@ -2,6 +2,7 @@ import prisma from '../../../prisma/prisma';
 import bcrypt from 'bcrypt';
 import { verifyJwt } from '../helpers/jwt';
 import { create_log } from './log';
+
 import {
   custom_error,
   handle_error_http_response,
@@ -43,6 +44,7 @@ export const create_user = async (
     }
     console.log(body);
 
+
     const new_user = await prisma.user.create({
       data: {
         name: body.name,
@@ -63,6 +65,7 @@ export const create_user = async (
       date: new Date()
     }
     const log = await create_log(body_log);
+
 
     return userWithoutPass;
   } catch (error) {
@@ -157,6 +160,7 @@ export const delete_my_user = async (id: number, token: string) => {
       date: new Date()
     }
     const log = await create_log(body_log);
+
 
     if (!delete_user) {
       throw new Error('User does not exists');
@@ -326,6 +330,7 @@ const updateUserRole = async (
       handle_err.status
     );
   }
+
 
   const { role_name } = userWithoutPass;
   if (role_name !== `admin`) {

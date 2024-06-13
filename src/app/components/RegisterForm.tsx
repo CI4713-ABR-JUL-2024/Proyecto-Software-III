@@ -25,30 +25,38 @@ export default function RegisterForm() {
   const [showModal, setShowModal] = useState(false);
 
   async function onSubmit(data: FormData) {
-    //console.log(data);
-    const {name,email,password,role,telephone,last_Name} = data;
-    const user = {name,email,password,role};
-
-    const a = { name : name, last_name : last_Name, telephone: telephone, email : email, password : password, role : role};
+    const {name,email,password,telephone,last_Name} = data;
+    const user = {name,email,password};
+  
+    const a = { name : name, last_name : last_Name, telephone: telephone, email : email, password : password};
     console.log('a')
     console.log(a)
-    const r = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/user',{
-      method: "POST",body : JSON.stringify(a),
-      })
-      .then((res) => {
-        if (res.status == 200){
-          setShowModal(true);
+  
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/user`,
+        {
+          method: "POST",
+          body : JSON.stringify(a),
         }
-        return res.json();
-      })
-      .then((data) => {
-        if (data!=undefined){
-          setShowModal(true);
-        }
+      );
+  
+      if (response.ok) {
+        console.log('Usuario creado correctamente');
+        setShowModal(true);
+        const data = await response.json();
         console.log(data);
-      });
-
+      } else {
+        // Lanza un error si el estado de la respuesta no es 200
+        throw new Error('Error en el registro de usuario');
+      }
+    } catch (error) {
+      // Captura cualquier error que ocurra durante la solicitud
+      console.error(error);
+      setShowModal(false);
     }
+  }
+  
 
 return (
     <div>
@@ -270,7 +278,7 @@ return (
                   </label>
                 </div>
 
-                {/* Role Input */}
+                {/* Role Input 
                 <div className="relative mt-5">
                   <select
                     {...register("role", { required: true })}
@@ -300,7 +308,7 @@ return (
                   </label>
                 
                 </div>
-
+                */}
                 {/* Phone Input */}
                 <div className="relative mt-5">
                   <input

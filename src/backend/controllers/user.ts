@@ -16,8 +16,6 @@ const post_user = async (req: NextRequest) => {
 
     const accessToken = headers().get('Authorization');
 
-    console.log(data);
-
     const new_user = await userService.create_user(data, accessToken);
 
     return new_user;
@@ -149,6 +147,7 @@ const delete_user = async (
 
     const user = await userService.delete_my_user(id, accessToken);
 
+
     return user;
   } catch (error: any) {
     const handle_err: error_object = handle_error_http_response(error, '0004');
@@ -204,6 +203,7 @@ const update_user_password = async (req: NextRequest) => {
     return updatedUser;
   } catch (error: any) {
     const handle_err: error_object = handle_error_http_response(error, '0004');
+
     throw new custom_error(
       handle_err.error_message,
       handle_err.error_message_detail,
@@ -267,6 +267,7 @@ const updateUserRole = async (
       handle_err.status
     );
   }
+
   const userId = params.id;
   const data = userValidator.validatorUpdateUserRole(body);
 
