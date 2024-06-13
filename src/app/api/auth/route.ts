@@ -4,6 +4,9 @@ import * as bcrypt from 'bcrypt'
 import { signJwtAccessToken } from '@/backend/helpers/jwt'
 import { userController } from '@/backend/controllers/user'
 
+import { create_log } from '@/backend/services/log'
+
+
 
 interface RequestBody {
   email: string
@@ -44,6 +47,14 @@ export async function POST(request: NextRequest) {
         ...userWithoutPass,
         accessToken,
       }
+      const body_log = {
+        user_id:userWithoutPass.id,
+        module:"Auth",
+        event:"Login",
+        date: new Date()
+      }
+      const log = await create_log(body_log);
+
       return new NextResponse(JSON.stringify(result))
     } else
       return NextResponse.json(

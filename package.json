@@ -29,6 +29,7 @@
     "react-modal": "^3.16.1",
     "react-pro-sidebar": "^1.1.0",
     "react-router-dom": "^6.23.1",
+    "react-to-print": "^2.15.1",
     "simplebar-react": "^3.2.5",
     "styled-components": "^6.1.11",
     "universal-cookie": "^7.1.4",

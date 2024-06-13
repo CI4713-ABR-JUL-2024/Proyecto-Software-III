@@ -1,6 +1,8 @@
 import prisma from '../../../prisma/prisma';
 import bcrypt from 'bcrypt';
 import { verifyJwt } from '../helpers/jwt';
+import { create_log } from './log';
+
 import {
   custom_error,
   handle_error_http_response,
@@ -40,6 +42,8 @@ export const create_user = async (
         handle_err.status
       );
     }
+    console.log(body);
+
 
     const new_user = await prisma.user.create({
       data: {
@@ -53,6 +57,15 @@ export const create_user = async (
     });
 
     const { password, ...userWithoutPass } = new_user;
+
+    const body_log = {
+      user_id:userWithoutPass.id,
+      module:"User",
+      event:" create_user",
+      date: new Date()
+    }
+    const log = await create_log(body_log);
+
 
     return userWithoutPass;
   } catch (error) {
@@ -140,6 +153,15 @@ export const delete_my_user = async (id: number, token: string) => {
       },
     });
 
+    const body_log = {
+      user_id:userWithoutPass.id,
+      module:"User",
+      event:" delete_my_user",
+      date: new Date()
+    }
+    const log = await create_log(body_log);
+
+
     if (!delete_user) {
       throw new Error('User does not exists');
     }
@@ -170,6 +192,14 @@ export const update_my_user = async (id: number, body: user_body_update) => {
         name: body.name,
       },
     });
+
+    const body_log = {
+      user_id:id,
+      module:"User",
+      event:" update_my_password",
+      date: new Date()
+    }
+    const log = await create_log(body_log);
 
     return update_user;
   } catch (error) {
@@ -229,6 +259,15 @@ export const update_my_user_password = async (
           password: hashedPassword,
         },
       });
+
+      const body_log = {
+        user_id:userWithoutPass.id,
+        module:"User",
+        event:" update_my_user_password",
+        date: new Date()
+      }
+      const log = await create_log(body_log);
+
       return updatedUser;
     } else {
       const handle_err: error_object = handle_error_http_response(
@@ -292,6 +331,7 @@ const updateUserRole = async (
     );
   }
 
+
   const { role_name } = userWithoutPass;
   if (role_name !== `admin`) {
     const handle_err: error_object = handle_error_http_response(
@@ -313,6 +353,14 @@ const updateUserRole = async (
       role_name: data.role,
     },
   });
+
+  const body_log = {
+    user_id:userWithoutPass.id,
+    module:"User",
+    event:"updateUserRole",
+    date: new Date()
+  }
+  const log = await create_log(body_log);
 
   return userUpdated;
 };
