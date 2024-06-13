@@ -9,6 +9,7 @@ type Project = {
     description: string;
     start: string;
     end: string;
+    status:string;
 }
 
 export default function Projects() {
@@ -40,6 +41,6 @@ export default function Projects() {
   }
 
   return (
-    <ProjectsTable projectInfo={projectList.map((project) => [project.id.toString(), project.description, project.start, project.end])}/>
+    <ProjectsTable projectInfo={projectList.map((project) => [project.id.toString(), project.description, project.start, project.end,project.status])}/>
 );
 }
