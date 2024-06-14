@@ -10,7 +10,6 @@ import { useReactToPrint } from "react-to-print";
 import { useCookies } from 'react-cookie';
 import { PrintProject } from "./PrintProject";
 import { Content } from "next/font/google";
-import { useCookies } from 'react-cookie';
 import { useRouter } from "next/navigation";
 
 
@@ -21,7 +20,7 @@ type ProjectsTableProps = {
 
 export default function ProjectsTable({ projectInfo }: ProjectsTableProps) {
   const router = useRouter();
-  const [cookies, setCookie,removeCookie] = useCookies(['access_token','id']);
+  const [role, setRole] = useState("");
   const [searchVal, setSearchVal] = useState("");
   const [addProject, setAddProject] = useState(false);
   const [descripcion, setDescripcion] = useState('');
@@ -33,8 +32,7 @@ export default function ProjectsTable({ projectInfo }: ProjectsTableProps) {
   const [editDescripcion, setEditDescripcion] = useState('');
   const [editInicio, setEditInicio] = useState('');
   const [editCierre, setEditCierre] = useState('');
-
-
+  const [cookies, setCookie] = useCookies(['access_token'	]);
   const componentRef = useRef<HTMLDivElement>(null);
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
@@ -70,7 +68,6 @@ export default function ProjectsTable({ projectInfo }: ProjectsTableProps) {
       buttons:[FaPen,FaTrash,FaPrint,FaFilePdf,FaPlay], 
       buttons_message:["Editar","Eliminar","Imprimir","Generar","Deshabilitar"]}
   const [projectTable, setProjectTable] = useState(tableProp);
-  const [cookies, setCookie] = useCookies(['access_token'	]);
   const handleClick = async (e: any,id: string[]) => {
     
       //e number of button on list
@@ -245,6 +242,8 @@ export default function ProjectsTable({ projectInfo }: ProjectsTableProps) {
                     setErrorCreatingProject(true);
                     return;
                 }
+                console.log(editDescripcion, editInicio, editCierre);
+                console.log(cookies.access_token);
                 const projectId = editingProject[0];
                 const response = await fetch(`/api/project/${projectId}`, {
                     method: 'PUT',
