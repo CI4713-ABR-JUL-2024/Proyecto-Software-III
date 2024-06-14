@@ -33,3 +33,7 @@ export const PrintProject = React.forwardRef<HTMLDivElement, ProjectsProps>((pro
     );
 
 });
+
+PrintProject.displayName = 'PrintProject';
+
+export default PrintProject;
