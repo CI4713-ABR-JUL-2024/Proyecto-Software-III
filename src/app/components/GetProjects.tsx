@@ -5,11 +5,14 @@ import { IoSearchCircle } from "react-icons/io5";
 import { use, useState } from "react";
 import Sidebar from "../components/Sidebar"
 import CreateProject from "../components/CreateProject";
-import { useRef } from "react";
+import { useRef,useEffect } from "react";
 import { useReactToPrint } from "react-to-print";
 import { useCookies } from 'react-cookie';
 import { PrintProject } from "./PrintProject";
 import { Content } from "next/font/google";
+import { useCookies } from 'react-cookie';
+import { useRouter } from "next/navigation";
+
 
 
 type ProjectsTableProps = {
@@ -17,6 +20,8 @@ type ProjectsTableProps = {
   };
 
 export default function ProjectsTable({ projectInfo }: ProjectsTableProps) {
+  const router = useRouter();
+  const [cookies, setCookie,removeCookie] = useCookies(['access_token','id']);
   const [searchVal, setSearchVal] = useState("");
   const [addProject, setAddProject] = useState(false);
   const [descripcion, setDescripcion] = useState('');
@@ -38,8 +43,29 @@ export default function ProjectsTable({ projectInfo }: ProjectsTableProps) {
   console.log(projectInfo);
   const p = [["1","Proyecto 1","2024-06-11T00:00:00.000Z","2024-06-11T00:00:00.000Z"],["2", "Proyecto 2","2024-06-11T00:00:00.000Z","2024-06-11T00:00:00.000Z"]]
   //console.log(p);
+  useEffect(() => {
+    if (cookies.access_token != undefined){
+      fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/user/'+cookies.id,{
+      method: "GET" , headers : {
+                "Authorization": "Bearer "+cookies.access_token,
+                "type" : "text"}})
+      .then(res => {
+        return res.json();
+      })
+      .then(data => {
+        setRole(data.role_name)
+      }).catch(error => {
+        console.error('error', error);
+      })
+    }
+    else{
+      router.push("/");
+    }
+    
+  }, []);
+
   const tableProp = {
-      header : ["Id","Descripción","Incio","Cierre"], 
+      header : ["ID","Descripción","Inicio","Cierre"], 
       info: projectInfo,
       buttons:[FaPen,FaTrash,FaPrint,FaFilePdf,FaPlay], 
       buttons_message:["Editar","Eliminar","Imprimir","Generar","Deshabilitar"]}
@@ -257,7 +283,7 @@ export default function ProjectsTable({ projectInfo }: ProjectsTableProps) {
 
 
             {errorCreatingProject && <p className="text-red-500">Por favor completa todos los campos necesarios.</p>}
-            <Table props={projectTable} onClick={handleClick} />
+            <Table role={role} props={projectTable} onClick={handleClick} />
         </div>
     </main>
 );

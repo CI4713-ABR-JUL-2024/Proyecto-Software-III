@@ -15,7 +15,11 @@ services:
       - JWT_SECRET="turing0210"
       - NEXTAUTH_SECRET="turing0210"
       - NEXTAUTH_URL=http://localhost:3000
-      - NEXT_PUBLIC_BASE_URL=http://localhost:3000 
+      - NEXT_PUBLIC_BASE_URL=http://localhost:3000
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
     depends_on:
       db:
         condition: service_healthy
@@ -33,5 +37,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
 volumes:
   db-data:

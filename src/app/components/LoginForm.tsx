@@ -96,7 +96,7 @@ export default function LoginForm() {
                 </div>
                 {errors?.email && (
                     <p className="text-red-600 text-sm">
-                      {errors?.email?.message}
+                      El correo electrónico no es correcto.
                     </p>
                   )}
 
@@ -120,10 +120,10 @@ export default function LoginForm() {
                 </div>
                 {errors?.password && (
                     <p className="text-red-600 text-sm">
-                      {errors?.password?.message}
+                      La contraseña debe tener al menos 8 caracteres.
                     </p>
                   )}
-                {errorMessage && <p className="text-red-600 text-sm">{errorMessage}</p>}
+                {errorMessage && <p className="text-red-600 text-sm">Correo o contraseña inválida.</p>}
                 {/* Submit Button */}
                 <button
                   type="submit"

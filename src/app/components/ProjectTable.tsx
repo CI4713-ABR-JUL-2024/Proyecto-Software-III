@@ -11,19 +11,26 @@ interface ActionProps {
   props: Array<IconType>,
   id: any,
   onClick: any,
+  role : string,
   message: string[],
 }
 
 
-const Actions = ({props, id, onClick, message} : ActionProps) => {
+const Actions = ({role,props, id, onClick, message} : ActionProps) => {
   const buttonProp = props;
   const idUser = id;
+  const userRole = role;
   const handleClick = onClick;
+
   return (
   <>
   <div>
-  {props.map((B,j) =>
-  <button onClick={() => handleClick(j,id)} key={"button"+j} style={{padding : "10px"}} title={message[j]}><B/></button>
+  {props.map((B,j) => {
+    if (role === "admin") {
+      return (<button onClick={() => handleClick(j,id)} key={"button"+j} style={{padding : "10px"}} title={message[j]}> <B/></button>)
+    }
+  }
+  
   )}
   </div>
   </>
@@ -41,10 +48,11 @@ interface propsInterface {
 
 interface TableProps {
     props : propsInterface,
+    role : string,
     onClick : any,
 }
 
-const Table = ({props, onClick} : TableProps) => {
+const Table = ({role,props, onClick} : TableProps) => {
   const tableProps = props;
   var persons = {};
   const [currentAmount, setCurrentAmount] = useState(5);
@@ -158,13 +166,13 @@ const Table = ({props, onClick} : TableProps) => {
         if (getPages[j] == currentPage && info[4] ==="INACTIVE"){
           return (<tr key={"tr2"+j}>
           {info.filter(value => value != "INACTIVE").map((value,i) =>  <td key={"info_"+i+"_"+j} style={{width : "8%", paddingTop : "2%", border: "1px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%",color: "gray"}}> {value} </td>)}
-          <td style={{width : "8%", paddingTop : "2%", border: "2px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> <Actions props={tableProps.buttons} id={info} message={tableProps.buttons_message} onClick={handleClick}/> </td>
+          <td style={{width : "8%", paddingTop : "2%", border: "2px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> <Actions role={role} props={tableProps.buttons} id={info} message={tableProps.buttons_message} onClick={handleClick}/> </td>
           </tr>);
         }
         if(getPages[j] == currentPage && info[4] === "ACTIVE"){
           return (<tr key={"tr2"+j}>
           {info.filter(value => value != "ACTIVE").map((value,i) =>  <td key={"info_"+i+"_"+j} style={{width : "8%", paddingTop : "2%", border: "1px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%",color: "black"}}> {value} </td>)}
-          <td style={{width : "8%", paddingTop : "2%", border: "2px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> <Actions props={tableProps.buttons} id={info} message={tableProps.buttons_message} onClick={handleClick}/> </td>
+          <td style={{width : "8%", paddingTop : "2%", border: "2px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> <Actions role={role} props={tableProps.buttons} id={info} message={tableProps.buttons_message} onClick={handleClick}/> </td>
           </tr>);
         }
         }
@@ -227,6 +235,8 @@ const AA = () => {
     buttons:[FaPen,FaCircle,FaRegUser,FaRegUser,FaRegUser], 
     buttons_message:["Edit","Cancel","Boton","Boton","Boton"]}
 
+  const role="admin";
+
 
   const handleClick = (e: any,id: any) => {
     //e number of button on list
@@ -236,10 +246,10 @@ const AA = () => {
   };
   return (
     <main>
-    <Table props={tableProp} onClick={handleClick}/>
-    <Table props={tableR} onClick={handleClick}/>
+    <Table role={role} props={tableProp} onClick={handleClick}/>
+    <Table role={role} props={tableR} onClick={handleClick}/>
     <div style={{width : "70%"}}>
-    <Table props={propsc} onClick={handleClick}/>
+    <Table role={role} props={propsc} onClick={handleClick}/>
     </div>
     </main>
   );

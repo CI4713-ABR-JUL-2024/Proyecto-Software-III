@@ -9,6 +9,7 @@ import { useCookies } from 'react-cookie';
 import { useRouter } from 'next/navigation';
 import { list } from "postcss";
 import DeleteUserModal from "../components/DeleteUserModal";
+import { set } from "zod";
 
 const roleMapping: { [key: string]: string } = {
     'admin': "Administrador",
@@ -41,8 +42,16 @@ export default function UsersTable() {
     const [userList, setUserList] = useState<any>([]);
     const [userJson, setUserJson] = useState<any>();
     const [refreshList, setRefreshList] = useState<boolean>(false);
-    
 
+    const tableProp = {
+        header : ["ID","Correo","Nombre","Apellido","Rol","Telefono"] , 
+        info: userList,
+        buttons:[FaPen,FaTrash],
+        buttons_message: ["Edit", "Delete"]
+    }
+
+    const [userTable, setUserTable] = useState(tableProp);
+    
     useEffect(() => {
         //console.log("TOKEN")
         //console.log(cookies.access_token);
@@ -65,6 +74,7 @@ export default function UsersTable() {
                 //console.log(list);
                 setUserJson(data);
                 setUserList(list);
+                setUserTable({ header: tableProp.header, info: list, buttons: tableProp.buttons, buttons_message: tableProp.buttons_message });
                
                 //console.log("userList");
                 //console.log(userList);
@@ -96,15 +106,6 @@ export default function UsersTable() {
         //console.log(array);
         return array;
     }
-    
-
-    const tableProp = {
-        header : ["ID","Correo","Nombre","Apellido","Rol","Telefono"] , 
-        info: userList,
-        buttons:[FaPen,FaTrash],
-        buttons_message:["Edit","Delete"]}
-
-    const [userTable, setUserTable] = useState(tableProp);
 
 
     const handleClick = (e: any,id: any) => {
@@ -131,15 +132,16 @@ export default function UsersTable() {
             setUserTable(tableProp);
             return;
         }
-        const filterBySearch = tableProp.info.filter((item: any[]) => { // Specify the type of 'item' as an array of strings
-            const lowercaseItem = item.map((str) => str.toLowerCase()); // Convert each string in the item array to lowercase
-            if (lowercaseItem.includes(searchVal.toLowerCase())) {
+        const filterBySearch = tableProp.info.filter((item: any) => {
+            const lowercaseItem = item.map((str: any) => str.toLowerCase()); // Convert each string in the item array to lowercase
+            if (lowercaseItem.some((str: any) => str.includes(searchVal.toLowerCase()))) {
                 return item;
             }
-            return null; // Add a default return statement
+            return null;
         });
         setUserTable({header: tableProp.header, info: filterBySearch, buttons: tableProp.buttons, buttons_message: tableProp.buttons_message});
     }
+
 
     async function createUser() {
         console.log("entro a crear usuario")
@@ -258,7 +260,7 @@ return (
             </div>
             }
             {errorCreatingUser && <p className="text-red-500">Por favor completa todos los campos necesarios.</p>}
-            <Table props={tableProp} onClick={handleClick} />
+            <Table props={userTable} onClick={handleClick} />
         </div>
         <div>
             <EditRoleModal userId={userId} isOpen={isModalOpen} setIsOpen={setIsModalOpen} setRefreshList={setRefreshList}/>

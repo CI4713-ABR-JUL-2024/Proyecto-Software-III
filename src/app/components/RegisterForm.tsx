@@ -93,7 +93,7 @@ return (
                   />
                   {errors?.name && (
                     <p className="text-red-600 text-sm">
-                      {errors?.name?.message}
+                      El nombre no puede estar vacío.
                     </p>
                   )}
                   <label
@@ -117,7 +117,7 @@ return (
                   />
                   {errors?.last_Name && (
                     <p className="text-red-600 text-sm">
-                      {errors?.last_Name?.message}
+                      El apellido no puede estar vacío.
                     </p>
                   )}
                   <label
@@ -141,7 +141,7 @@ return (
                   />
                   {errors?.email && (
                     <p className="text-red-600 text-sm">
-                      {errors?.email?.message}
+                      El correo electrónico no es correcto.
                     </p>
                   )}
                   <label
@@ -204,7 +204,7 @@ return (
                   </button>
                   {errors?.password && (
                     <p className="text-red-600 text-sm">
-                      {errors?.password?.message}
+                      La contraseña debe tener al menos 8 caracteres.
                     </p>
                   )}
                   <label
@@ -267,7 +267,7 @@ return (
                   </button>
                   {errors?.confirmPass && (
                     <p className="text-red-600 text-sm">
-                      {errors?.confirmPass?.message}
+                      La contraseña debe tener al menos 8 caracteres.
                     </p>
                   )}
                   <label
@@ -322,7 +322,7 @@ return (
                   />
                   {errors?.telephone && (
                     <p className="text-red-600 text-sm">
-                      {errors?.telephone?.message}
+                      El número de teléfono es inválido.
                     </p>
                   )}
                   <label
