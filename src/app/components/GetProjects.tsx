@@ -7,10 +7,12 @@ import Sidebar from "../components/Sidebar"
 import CreateProject from "../components/CreateProject";
 import { useRef,useEffect } from "react";
 import { useReactToPrint } from "react-to-print";
+import { useCookies } from 'react-cookie';
 import { PrintProject } from "./PrintProject";
 import { Content } from "next/font/google";
 import { useCookies } from 'react-cookie';
 import { useRouter } from "next/navigation";
+
 
 
 type ProjectsTableProps = {
@@ -27,7 +29,11 @@ export default function ProjectsTable({ projectInfo }: ProjectsTableProps) {
   const [cierre, setCierre] = useState('');
   const [errorCreatingProject, setErrorCreatingProject] = useState(false);
   const [currentProject, setCurrentProject] = useState<string[]>();
-  const [role, setRole] = useState("");
+  const [editingProject, setEditingProject] = useState<string[] | null>(null);
+  const [editDescripcion, setEditDescripcion] = useState('');
+  const [editInicio, setEditInicio] = useState('');
+  const [editCierre, setEditCierre] = useState('');
+
 
   const componentRef = useRef<HTMLDivElement>(null);
   const handlePrint = useReactToPrint({
@@ -64,16 +70,46 @@ export default function ProjectsTable({ projectInfo }: ProjectsTableProps) {
       buttons:[FaPen,FaTrash,FaPrint,FaFilePdf,FaPlay], 
       buttons_message:["Editar","Eliminar","Imprimir","Generar","Deshabilitar"]}
   const [projectTable, setProjectTable] = useState(tableProp);
-
-  const handleClick = (e: any,id: string[]) => {
+  const [cookies, setCookie] = useCookies(['access_token'	]);
+  const handleClick = async (e: any,id: string[]) => {
+    
       //e number of button on list
       //id position of user in info list
       //console.log(e);
       if(e == 0){
+        //Editar proyecto
         console.log("Editar");
+        setEditingProject(id);
+        setEditDescripcion(id[1]);
+        setEditInicio(id[2]);
+        setEditCierre(id[3]);
+
       }
       if(e == 1){
+        //Eliminar proyecto
         console.log("Eliminar");
+        try {
+            const projectId = id[0]; 
+            const response = await fetch(`/api/project/${projectId}`, { method: 'DELETE',
+
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${cookies.access_token}`,
+                    'type': 'text'
+                  }
+             });
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            console.log(data); 
+            //Actualizar pagina luego de eliminar proyecto
+            const updatedProjectInfo = projectInfo.filter(project => project[0] !== projectId);
+            setProjectTable(prevState => ({ ...prevState, info: updatedProjectInfo }));
+          } catch (error) {
+            console.error('Error:', error);
+          }
+        
       }
         if(e == 2){
             //setCurrentProject(id);
@@ -169,6 +205,83 @@ export default function ProjectsTable({ projectInfo }: ProjectsTableProps) {
                 </button>
             </div>
             }
+
+            
+        {editingProject && <div className="flex p-5">
+            <input 
+                id="editDescripcion"
+                type="text"
+                value={editDescripcion}
+                placeholder="Descripción del proyecto"
+                className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2.5" 
+                onChange={(e) => { setEditDescripcion(e.target.value) }}
+                required
+            />
+            <input 
+                id="editInicio"
+                type="date"
+                value={editInicio}
+                placeholder="Fecha de inicio"
+                className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2.5"
+                onChange={(e) => { setEditInicio(e.target.value) }}
+                required
+            />
+            <input 
+                id="editCierre"
+                type="date"
+                value={editCierre}
+                placeholder="Fecha de cierre"
+                className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2.5"
+                onChange={(e) => { setEditCierre(e.target.value) }}
+                required
+            />
+            
+            <button
+                type="button"
+                className="bg-[#3A4FCC] text-white font-bold py-2 px-5 rounded-full"
+                onClick={async () => {
+                if (!editDescripcion || !editInicio || !editCierre) {
+                    console.error("Por favor completa todos los campos.");
+                    setErrorCreatingProject(true);
+                    return;
+                }
+                const projectId = editingProject[0];
+                const response = await fetch(`/api/project/${projectId}`, {
+                    method: 'PUT',
+                    headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${cookies.access_token}`,
+                    'type': 'text'
+                    },
+                    body: JSON.stringify({
+                    description: editDescripcion,
+                    start: editInicio,
+                    end: editCierre
+                    })
+                });
+
+                if (!response.ok) {
+                  console.error(`HTTP error! status: ${response.status}`);
+                  const errorText = await response.text();
+                  console.error('Error body:', errorText);
+                  throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log(data); 
+                
+                setEditingProject([projectId, editDescripcion, editInicio, editCierre, 'ACTIVE']);
+                setEditingProject(null);
+                
+                }}
+            >
+                Guardar
+            </button>
+            </div>}
+
+
+
+
             {errorCreatingProject && <p className="text-red-500">Por favor completa todos los campos necesarios.</p>}
             <Table role={role} props={projectTable} onClick={handleClick} />
         </div>
