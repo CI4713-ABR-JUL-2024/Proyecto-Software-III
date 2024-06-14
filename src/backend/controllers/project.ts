@@ -39,7 +39,7 @@ const update_project = async (
     const updated_project = await projectService.update_project(id, data,accessToken);
     return updated_project;
   } catch (error: any) {
-    const handle_err: error_object = handle_error_http_response(error, '0000');
+    const handle_err: error_object = handle_error_http_response(error, '0013');
     throw new custom_error(
       handle_err.error_message,
       handle_err.error_message_detail,
@@ -68,7 +68,7 @@ const delete_project = async (
     await projectService.delete_project(id,accessToken);
     return { message: 'Proyecto eliminado correctamente' };
   } catch (error: any) {
-    const handle_err: error_object = handle_error_http_response(error, '0000');
+    const handle_err: error_object = handle_error_http_response(error, '0014');
     throw new custom_error(
       handle_err.error_message,
       handle_err.error_message_detail,
@@ -92,7 +92,7 @@ const get_all_projects = async (
     const projects = await projectService.get_all_projects();
     return { projects };
   } catch (error: any) {
-    const handle_err: error_object = handle_error_http_response(error, '0000');
+    const handle_err: error_object = handle_error_http_response(error, '0011');
     throw new custom_error(
       handle_err.error_message,
       handle_err.error_message_detail,
@@ -125,7 +125,7 @@ const create_project = async (
     const project = await projectService.create_project(data);
     return project;
   } catch (error: any) {
-    const handle_err: error_object = handle_error_http_response(error, '0000');
+    const handle_err: error_object = handle_error_http_response(error, '0012');
     throw new custom_error(
       handle_err.error_message,
       handle_err.error_message_detail,
