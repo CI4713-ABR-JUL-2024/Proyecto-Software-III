@@ -38,7 +38,7 @@ export default function ProjectsTable({ projectInfo }: ProjectsTableProps) {
       buttons_message:["Editar","Eliminar","Imprimir","Generar","Deshabilitar"]}
   const [projectTable, setProjectTable] = useState(tableProp);
 
-  const handleClick = (e: any,id: string[]) => {
+  const handleClick = async (e: any,id: string[]) => {
       //e number of button on list
       //id position of user in info list
       //console.log(e);
@@ -47,6 +47,18 @@ export default function ProjectsTable({ projectInfo }: ProjectsTableProps) {
       }
       if(e == 1){
         console.log("Eliminar");
+        try {
+            const projectId = id[0]; 
+            const response = await fetch(`/api/project/${projectId}`, { method: 'DELETE' });
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            console.log(data); 
+          } catch (error) {
+            console.error('Error:', error);
+          }
+        
       }
         if(e == 2){
             //setCurrentProject(id);
