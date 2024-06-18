@@ -20,6 +20,10 @@ export default function Sidebar(props: { role: string }) {
         router.push("/projects");
     }
 
+    async function viewLogger(){
+      router.push("/logger");
+  }
+
     async function logOut(){
     removeCookie('access_token', { path: '/', domain: 'localhost' });
     router.push("/");
@@ -53,6 +57,14 @@ export default function Sidebar(props: { role: string }) {
                             onClick={viewProjects}
                         >
                             Proyectos
+                        </button>
+                    }
+                    {role === 'admin' &&
+                        <button
+                            className="w-[-webkit-fill-available] hover:bg-[#3A4FCC] hover:text-white font-bold py-2 px-4 rounded-full"
+                            onClick={viewLogger}
+                        >
+                            Logger
                         </button>
                     }
                     {/* <button className="w-[-webkit-fill-available] hover:bg-[#3A4FCC] hover:text-white font-bold py-2 px-4 rounded-full">Ayuda</button> */}
