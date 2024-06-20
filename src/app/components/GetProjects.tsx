@@ -43,7 +43,7 @@ export default function ProjectsTable({ projectInfo }: ProjectsTableProps) {
   //console.log(p);
   useEffect(() => {
     if (cookies.access_token != undefined){
-      fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/user/'+cookies.id,{
+      fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/user/'+cookies,{
       method: "GET" , headers : {
                 "Authorization": "Bearer "+cookies.access_token,
                 "type" : "text"}})
