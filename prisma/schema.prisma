@@ -44,9 +44,16 @@ model Role{
 model Project {
   id          Int      @id @default(autoincrement())
   description String
+  trimester   String
+  year        String
+  organization Organization @relation(fields: [organization_id], references: [id])
+  organization_id Int
+  aproach Approach @relation(fields: [aproach_id], references: [id])
+  aproach_id Int
   start       DateTime
   end         DateTime
   status      ProjectStatus @default(ACTIVE)
+  okrDesign OkrDesing?
 }
 
 model Log {
@@ -56,4 +63,54 @@ model Log {
   module  String
   event   String
   date    DateTime
+}
+
+
+model Organization {
+  id          Int      @id @default(autoincrement())
+  name        String
+  country     String
+  description String
+  cellphone   String
+  email       String
+  personResponsible String
+  projects    Project[]
+  
+}
+
+model Approach {
+  id          Int      @id @default(autoincrement())
+  name String
+  projects    Project[]
+}
+
+model Objective {
+  id          Int      @id @default(autoincrement())
+  name String
+  objectiveDetails ObjectiveDetail[]
+  okrDesignId       Int                // New field for foreign key
+  okrDesign         OkrDesing          @relation(fields: [okrDesignId], references: [id])
+}
+model OkrDesing {
+  id          Int      @id @default(autoincrement())
+  project Project @relation(fields: [project_id], references: [id])
+  project_id Int @unique
+  objectives Objective[]
+}
+
+model ObjectiveDetail {
+  id          Int      @id @default(autoincrement())
+  objective Objective @relation(fields: [objective_id], references: [id])
+  objective_id Int
+  keyResult String
+  keyIndicator String
+  initiative String
+  initiativeType InitiativeType @relation(fields: [initiativeType_id], references: [id])
+  initiativeType_id Int
+}
+
+model  InitiativeType {
+  id         Int      @id @default(autoincrement())
+  name String
+  objectiveDetails ObjectiveDetail[]
 }
