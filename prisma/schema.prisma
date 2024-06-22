@@ -70,7 +70,7 @@ model Organization {
   id          Int      @id @default(autoincrement())
   name        String
   country     String
-  description String
+  estate String
   cellphone   String
   email       String
   personResponsible String
