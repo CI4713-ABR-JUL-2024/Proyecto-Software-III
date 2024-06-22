@@ -5,4 +5,7 @@ export const roleEnum = [
   'general_management',
   'not_assigned',
   'operations_management',
+  'project_leader',
+  'change_agents',
+  'agile_coach',
 ] as const;

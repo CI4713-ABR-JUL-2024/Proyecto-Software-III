@@ -84,10 +84,8 @@ export const createOrganization = async (
   }
 };
 
-export const listOrganizations = async (data: TOrganizationListObject) => {
+export const listOrganizations = async (search: string | null) => {
   try {
-    const { search } = data;
-
     const organizations = await prisma.organization.findMany({
       where: search
         ? {
@@ -213,7 +211,7 @@ export const updateOrganization = async (
       throw new Error('User does not exists');
     }
 
-    const updatedOrganization = await prisma.user.update({
+    const updatedOrganization = await prisma.organization.update({
       where: {
         id: id,
       },

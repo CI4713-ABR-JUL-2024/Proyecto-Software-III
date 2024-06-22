@@ -38,9 +38,9 @@ const postOrganization = async (req: NextRequest) => {
 
 const getOrganizations = async (req: NextRequest) => {
   try {
-    const body = await req.json();
-    const data = organizationValidator.validatorOrganizationList(body);
-    const organizations = await organizationService.listOrganizations(data);
+    const search = req.nextUrl.searchParams.get('search');
+
+    const organizations = await organizationService.listOrganizations(search);
 
     return organizations;
   } catch (error: any) {
