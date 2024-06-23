@@ -99,7 +99,24 @@ export const get_all_projects = async () => {
  */
 export const create_project = async (data: ProjectCreateInput) => {
   try {
-    const project = await prisma.project.create({ data });
+    const project = await prisma.project.create({
+       data: {
+        ...data, 
+        trimester: '',
+        year: '',
+        organization: { create: { 
+          name: '',
+          country: '',
+          estate: '',
+          cellphone: '',
+          email: '',
+          personResponsible: ''
+        }},
+        aproach: { create: {
+          name: '',
+        }},
+       } 
+    });
     return project;
   } catch (error) {
     throw error;
