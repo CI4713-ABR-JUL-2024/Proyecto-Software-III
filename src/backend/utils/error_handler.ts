@@ -65,6 +65,10 @@ const error_message_dict: error_message_dictionary = {
   '0013': 'Error modificando proyecto',
   '0014': 'Error borrando proyecto',
   '0015': 'Error obteniendo logs',
+  '0016': 'Error creando tipo de iniciativa',
+  '0017': 'Error Listando tipo de iniciativa',
+  '0018': 'Error actualizando tipo de iniciativa',
+
 };
 
 function get_message_for_code(code: string): string {

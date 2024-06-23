@@ -196,7 +196,7 @@ export const update_my_user = async (id: number, body: user_body_update) => {
     const body_log = {
       user_id:id,
       module:"User",
-      event:" update_my_password",
+      event:" update_my_user",
       date: new Date()
     }
     const log = await create_log(body_log);
