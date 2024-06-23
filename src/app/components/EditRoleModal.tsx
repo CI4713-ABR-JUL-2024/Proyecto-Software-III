@@ -76,6 +76,9 @@ export default function EditRoleModal({ isOpen, setIsOpen, userId, setRefreshLis
             <option value="operations_management">Gerente de Operaciones</option>
             <option value="account_submanagement">Sub-Gerente de Cuentas</option>
             <option value="account_analyst">Analista de Cuentas</option>
+            <option value="change_agents">Agente de Cambio</option>
+            <option value="project_leader">Líder de Proyecto</option>
+            <option value="agile_coach">Coach Ágil</option>
           </select>
           <button
             type="submit"

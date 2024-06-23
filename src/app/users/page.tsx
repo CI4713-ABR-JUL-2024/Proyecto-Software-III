@@ -17,6 +17,9 @@ const roleMapping: { [key: string]: string } = {
     'operations_management': 'Gerente de Operaciones',
     'account_submanagement': 'Subgerente de Cuentas',
     'account_analyst': 'Analista de Cuentas',
+    'change_agents': 'Agente de Cambio',
+    'project_leader': 'Líder de Proyecto',
+    'agile_coach': 'Coach Ágil',
     'not_assigned': 'No asignado',
   };
   
@@ -229,6 +232,9 @@ return (
                     <option value="operations_management">Gerente de Operaciones</option>
                     <option value="account_submanagement">Sub-Gerente de Cuentas</option>
                     <option value="account_analyst">Analista de Cuentas</option>
+                    <option value="change_agents">Agente de Cambio</option>
+                    <option value="project_leader">Líder de Proyecto</option>
+                    <option value="agile_coach">Coach Ágil</option>
                 </select>
 
                 <input 

@@ -23,6 +23,9 @@ const roleMapping: { [key: string]: string } = {
   'operations_management': 'Gerente de Operaciones',
   'account_submanagement': 'Subgerente de Cuentas',
   'account_analyst': 'Analista de Cuentas',
+  'change_agents': 'Agente de Cambio',
+  'project_leader': 'Líder de Proyecto',
+  'agile_coach': 'Coach Ágil',
   'not_assigned': 'No asignado',
 };
 
@@ -90,21 +93,6 @@ const Profile = () => {
   }
 
 
-  /*
-  async function onChangePassword() {
-    const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/changePassword',{
-      method: "POST" , headers : {
-                "Authorization": "Bearer "+cookies.access_token,
-                "type" : "text"} , // se pasa la contrasena encriptada
-      body : JSON.stringify({oldPassword : password, newPassword : newPassword, compareNewPassword : newPassword}) , })
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        console.log(data);        
-      });
-  }
-  */
   return (
     <main className="flex">
     <Sidebar role={role}/>
