@@ -13,21 +13,16 @@ type Project = {
 }
 
 export default function Projects() {
-  const [searchVal, setSearchVal] = useState("");
-  const [addProject, setAddProject] = useState(false);
+
   const [loading, setLoading] = useState(true);
-  const [descripcion, setDescripcion] = useState('');
-  const [inicio, setInicio] = useState('');
-  const [cierre, setCierre] = useState('');
-  const [errorCreatingProject, setErrorCreatingProject] = useState(false);
   const [projectList, setProjectList] = useState<Project[]>([]);
-  //const [projectInfo, setProjectInfo] = useState<string[][]>([]);
+
 
    useEffect(() => {
     const getProjectsData = async () => {
      const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/project')
      const data = await response.json().then((data) => data);
-      //console.log(data.projects);
+      console.log(data.projects);
       setProjectList(data.projects);
       //console.log(data.projects);
       setLoading(false);
@@ -41,6 +36,8 @@ export default function Projects() {
   }
 
   return (
-    <ProjectsTable projectInfo={projectList.map((project) => [project.id.toString(), project.description, project.start, project.end,project.status])}/>
-);
+        <ProjectsTable 
+          projectInfo={projectList.map((project) => [project.id.toString(), project.description, project.start, project.end,project.status])}
+        />
+    );
 }

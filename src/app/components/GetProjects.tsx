@@ -41,12 +41,16 @@ export default function ProjectsTable({ projectInfo }: ProjectsTableProps) {
   console.log(projectInfo);
   const p = [["1","Proyecto 1","2024-06-11T00:00:00.000Z","2024-06-11T00:00:00.000Z"],["2", "Proyecto 2","2024-06-11T00:00:00.000Z","2024-06-11T00:00:00.000Z"]]
   //console.log(p);
+
   useEffect(() => {
     if (cookies.access_token != undefined){
-      fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/user/'+cookies,{
-      method: "GET" , headers : {
-                "Authorization": "Bearer "+cookies.access_token,
-                "type" : "text"}})
+      fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/user',{
+      method: "GET" , 
+      headers : {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer "+cookies.access_token,
+        },
+      })
       .then(res => {
         return res.json();
       })
@@ -61,6 +65,7 @@ export default function ProjectsTable({ projectInfo }: ProjectsTableProps) {
     }
     
   }, []);
+
 
   const tableProp = {
       header : ["ID","Descripción","Inicio","Cierre"], 
