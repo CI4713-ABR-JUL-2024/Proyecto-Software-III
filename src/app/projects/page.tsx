@@ -3,6 +3,9 @@ import { use, useState } from "react";
 import CreateProject from "../components/CreateProject";
 import { useEffect } from "react";
 import ProjectsTable from "../components/GetProjects";
+import { useCookies } from 'react-cookie';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import LeaderProjectTable from "../components/LeaderProjectTable";
 
 type Project = {
     id: number;
@@ -13,9 +16,23 @@ type Project = {
 }
 
 export default function Projects() {
-
+  const [cookies] = useCookies(['access_token']);
+  let role = '' ;
+  const token = cookies.access_token;
+  console.log(role)
+  console.log(cookies)
   const [loading, setLoading] = useState(true);
   const [projectList, setProjectList] = useState<Project[]>([]);
+
+  if (token) {
+    try {
+      const decoded = jwt.decode(token, {}) as JwtPayload;
+      role = decoded?.role_name || 'Rol no encontrado';
+      console.log(role);
+    } catch (error) {
+      console.error('Error al decodificar el token:', error);
+    }
+  }
 
 
    useEffect(() => {
@@ -36,8 +53,17 @@ export default function Projects() {
   }
 
   return (
+    <> 
+      {(role === 'change_agents' || role === 'agile_coach' || role === 'project_leader') && 
+        <LeaderProjectTable role={role}/>
+      }
+      {(role === "admin" || role === "general_management" || role === "operations_management") &&
         <ProjectsTable 
+          role={role}
           projectInfo={projectList.map((project) => [project.id.toString(), project.description, project.start, project.end,project.status])}
         />
-    );
+      } 
+    </>
+  );
+  
 }
