@@ -6,8 +6,6 @@ import { useCookies } from 'react-cookie';
 import Modal from 'react-modal';
 
 
-type RoleData = z.infer<typeof roleSchema>;
-
 export default function EditRoleModal({ isOpen, setIsOpen, userId, setRefreshList }: { isOpen: boolean, setIsOpen: React.Dispatch<React.SetStateAction<boolean>>, userId: string | null, setRefreshList: React.Dispatch<React.SetStateAction<boolean>> }) {
   const [role, setRole] = useState("");
   const [cookies, setCookie] = useCookies(['access_token'	]);
@@ -51,7 +49,8 @@ export default function EditRoleModal({ isOpen, setIsOpen, userId, setRefreshLis
   return (
     <Modal 
       isOpen={isOpen} 
-      onRequestClose={() => setIsOpen(false)} ariaHideApp={false}
+      onRequestClose={() => setIsOpen(false)} 
+      ariaHideApp={false}
       style={{content: {width: '55vw', height: '55vh', margin: 'auto'}}}
     >
       <div className="flex flex-col justify-center h-[40vh]">
@@ -76,6 +75,9 @@ export default function EditRoleModal({ isOpen, setIsOpen, userId, setRefreshLis
             <option value="operations_management">Gerente de Operaciones</option>
             <option value="account_submanagement">Sub-Gerente de Cuentas</option>
             <option value="account_analyst">Analista de Cuentas</option>
+            <option value="change_agents">Agente de Cambio</option>
+            <option value="project_leader">Líder de Proyecto</option>
+            <option value="agile_coach">Coach Ágil</option>
           </select>
           <button
             type="submit"

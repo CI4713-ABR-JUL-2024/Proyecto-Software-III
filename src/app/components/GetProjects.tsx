@@ -18,9 +18,8 @@ type ProjectsTableProps = {
     projectInfo: string[][];
   };
 
-export default function ProjectsTable({ projectInfo }: ProjectsTableProps) {
+export default function ProjectsTable(role: any, { projectInfo }: ProjectsTableProps) {
   const router = useRouter();
-  const [role, setRole] = useState("");
   const [searchVal, setSearchVal] = useState("");
   const [addProject, setAddProject] = useState(false);
   const [descripcion, setDescripcion] = useState('');
@@ -41,26 +40,6 @@ export default function ProjectsTable({ projectInfo }: ProjectsTableProps) {
   console.log(projectInfo);
   const p = [["1","Proyecto 1","2024-06-11T00:00:00.000Z","2024-06-11T00:00:00.000Z"],["2", "Proyecto 2","2024-06-11T00:00:00.000Z","2024-06-11T00:00:00.000Z"]]
   //console.log(p);
-  useEffect(() => {
-    if (cookies.access_token != undefined){
-      fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/user/'+cookies.id,{
-      method: "GET" , headers : {
-                "Authorization": "Bearer "+cookies.access_token,
-                "type" : "text"}})
-      .then(res => {
-        return res.json();
-      })
-      .then(data => {
-        setRole(data.role_name)
-      }).catch(error => {
-        console.error('error', error);
-      })
-    }
-    else{
-      router.push("/");
-    }
-    
-  }, []);
 
   const tableProp = {
       header : ["ID","Descripción","Inicio","Cierre"], 

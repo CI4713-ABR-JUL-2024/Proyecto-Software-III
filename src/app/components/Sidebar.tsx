@@ -51,7 +51,7 @@ export default function Sidebar(props: { role: string }) {
                             Perfiles de Usuarios
                         </button>
                     }
-                    {(role === "admin" || role === "Gerente General" || role === "Gerente de Operaciones") &&
+                    {(role === "admin" || role === "general_management" || role === "operations_management" || role === "change_agents" || role === "project_leader" || role === "agile_coach") &&
                         <button
                             className="w-[-webkit-fill-available] hover:bg-[#3A4FCC] hover:text-white font-bold py-2 px-4 rounded-full"
                             onClick={viewProjects}

@@ -1,24 +1,22 @@
-'use client';
+'use client'
 import {useEffect, useState} from 'react';
 import { useCookies } from 'react-cookie';
 import Modal from 'react-modal';
 
 
-
-export default function DeleteUserModal({ isOpen, setIsOpen, userId, userList, setRefreshList }: { isOpen: boolean, setIsOpen: React.Dispatch<React.SetStateAction<boolean>>, userId: string | null, userList: any, setRefreshList: React.Dispatch<React.SetStateAction<boolean>>}) {
+export default function DeleteApproachModal({isOpen, setIsOpen, approachId, approachList}: {isOpen: boolean, setIsOpen: React.Dispatch<React.SetStateAction<boolean>>, approachId: string | null, approachList: any}) {
   const [name, setName] = useState('');
-  const [lastName, setLastName] = useState('');
   const [cookies, setCookie] = useCookies(['access_token'	]);
 
-  console.log('entro por el user', userId);
+  console.log('entro por el approach', approachId);
 
   async function onClick(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
-    console.log('entro por el click', userId);
+    console.log('entro por el click', approachId);
     try {
 
       const response = await fetch(
-        new URL(`api/user/${userId}`, process.env.NEXT_PUBLIC_BASE_URL),
+        new URL(`/api/approach/${approachId}`, process.env.NEXT_PUBLIC_BASE_URL),
         {
           method: 'DELETE',
           headers: {
@@ -31,11 +29,10 @@ export default function DeleteUserModal({ isOpen, setIsOpen, userId, userList, s
   
       if (response.ok) {
         console.log('Eliminado correctamente');
-        console.log('userId', userId);
+        console.log('approachId', approachId);
         console.log('token', cookies.access_token);
         console.log('response', response);
         setIsOpen(false);
-        setRefreshList(true);
       } else {
         const errorData = await response.json();
         console.error(errorData.error_message);
@@ -43,30 +40,25 @@ export default function DeleteUserModal({ isOpen, setIsOpen, userId, userList, s
     } catch (error) {
       console.error('Error al procesar la solicitud:', error);
     }
-  }
+  } 
+  
+  function getApproachById(id: string) {
+    const approach = approachList.find((approach: any) => approach.id === id);
+    console.log('approach', approach);
 
-
-  function getUserNameById(id: string) {
-    const user = userList.find((user: any) => user.id === id);
-    console.log('user encontrado',user);
-    console.log(user.name, user.last_name);
-
-     if (user) {
-      setName(user.name);
-      setLastName(user.last_name);
+    if (approach) {
+      setName(approach.name);
     } else {
-      console.error({error: 'Error Function', message: 'No se encontro user en getUserNameById'})
-    }    
-    return 
-    
+      console.error({error: 'Error Function', message: 'No se encontro approach en getApproachById'})
+    }
+    return
   }
 
   useEffect(() => {
-    if (isOpen && userId) {
-      getUserNameById(userId);
-      console.log('nombre', name, 'apellido', lastName)
+    if (isOpen && approachId) {
+        getApproachById(approachId);    
     }
-  }, [isOpen, userId]);
+  }, [isOpen, approachId]);
 
   return (
     <Modal 
@@ -79,13 +71,13 @@ export default function DeleteUserModal({ isOpen, setIsOpen, userId, userList, s
           className="text-4xl font-bold text-gray-900 mx-auto"
           style={{ color: "#3A4FCC" }}
         >
-          Eliminar un usuario
+          Eliminar Tipo de Abordaje
         </h1>
         <form
           className="mt-6 flex flex-col items-center justify-center w-[50vw] mx-auto shadow-2xl p-12 rounded-2xl"
         >
           <p className="text-lg text-gray-900 mx-auto mb-8">
-            ¿Estás seguro de querer eliminar al usuario [ID: {userId} - {name} {lastName}]?
+            ¿Estás seguro de querer eliminar al abordaje [ID: {approachId} - {name}]?
           </p>
           <div className="flex space-x-4">
             <button
@@ -104,6 +96,8 @@ export default function DeleteUserModal({ isOpen, setIsOpen, userId, userList, s
           </div>
         </form>
       </div>
-    </Modal>
-  );
-};
+    </Modal>    
+  )
+
+
+}
