@@ -1,14 +1,17 @@
 'use client'
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import { FaPlus, FaPen, FaTrash } from "react-icons/fa";
 import Table from '../components/Table';
 import Sidebar from "../components/Sidebar";
 import { useCookies } from 'react-cookie';
 import { useRouter } from 'next/navigation';
 import { IoSearchCircle } from 'react-icons/io5';
+import ApproachModal from '../components/ApproachModal';
+import { set } from 'zod';
 
 export default function LeaderProjectTable(role: any) {
     const [projectList, setProjectList] = useState<any>([]);
+    const [cookies, setCookie] = useCookies(['access_token']);
     const [searchVal, setSearchVal] = useState("");
     const [addProject, setAddProject] = useState(false);
     const [addApproach, setAddApproach] = useState(false);
@@ -17,17 +20,21 @@ export default function LeaderProjectTable(role: any) {
     const [organization, setOrganization] = useState('');
     const [approach, setApproach] = useState('');
     const [area, setArea] = useState('');
+    const [approachList, setApproachList] = useState<any>([]);
     const [errorCreatingProject, setErrorCreatingProject] = useState(false);
 
     const tableProps = {
         header: ['ID','Trimestre', 'Año', 'Organización', 'Abordaje', 'Área'],
-        info: projectList,
+        info: [['1', 'Enero-Marzo', '2024', 'Organización 1', 'Abordaje 1', 'Educacion']],
         buttons: [FaPlus, FaPen, FaTrash],
         buttons_message: ['Generar diseño OKR', 'Editar Proyecto', 'Eliminar Proyecto'],
     };
     const [projectTable, setProjectTable] = useState(tableProps);
 
     //AGREGAR NUEVA LLAMADA AL ENDPOINT DE PROYECTOS
+    useEffect(() => {
+        getApproachs();
+    }, []);
 
     /*
     //Convertir la lista de proyectos en un array de arrays
@@ -84,6 +91,24 @@ export default function LeaderProjectTable(role: any) {
         //AGREGAR CONEXION NUEVA PARA AGREGAR PROYECTO
     }
 
+    async function getApproachs() {
+        console.log('Se obtuvieron los abordajes')
+        try {
+            const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/approach', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${cookies.access_token}`,
+                },
+            });
+            const data = await response.json();
+            console.log(data);
+            setApproachList(data);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
 
     return (
         <main className='flex'>
@@ -110,7 +135,7 @@ export default function LeaderProjectTable(role: any) {
                             onClick={() => setAddApproach(true)}
                             className="ml-5 bg-[#3A4FCC] text-white font-bold py-2 px-4 rounded-full"
                         >
-                            Agregar abordaje
+                            Modificar abordajes
                         </button>
                     </div>
                 </div> 
@@ -152,9 +177,9 @@ export default function LeaderProjectTable(role: any) {
                         required
                     >
                         <option disabled className="text-gray-400" value="">Seleccione un abordaje</option>
-                        <option value="1">Abordaje 1</option>
-                        <option value="2">Abordaje 2</option>
-                        <option value="3">Abordaje 3</option>
+                        {approachList.map((item: any) => (
+                            <option key={item.id} value={item.id}>{item.name}</option>
+                        ))}
                     </select>
                     <input
                         id='area'
@@ -186,6 +211,8 @@ export default function LeaderProjectTable(role: any) {
                     </button>
                 </div>}
                 {errorCreatingProject && <p className="text-red-500">Por favor completa todos los campos.</p>}
+                
+                <ApproachModal isOpen={addApproach} setIsOpen={setAddApproach} />
                 <Table props={projectTable} onClick={handleClick}/>   
             </div>
         </main>
