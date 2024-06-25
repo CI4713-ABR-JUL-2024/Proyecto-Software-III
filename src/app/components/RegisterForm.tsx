@@ -6,6 +6,7 @@ import * as z from "zod";
 import { registerSchema } from "@/zodSchema/register";
 import { useState } from "react";
 import RegisterSuccessModal from "./RegisterSuccessModal";
+import RegisterErrorModal from "./RegisterErrorModal";
 type FormData = z.infer<typeof registerSchema>;
 
 export default function RegisterForm() {
@@ -23,6 +24,7 @@ export default function RegisterForm() {
   const [role, setRole] = useState("");
   // constante para mostrar el modal de éxito
   const [showModal, setShowModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
 
   async function onSubmit(data: FormData) {
     const {name,email,password,telephone,last_Name} = data;
@@ -48,12 +50,14 @@ export default function RegisterForm() {
         console.log(data);
       } else {
         // Lanza un error si el estado de la respuesta no es 200
+        setShowErrorModal(true);
         throw new Error('Error en el registro de usuario');
       }
     } catch (error) {
       // Captura cualquier error que ocurra durante la solicitud
       console.error(error);
       setShowModal(false);
+      setShowErrorModal(true);
     }
   }
   
@@ -368,9 +372,10 @@ return (
                     Inicia sesión
                   </a>
                 </p>
-                {showModal && (
+                {(showModal && (
                 <RegisterSuccessModal title = "¡Registro exitoso!" message="Usuario creado correctamente" />
-              )}
+              )) || (showErrorModal && <RegisterErrorModal title="Error de registro" message="¡Ooops! ¡Ha ocurrido un error al intentar crear el usuario!"/>)}
+                
               </form>
 
             </div>
