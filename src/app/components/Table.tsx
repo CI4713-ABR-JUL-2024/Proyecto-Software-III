@@ -24,7 +24,7 @@ const Actions = ({props, id, onClick, message} : ActionProps) => {
   <>
   <div>
   {props.map((B,j) =>
-  <button onClick={() => handleClick(j,id)} key={"button"+j} style={{padding : "10px"}} title={message[j]}><B/></button>
+  <button onClick={() => handleClick(j,idUser)} key={"button"+j} style={{padding : "10px"}} title={message[j]}> <B/></button>
   )}
   </div>
   </>

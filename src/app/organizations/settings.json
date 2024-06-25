@@ -1,0 +1,13 @@
+{
+	"organization" : {
+		"title" : "Organizaciones",
+		"search" : "Buscar organización",
+		"name": "Crear organización",
+		"placeholders"  : ["Nombre de la organización","País","Estado","Responsable","Teléfono","Correo electrónico"],
+		"ids" : ["nombre","pais","estado","responsable","tlf","mail"],
+		"types" : ["text","text","text","text","text","text"],
+		"tableHeader" : ["ID","Nombre","País","Estado","Responsable","Teléfono","Correo electrónico"],
+		"buttons_message" : ["Edit","Delete"]
+	}
+
+}

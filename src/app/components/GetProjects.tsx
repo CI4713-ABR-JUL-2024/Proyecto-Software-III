@@ -32,7 +32,7 @@ export default function ProjectsTable({ projectInfo }: ProjectsTableProps) {
   const [editDescripcion, setEditDescripcion] = useState('');
   const [editInicio, setEditInicio] = useState('');
   const [editCierre, setEditCierre] = useState('');
-  const [cookies, setCookie] = useCookies(['access_token'	]);
+  const [cookies, setCookie] = useCookies(['access_token','id']);
   const componentRef = useRef<HTMLDivElement>(null);
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
