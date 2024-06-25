@@ -16,9 +16,10 @@ import { useRouter } from "next/navigation";
 
 type ProjectsTableProps = {
     projectInfo: string[][];
+    role: string;
   };
 
-export default function ProjectsTable(role: any, { projectInfo }: ProjectsTableProps) {
+export default function ProjectsTable({ projectInfo, role }: ProjectsTableProps) {
   const router = useRouter();
   const [searchVal, setSearchVal] = useState("");
   const [addProject, setAddProject] = useState(false);
@@ -38,8 +39,10 @@ export default function ProjectsTable(role: any, { projectInfo }: ProjectsTableP
   });
     
   console.log(projectInfo);
-  const p = [["1","Proyecto 1","2024-06-11T00:00:00.000Z","2024-06-11T00:00:00.000Z"],["2", "Proyecto 2","2024-06-11T00:00:00.000Z","2024-06-11T00:00:00.000Z"]]
-  //console.log(p);
+  if (projectInfo === undefined) {
+    projectInfo = [["1","Proyecto 1","2024-06-11T00:00:00.000Z","2024-06-11T00:00:00.000Z","ACTIVE"],["2", "Proyecto 2","2024-06-11T00:00:00.000Z","2024-06-11T00:00:00.000Z","ACTIVE"]]
+  }
+    console.log(projectInfo);
 
   const tableProp = {
       header : ["ID","Descripción","Inicio","Cierre"], 
