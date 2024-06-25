@@ -21,6 +21,7 @@ export default function LeaderProjectTable(role: any) {
     const [approach, setApproach] = useState('');
     const [area, setArea] = useState('');
     const [approachList, setApproachList] = useState<any>([]);
+    const [organizationList, setOrganizationList] = useState<any>([]);
     const [errorCreatingProject, setErrorCreatingProject] = useState(false);
 
     const tableProps = {
@@ -34,6 +35,7 @@ export default function LeaderProjectTable(role: any) {
     //AGREGAR NUEVA LLAMADA AL ENDPOINT DE PROYECTOS
     useEffect(() => {
         getApproachs();
+        getOrganizationsData();
     }, []);
 
     /*
@@ -109,10 +111,27 @@ export default function LeaderProjectTable(role: any) {
         }
     }
 
+    async function getOrganizationsData()  {
+        try {
+            const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/organization', {
+                method: "GET" , 
+                headers : {
+                    'Authorization': `Bearer ${cookies.access_token}`,
+                    "type" : "text",
+                },
+            });
+            const data = await response.json();
+            console.log(data);
+            setOrganizationList(data);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
 
     return (
         <main className='flex'>
-            <Sidebar role={role}/>
+            <Sidebar role={role.toString()}/>
             <div className="m-10 flex flex-col w-full">
                 <div className="flex justify-between w-full p-4">
                     <h3 className="text-2xl font-bold text-[#3A4FCC]">Proyectos OKRs</h3>
@@ -165,9 +184,9 @@ export default function LeaderProjectTable(role: any) {
                         required
                     >
                         <option disabled className="text-gray-400" value="">Seleccione una organización</option>
-                        <option value="1">Organización 1</option>
-                        <option value="2">Organización 2</option>
-                        <option value="3">Organización 3</option>
+                        {organizationList.map((item: any) => (
+                            <option key={item.id} value={item.id}>{item.name}</option>
+                        ))}
                     </select>
                     <select
                         id='approach'
