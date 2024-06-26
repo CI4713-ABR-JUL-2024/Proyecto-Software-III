@@ -1,7 +1,6 @@
 'use client';
 import React from 'react'
 import { useState} from 'react';
-import { FaRegUser, FaPen, FaCircle} from "react-icons/fa";
 import { IconType } from "react-icons";
 
 import Select from "react-dropdown-select";
@@ -203,29 +202,7 @@ const Table = ({role,props, onClick} : TableProps) => {
             </tr>
 
             {tableProps.info.map((info,j) =>{
-              if (getPages[j] == currentPage && info[4] ==="INACTIVE"){
-                return (
-                  <tr key={"tr2"+j}>
-                    {info.filter(value => value != "INACTIVE").map((value,i) =>  
-                      <td 
-                        key={"info_"+i+"_"+j} 
-                        style={{width : "8%", paddingTop : "2%", border: "1px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%",color: "gray"}}
-                      > {value} 
-                      </td>
-                    )}
-                    <td style={{width : "8%", paddingTop : "2%", border: "2px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> 
-                      <Actions 
-                        role={role} 
-                        props={tableProps.buttons} 
-                        id={info} 
-                        message={tableProps.buttons_message} 
-                        onClick={handleClick}/> 
-                    </td>
-                  </tr>
-                );
-              }
-
-              if(getPages[j] == currentPage && info[4] === "ACTIVE"){
+              if(getPages[j] == currentPage){
                 return (
                   <tr key={"tr2"+j}>
                     {info.filter(value => value != "ACTIVE").map((value,i) => 
