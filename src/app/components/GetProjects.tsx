@@ -20,7 +20,6 @@ type ProjectsTableProps = {
   };
 
 export default function ProjectsTable({ projectInfo, role }: ProjectsTableProps) {
-  const router = useRouter();
   const [searchVal, setSearchVal] = useState("");
   const [addProject, setAddProject] = useState(false);
   const [descripcion, setDescripcion] = useState('');
