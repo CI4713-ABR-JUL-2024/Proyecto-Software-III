@@ -1,6 +1,7 @@
 services:
   app:
     build: .
+    command: tail -F anything
     ports:
       - "3000:3000"
     environment:
