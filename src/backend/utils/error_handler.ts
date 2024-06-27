@@ -70,6 +70,7 @@ const error_message_dict: error_message_dictionary = {
   '0018': 'Error actualizando tipo de iniciativa',
   '0019': 'Error creando detalles de objetivo',
   '0020': 'Error actualizando detalles de objetivo',
+  '0021': 'Error eliminando detalles de objetivo',
 
 };
 

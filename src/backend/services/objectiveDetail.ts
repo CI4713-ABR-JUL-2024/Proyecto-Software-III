@@ -95,63 +95,29 @@ export const createObjectiveDetail = async (
 //   }
 // };
 
-// export const deleteApproach = async (id: number, token: string) => {
-//   try {
-//     const userWithoutPass = verifyJwt(token);
+export const deleteObjectiveDetail = async (id: number, token: string) => {
+  try {
+    const userWithoutPass = checkAuth(token);  
 
-//     const { role_name } = userWithoutPass;
+    const deletedObjectiveDetail = await prisma.objectiveDetail.delete({
+      where: {
+        id: id,
+      },
+    });
 
-//     if (!userWithoutPass) {
-//       const handle_err: error_object = handle_error_http_response(
-//         new Error('Error en el token'),
-//         '0000'
-//       );
-//       throw new custom_error(
-//         handle_err.error_message,
-//         handle_err.error_message_detail,
-//         handle_err.error_code,
-//         handle_err.status
-//       );
-//     }
+    const body_log = {
+      user_id: userWithoutPass.id,
+      module: 'ObjectiveDetail',
+      event: 'deleteObjectiveDetail',
+      date: new Date(),
+    };
+    await create_log(body_log);
 
-//     if (!arrayOfRolesAdmitted.includes(role_name)) {
-//       const handle_err: error_object = handle_error_http_response(
-//         new Error(
-//           'Error no posee los permisos adecuados para realizar esta acción'
-//         ),
-//         '0000'
-//       );
-//       throw new custom_error(
-//         handle_err.error_message,
-//         handle_err.error_message_detail,
-//         handle_err.error_code,
-//         handle_err.status
-//       );
-//     }
-
-//     const deletedApproach = await prisma.approach.delete({
-//       where: {
-//         id: id,
-//       },
-//     });
-
-//     const body_log = {
-//       user_id: userWithoutPass.id,
-//       module: 'Approach',
-//       event: ' deleteApproach',
-//       date: new Date(),
-//     };
-//     await create_log(body_log);
-
-//     if (!deletedApproach) {
-//       throw new Error('User does not exists');
-//     }
-
-//     return deletedApproach;
-//   } catch (error) {
-//     throw error;
-//   }
-// };
+    return deletedObjectiveDetail;
+  } catch (error) {
+    throw error;
+  }
+};
 
 export const updateObjectiveDetail = async (
   id: number,
@@ -184,5 +150,6 @@ export const updateObjectiveDetail = async (
 
 export const objectiveDetailService = {
   createObjectiveDetail,
-  updateObjectiveDetail
+  updateObjectiveDetail,
+  deleteObjectiveDetail,
 };

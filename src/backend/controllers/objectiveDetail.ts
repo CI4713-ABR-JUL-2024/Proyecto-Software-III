@@ -78,46 +78,35 @@ const updateObjectiveDetail = async (
   }
 };
 
-// const deleteApproach = async (
-//   req: NextRequest,
-//   { params }: { params: { id: string } }
-// ) => {
-//   try {
-//     let prams_id = params.id;
-//     let id = parseInt(prams_id);
+const deleteObjectiveDetail = async (
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) => {
+  try {      
 
-//     const accessToken = headers().get('Authorization');
-//     if (!accessToken) {
-//       const handle_err: error_object = handle_error_http_response(
-//         new Error('No autorizado'),
-//         '0101'
-//       );
-//       throw new custom_error(
-//         handle_err.error_message,
-//         handle_err.error_message_detail,
-//         handle_err.error_code,
-//         handle_err.status
-//       );
-//     }
+    const accessToken = headers().get('Authorization');
+    if (!accessToken) throw new Error('No autorizado');
 
-//     const deletedApproach = await approachService.deleteApproach(
-//       id,
-//       accessToken
-//     );
+    let id = parseInt(params.id);
+    const deletedObjectiveDetail = await objectiveDetailService.deleteObjectiveDetail(
+      id,
+      accessToken
+    );
 
-//     return deletedApproach;
-//   } catch (error: any) {
-//     const handle_err: error_object = handle_error_http_response(error, '0004');
-//     throw new custom_error(
-//       handle_err.error_message,
-//       handle_err.error_message_detail,
-//       handle_err.error_code,
-//       handle_err.status
-//     );
-//   }
-// };
+    return deletedObjectiveDetail;
+  } catch (error: any) {
+    const handle_err: error_object = handle_error_http_response(error, '0021');
+    throw new custom_error(
+      handle_err.error_message,
+      error.issues ?? error.meta,
+      handle_err.error_code,
+      handle_err.status
+    );
+  }
+};
 
 export const objectiveDetailController = {
   postObjectiveDetail,
-  updateObjectiveDetail
+  updateObjectiveDetail,
+  deleteObjectiveDetail,
 };
