@@ -42,7 +42,28 @@ const getObjectiveDetails = async (req: NextRequest) => {
 
     return objectives;
   } catch (error: any) {
-    const handle_err: error_object = handle_error_http_response(error, '0002');
+    const handle_err: error_object = handle_error_http_response(error, '0023');
+    throw new custom_error(
+      handle_err.error_message,
+      handle_err.error_message_detail,
+      handle_err.error_code,
+      handle_err.status
+    );
+  }
+};
+
+const getObjectiveDetail = async (
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) => {
+  try {
+    let id = parseInt(params.id); 
+
+    const objective = await objectiveDetailService.getObjectiveDetail(id);
+
+    return objective;
+  } catch (error: any) {
+    const handle_err: error_object = handle_error_http_response(error, '0022');
     throw new custom_error(
       handle_err.error_message,
       handle_err.error_message_detail,
@@ -109,5 +130,6 @@ export const objectiveDetailController = {
   postObjectiveDetail,
   updateObjectiveDetail,
   deleteObjectiveDetail,
-  getObjectiveDetails
+  getObjectiveDetails,
+  getObjectiveDetail
 };

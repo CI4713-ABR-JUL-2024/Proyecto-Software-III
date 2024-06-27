@@ -95,6 +95,20 @@ export const listObjectiveDetail = async (search: string | null) => {
   }
 };
 
+export const getObjectiveDetail = async (id: number) => {
+  try {
+    const objectiveDetail = await prisma.objectiveDetail.findUniqueOrThrow({
+      where: {
+        id: id,
+      },
+    });
+
+    return objectiveDetail;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const deleteObjectiveDetail = async (id: number, token: string) => {
   try {
     const userWithoutPass = checkAuth(token);  
@@ -152,5 +166,6 @@ export const objectiveDetailService = {
   createObjectiveDetail,
   updateObjectiveDetail,
   deleteObjectiveDetail,
-  listObjectiveDetail
+  listObjectiveDetail,
+  getObjectiveDetail
 };

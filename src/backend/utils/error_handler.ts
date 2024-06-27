@@ -71,6 +71,8 @@ const error_message_dict: error_message_dictionary = {
   '0019': 'Error creando detalles de objetivo',
   '0020': 'Error actualizando detalles de objetivo',
   '0021': 'Error eliminando detalles de objetivo',
+  '0022': 'Error buscando detalles de objetivo',
+  '0023': 'Error listando detalles de objetivos',
 
 };
 
