@@ -30,7 +30,7 @@ export const handle_error_http_response = (
   var error_object;
   if (error instanceof z.ZodError) {
     error_object = {
-      error_message: get_message_for_code(error_code),
+      error_message: get_message_for_code(error_code) + '. ' + error.errors[0].message,
       error_message_detail: 'Error en validación',
       error_code,
       status: 400,

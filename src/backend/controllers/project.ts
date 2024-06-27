@@ -120,7 +120,6 @@ const create_project = async (
     if (body.end) {
       body.end = new Date(body.end);
     }
-
     const data = projectValidator.validator_project_create(body);
     const project = await projectService.create_project(data);
     return project;
