@@ -79,21 +79,21 @@ export const createObjectiveDetail = async (
   }
 };
 
-// export const listApproachs = async (search: string | null) => {
-//   try {
-//     const approachs = await prisma.approach.findMany({
-//       where: search
-//         ? {
-//             OR: [{ name: { contains: search, mode: 'insensitive' } }],
-//           }
-//         : {},
-//     });
+export const listObjectiveDetail = async (search: string | null) => {
+  try {
+    const approachs = await prisma.objectiveDetail.findMany({
+      where: search
+        ? {
+            OR: [{ objective_id: { equals: parseInt(search) } }],
+          }
+        : {},
+    });
 
-//     return approachs;
-//   } catch (error) {
-//     throw error;
-//   }
-// };
+    return approachs;
+  } catch (error) {
+    throw error;
+  }
+};
 
 export const deleteObjectiveDetail = async (id: number, token: string) => {
   try {
@@ -152,4 +152,5 @@ export const objectiveDetailService = {
   createObjectiveDetail,
   updateObjectiveDetail,
   deleteObjectiveDetail,
+  listObjectiveDetail
 };

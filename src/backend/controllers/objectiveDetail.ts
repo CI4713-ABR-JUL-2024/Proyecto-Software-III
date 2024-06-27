@@ -34,23 +34,23 @@ const postObjectiveDetail = async (req: NextRequest) => {
   }
 };
 
-// const getApproachs = async (req: NextRequest) => {
-//   try {
-//     const search = req.nextUrl.searchParams.get('search');
+const getObjectiveDetails = async (req: NextRequest) => {
+  try {
+    const search = req.nextUrl.searchParams.get('objective_id');
 
-//     const approachs = await approachService.listApproachs(search);
+    const objectives = await objectiveDetailService.listObjectiveDetail(search);
 
-//     return approachs;
-//   } catch (error: any) {
-//     const handle_err: error_object = handle_error_http_response(error, '0002');
-//     throw new custom_error(
-//       handle_err.error_message,
-//       handle_err.error_message_detail,
-//       handle_err.error_code,
-//       handle_err.status
-//     );
-//   }
-// };
+    return objectives;
+  } catch (error: any) {
+    const handle_err: error_object = handle_error_http_response(error, '0002');
+    throw new custom_error(
+      handle_err.error_message,
+      handle_err.error_message_detail,
+      handle_err.error_code,
+      handle_err.status
+    );
+  }
+};
 
 const updateObjectiveDetail = async (
   req: NextRequest,
@@ -109,4 +109,5 @@ export const objectiveDetailController = {
   postObjectiveDetail,
   updateObjectiveDetail,
   deleteObjectiveDetail,
+  getObjectiveDetails
 };

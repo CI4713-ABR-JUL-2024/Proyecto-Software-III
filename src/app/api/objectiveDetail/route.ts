@@ -18,19 +18,19 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// export async function GET(req: NextRequest) {
-//   try {
-//     const approachs = await approachController.getApproachs(req);
-//     return NextResponse.json(approachs, { status: 200 });
-//   } catch (err: any) {
-//     const error_json = {
-//       error_message: err.error_message,
-//       error_message_detail: err.error_message_detail,
-//       error_code: err.error_code,
-//     };
-//     return NextResponse.json(error_json, { status: err.status });
-//   }
-// }
+export async function GET(req: NextRequest) {
+  try {
+    const approachs = await objectiveDetailController.getObjectiveDetails(req);
+    return NextResponse.json(approachs, { status: 200 });
+  } catch (err: any) {
+    const error_json = {
+      error_message: err.error_message,
+      error_message_detail: err.error_message_detail,
+      error_code: err.error_code,
+    };
+    return NextResponse.json(error_json, { status: err.status });
+  }
+}
 
 export async function OPTIONS(request: NextRequest) {
   const origin = request.headers.get('origin');
