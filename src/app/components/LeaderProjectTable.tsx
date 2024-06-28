@@ -1,5 +1,5 @@
 'use client'
-import {useEffect, useState} from 'react';
+import {use, useEffect, useState} from 'react';
 import { FaPlus, FaPen, FaTrash } from "react-icons/fa";
 import Table from '../components/Table';
 import Sidebar from "../components/Sidebar";
@@ -7,7 +7,9 @@ import { useCookies } from 'react-cookie';
 import { useRouter } from 'next/navigation';
 import { IoSearchCircle } from 'react-icons/io5';
 import ApproachModal from '../components/ApproachModal';
+import EditLeaderProjectModal from './EditLeaderProjectModal';
 import { set } from 'zod';
+import DeleteLeaderProjectModal from './DeleteLeaderProjectModal';
 
 export default function LeaderProjectTable(role: any) {
     const [projectList, setProjectList] = useState<any>([]);
@@ -22,6 +24,12 @@ export default function LeaderProjectTable(role: any) {
     const [area, setArea] = useState('');
     const [approachList, setApproachList] = useState<any>([]);
     const [errorCreatingProject, setErrorCreatingProject] = useState(false);
+    const [selectedProject, setSelectedProject] = useState<any>(null); // Estado para almacenar el proyecto seleccionado para editar
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // Estado para abrir el modal de eliminación
+    const [selectedProjectId, setSelectedProjectId] = useState(''); // Estado para almacenar el id del proyecto seleccionado para eliminar
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false); // Estado para abrir el modal de edición
+    const [refreshList, setRefreshList] = useState(false); // Estado para refrescar la lista de proyectos
+    
 
     const tableProps = {
         header: ['ID','Trimestre', 'Año', 'Organización', 'Abordaje', 'Área'],
@@ -35,6 +43,14 @@ export default function LeaderProjectTable(role: any) {
     useEffect(() => {
         getApproachs();
     }, []);
+
+    useEffect(() => {
+        //si se hace regreshList, se vuelve a llamar a la lista de proyectos
+        if (refreshList) {
+            //Aqui se deberia llamar a la lista de proyectos
+            setRefreshList(false);
+        }
+    }, [refreshList]);
 
     /*
     //Convertir la lista de proyectos en un array de arrays
@@ -64,10 +80,24 @@ export default function LeaderProjectTable(role: any) {
         
         if (e === 1) {
             console.log('Editar Proyecto');
+            const project = projectTable.info.find((project: any) => project[0] === id.toString());
+            if (project) {
+                setSelectedProject({
+                    id: project[0],
+                    trimester: project[1],
+                    year: project[2],
+                    organization: project[3],
+                    approach: project[4],
+                    area: project[5],
+                });
+                setIsEditModalOpen(true);
+            }
         }
 
         if (e === 2) {
             console.log('Eliminar Proyecto');
+            setSelectedProjectId(id); // Almacenar el id del proyecto seleccionado
+            setIsDeleteModalOpen(true); // Abrir modal de eliminación
         }
     }
 
@@ -214,6 +244,22 @@ export default function LeaderProjectTable(role: any) {
                 
                 <ApproachModal isOpen={addApproach} setIsOpen={setAddApproach} />
                 <Table props={projectTable} onClick={handleClick}/>   
+
+                <EditLeaderProjectModal 
+                    isOpen={isEditModalOpen} 
+                    setIsOpen={setIsEditModalOpen} 
+
+                    projectId={selectedProject} 
+                    setRefreshList={setRefreshList} 
+                />
+
+                <DeleteLeaderProjectModal
+                    isOpen={isDeleteModalOpen}
+                    setIsOpen={setIsDeleteModalOpen}
+                    projectId={selectedProjectId}
+                    projectList={projectList}
+                    setRefreshList={setRefreshList}
+                />
             </div>
         </main>
     )
