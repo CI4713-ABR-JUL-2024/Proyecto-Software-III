@@ -5,10 +5,11 @@ import { useEffect } from "react";
 import ProjectsTable from "../components/GetProjects";
 import Sidebar from "../components/Sidebar"
 import { useRouter } from "next/navigation";
-import { FaRegUser, FaPen, FaCircle} from "react-icons/fa";
+import { FaRegUser, FaPen, FaCircle, FaTrash} from "react-icons/fa";
 import { IoSearchCircle } from "react-icons/io5";
 import { useCookies } from 'react-cookie';
 import Table from "../components/Table";
+import DeleteModal from "./DeleteModal"
 
 import settings from './settings.json';
 
@@ -21,9 +22,10 @@ interface AddProps {
   types : Array<string>,
   save : any,
   valuesOf : Array<string>,
+  handleClosing : any,
 }
 
-const Add = ({role, ID, valuesOf, placeholders,ids,types,save} : AddProps) => {
+const Add = ({role, ID, valuesOf, placeholders,ids,types,save,handleClosing} : AddProps) => {
   const pc = placeholders;
   const newid = ID;
   const id = ids;
@@ -52,51 +54,79 @@ const Add = ({role, ID, valuesOf, placeholders,ids,types,save} : AddProps) => {
     return true;
   }
 
+  function idFound(){
+    if (id != null){
+      return (<div key={"id"}>
+              <input 
+                    key="inputnumberid"
+                    id="numberid"
+                    type="text"
+                    value={newid}
+                    placeholder={newid}
+                    className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2.5" 
+                    readOnly
+                  />
+              </div>)
+    }
+  }
+
+  function mapping(){
+    console.log(pc)
+    var found : Array<any> = []
+    pc.map((B,j) => {
+      if (role === "admin") {
+        console.log(B)
+        console.log(j)
+        found.push(
+        <div key={"inputdiv"+j}>
+        <input 
+            key={"inputnew"+j}
+            id={id[j]+j}
+            type={type[j]}
+            value={info[j]}
+            placeholder={B}
+            className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2.5" 
+            onChange={(e) => { handleEdition(j,e.target.value) }}
+            required
+        />
+        </div>
+        )
+      }
+    })
+    return found;
+  }
+
   return (
   <>
-    <div className="flex p-5">
-          <input 
-              key="inputnumberid"
-              id="numberid"
-              type="text"
-              value={newid}
-              placeholder={newid}
-              className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2.5" 
-              readOnly
-          />
-          {pc.map((B,j) => {
-              if (role === "admin") {
-                return (<input 
-                    key={"inputnew"+j}
-                    id={id[j]+j}
-                    type={type[j]}
-                    value={info[j]}
-                    placeholder={B}
-                    className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2.5" 
-                    onChange={(e) => { handleEdition(j,e.target.value) }}
-                    required
-                />)
-              }
-            }
+    <div className="flex flex-wrap p-5 bg-gray-300">
+        
+        {idFound()}
+        
+        {mapping()}
             
-            )}               
-               
-            <button
-                type="submit"
-                className="bg-[#3A4FCC] text-white font-bold py-2 px-5 rounded-full"
-                onClick={() => {
-                  console.log(allFieldsFilled());
-                    if (!allFieldsFilled()) {
-                        console.error("Por favor completa todos los campos.");
-                        setErrorCreatingProject(true);
-                        return;
-                    }
-                    if (errorCreatingProject) setErrorCreatingProject(false);
-                    onSave(info);
-                }}
-            >
-                Crear
-            </button>
+        <div key={"buttondivsave"}>
+        <button
+            type="submit"
+            className="bg-[#3A4FCC] text-white font-bold py-2 px-5 rounded-full"
+            onClick={() => {
+              console.log(allFieldsFilled());
+                if (!allFieldsFilled()) {
+                    console.error("Por favor completa todos los campos.");
+                    setErrorCreatingProject(true);
+                    return;
+                }
+                if (errorCreatingProject) setErrorCreatingProject(false);
+                onSave(info);
+            }}
+        >
+            Crear
+        </button>
+        </div>
+        <div key={"div3"}></div>
+        <div key={"div4"}></div>
+        <div key={"div5"}></div>
+
+        <div className="grow" key={"divbuttonclose"}><button onClick={handleClosing}> X </button></div>
     </div>
     {errorCreatingProject && <p className="text-red-500">Por favor completa todos los campos necesarios.</p>}
   </>
@@ -153,6 +183,10 @@ const TablePage = ({information,data,role,buttons,click,search,save,editF,delete
   const [editing, setEditing] = useState<string[] | null>(null);
   const importing = information
   const [valuesOf, setValuesOf] = useState(Array(importing.tableHeader.length-1).fill(""));
+  const [isOpen,setModalOpen] = useState(false);
+  const [text, setText] = useState("¿Estás seguro de eliminar la organización?");
+  const [deleteID,setDeleteID] = useState(0);
+  const router = useRouter();
 
   const propsc = {
     header : importing.tableHeader , 
@@ -175,7 +209,8 @@ const TablePage = ({information,data,role,buttons,click,search,save,editF,delete
     }
     if (importing.buttons_message[e] == "Delete"){
       console.log("deleting organization")
-      deleteF(id);
+      setModalOpen(true);
+      setDeleteID(id);
     }
     click(e,id);
   }
@@ -185,10 +220,27 @@ const TablePage = ({information,data,role,buttons,click,search,save,editF,delete
   }
 
   const onSave = async (info : Array<string>) =>{
-    save(info);
+    const a = await save(info);
+    if (a == true){
+      setAdd(false);
+    }
   }
   const onEdit = async (info : Array<string>) => {
-    editF(info);
+    const a = await editF(info);
+    console.log(a);
+    if (a == true){
+      setEdit(false);
+    }
+  }
+  const closingAddEdit = () => {
+    if (add == true){
+      setAdd(false);
+      setValuesOf(Array(importing.tableHeader.length-1).fill(""));
+    }
+    if (edit== true){
+      setEdit(false);
+      setValuesOf(Array(importing.tableHeader.length-1).fill(""));
+    }
   }
 
   return (
@@ -196,15 +248,20 @@ const TablePage = ({information,data,role,buttons,click,search,save,editF,delete
         <Sidebar role={role} />
         <div className="m-10 flex flex-col w-full">
 
+        <DeleteModal isOpen={isOpen} texti={text} fun={deleteF} ID={deleteID} setModalOpen={setModalOpen}/>
+
         <TableHeader title={importing.title} placeholder={importing.search} 
         handleSearchClick={onSearch} setAdd={setAdd} name={importing.name}/>
-            
-        {add && <Add role={role} ID={newId} valuesOf={valuesOf} placeholders={importing.placeholders} 
-        ids={importing.ids} types={importing.types} save={onSave}/>}
-            
+        
+        {add &&
+        <Add role={role} ID={newId} valuesOf={valuesOf} placeholders={importing.placeholders} 
+                ids={importing.ids} types={importing.types} save={onSave} handleClosing={closingAddEdit}/> 
+        }
+        
         {edit && <Add role={role} ID={editing} valuesOf={valuesOf} placeholders={importing.placeholders} 
-        ids={importing.ids} types={importing.types} save={onEdit}/>}
-            
+        ids={importing.ids} types={importing.types} save={onEdit} handleClosing={closingAddEdit}/>
+        }
+                    
         <Table props={propsc} onClick={handleClick}/>
         </div>
     </main>
@@ -212,9 +269,7 @@ const TablePage = ({information,data,role,buttons,click,search,save,editF,delete
 }
 
 export default function Organizations() {
-  //const [tableInfo, setTableInfo] = useState<string[][]>([]);
-  const tableInfo =  [["1","Adelina","Figueira","Admin","User","User","User"],
-      ["2","Adelina","Figueira","Admin","User","User","User"]];
+  const [tableInfo, setTableInfo] = useState<string[][]>([["0"]]);
   const [role, setRole] = useState("");
   const [cookies, setCookie] = useCookies(["access_token","id"]);
   const [loading, setLoading] = useState(true);
@@ -229,8 +284,8 @@ export default function Organizations() {
         return res.json();
       })
       .then(data => {
-        //setRole(data.role_name)
-        setRole("admin")
+        console.log(data.role_name)
+        setRole(data.role_name)
       }).catch(error => {
         console.error('error', error);
       })
@@ -238,7 +293,11 @@ export default function Organizations() {
     else{
       router.push("/");
     }
-    const getOrganizationsData = async () => {
+    getOrganizationsData();
+    
+  }, []);
+
+  const getOrganizationsData = async () => {
      const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/organization',{
       method: "GET" , headers : {
                 "Authorization": "Bearer "+cookies.access_token,
@@ -248,22 +307,31 @@ export default function Organizations() {
       })
       .then(data => {
         console.log(data);
-        //setTableInfo(data);
+        const values = handleInfo(data);
+        setTableInfo(values);
         setLoading(false);       
       }).catch(error => {
         console.error('error', error);
       })
     };
-    getOrganizationsData();
-    
-  }, []);
+
+  const handleInfo = (data : any) : Array<Array<string>> => {
+      var infoChanged = new Array();
+      for (var val of data) {
+        var newD = [val.id,val.name,val.country,val.estate,
+          val.personResponsible,val.cellphone,val.email]
+        infoChanged.push(newD)
+      } 
+      return infoChanged;
+    }
 
   const handleClick = async (e: any,id: any) => {
     console.log(e)
   }
 
-  const onSearch = async (value : string) =>{
+  const onSearch = async (value : string) => {
     //handle search after pressing button
+    console.log(value);
     const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/organization?search='+value,{
       method: "GET" , headers : {
                 "Authorization": "Bearer "+cookies.access_token,
@@ -273,19 +341,20 @@ export default function Organizations() {
       })
       .then(data => {
         console.log(data);
-        //setTableInfo(data);
+        const values = handleInfo(data);
+        setTableInfo(values);
       }).catch(error => {
         console.error('error', error);
     })
     console.log(value);
   }
 
-  const onSave = async (info : Array<string>) =>{
+  const onSave = async (info : Array<string>) : Promise<boolean> =>{
     //handle saving organization
 
     // ["ID","Nombre","País","Estado","Responsable","Teléfono","Correo electrónico"]
     console.log(info);
-
+    var result = false 
     const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/organization',{
       method: "POST" , headers : {
                 "Authorization": "Bearer "+cookies.access_token,
@@ -296,13 +365,23 @@ export default function Organizations() {
         return res.json();
       })
       .then((data) => {
-        console.log(data);        
+        console.log(data);
+        if (data.error_code){
+          result=false;
+          return result;
+        }
+        else{
+          result=true;
+          return result;
+        }
       });
+    return response;
   }
-  const onEdit = async (info : Array<string>) => {
+  const onEdit = async (info : Array<string>) : Promise<boolean> => {
     console.log(info)
     //handle edition
     const id = info[0]
+    var result = false
     const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/organization/'+id,{
       method: "PUT" , headers : {
                 "Authorization": "Bearer "+cookies.access_token,
@@ -313,12 +392,22 @@ export default function Organizations() {
         return res.json();
       })
       .then((data) => {
-        console.log(data);        
+        console.log(data);
+        if (data.error_code){
+          result=false;
+          return result;
+        }
+        else{
+          result=true;
+          return result;
+        }       
       });
+      return response;
   }
-  const onDelete = async (id : any) => {
-    console.log(id)
+  const onDelete = async (x : any) : Promise<boolean> => {
+    const id = parseInt(tableInfo[parseInt(x)][0])
     //handle edition
+    var result=false;
     const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/organization/'+id,{
       method: "DELETE" , headers : {
                 "Authorization": "Bearer "+cookies.access_token,
@@ -327,12 +416,22 @@ export default function Organizations() {
         return res.json();
       })
       .then((data) => {
-        console.log(data);        
+        console.log(data);
+        console.log(data);
+        if (data.error_code){
+          result=false;
+          return result;
+        }
+        else{
+          result=true;
+          return result;
+        }          
       });
+      return result
   }
 
   return(
-    <TablePage information={settings.organization} data={tableInfo} buttons={[FaPen,FaCircle]}
+    <TablePage information={settings.organization} data={tableInfo} buttons={[FaPen,FaTrash]}
     click = {handleClick} search={onSearch} save={onSave} editF={onEdit} deleteF={onDelete} role={role}/>
     );
 }
