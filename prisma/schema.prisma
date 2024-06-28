@@ -54,6 +54,7 @@ model Project {
   end         DateTime
   status      ProjectStatus @default(ACTIVE)
   okrDesign OkrDesing?
+  area       String?
 }
 
 model Log {

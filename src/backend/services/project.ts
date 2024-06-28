@@ -24,6 +24,28 @@ export const update_project = async (id: number, data: ProjectUpdateInput,token:
       throw new Error('El proyecto no existe');
     }
 
+    if (data.aproach_id) {
+      const approach = await prisma.approach.findFirst({
+        where: {
+          id: data.aproach_id,
+        },
+      });
+      if (!approach) {
+        throw new Error('El enfoque no existe');
+      }
+    }
+
+    if (data.organization_id) {
+      const organization = await prisma.organization.findFirst({
+        where: {
+          id: data.organization_id,
+        },
+      });
+      if (!organization) {
+        throw new Error('La organización no existe');
+      }
+    }
+
     const updated_project = await prisma.project.update({
       where: {
         id: id,
@@ -99,24 +121,23 @@ export const get_all_projects = async () => {
  */
 export const create_project = async (data: ProjectCreateInput) => {
   try {
-    const project = await prisma.project.create({
-       data: {
-        ...data, 
-        trimester: '',
-        year: '',
-        organization: { create: { 
-          name: '',
-          country: '',
-          estate: '',
-          cellphone: '',
-          email: '',
-          personResponsible: ''
-        }},
-        aproach: { create: {
-          name: '',
-        }},
-       } 
+    const approach = await prisma.approach.findFirst({
+      where: {
+        id: data.aproach_id,
+      },
     });
+    if (!approach) {
+      throw new Error('El enfoque no existe');
+    }
+    const organization = await prisma.organization.findFirst({
+      where: {
+        id: data.organization_id,
+      },
+    });
+    if (!organization) {
+      throw new Error('La organización no existe');
+    }
+    const project = await prisma.project.create({ data });
     return project;
   } catch (error) {
     throw error;
