@@ -100,7 +100,6 @@ const Add = ({role, ID, valuesOf, placeholders,ids,types,save,handleClosing} : A
   <>
     <div className="flex flex-wrap p-5 bg-gray-300">
         
-        {idFound()}
         
         {mapping()}
             
@@ -194,7 +193,16 @@ const TablePage = ({information,data,role,buttons,click,search,save,editF,delete
     buttons: buttons, 
     buttons_message: importing.buttons_message}
 
-  const newId = parseInt(propsc.info[propsc.info.length-1][0])+1;
+  const handleValue = () : number => {
+    if (data.length == 0){
+      return 0
+    }
+    else{
+      return parseInt(propsc.info[propsc.info.length-1][0])+1;
+    }
+  }
+
+  var newId = handleValue();
 
   const handleClick = async (e: any,id: any) => {
     //when the buttons inside the table are clicked
@@ -241,6 +249,7 @@ const TablePage = ({information,data,role,buttons,click,search,save,editF,delete
       setEdit(false);
       setValuesOf(Array(importing.tableHeader.length-1).fill(""));
     }
+    setValuesOf(Array(importing.tableHeader.length-1).fill(""));
   }
 
   return (
@@ -269,7 +278,7 @@ const TablePage = ({information,data,role,buttons,click,search,save,editF,delete
 }
 
 export default function Organizations() {
-  const [tableInfo, setTableInfo] = useState<string[][]>([["0"]]);
+  const [tableInfo, setTableInfo] = useState<string[][]>([]);
   const [role, setRole] = useState("");
   const [cookies, setCookie] = useCookies(["access_token","id"]);
   const [loading, setLoading] = useState(true);
@@ -375,6 +384,8 @@ export default function Organizations() {
           return result;
         }
       });
+    getOrganizationsData();
+    console.log(tableInfo);
     return response;
   }
   const onEdit = async (info : Array<string>) : Promise<boolean> => {
@@ -402,13 +413,13 @@ export default function Organizations() {
           return result;
         }       
       });
+      getOrganizationsData();
       return response;
   }
   const onDelete = async (x : any) : Promise<boolean> => {
-    const id = parseInt(tableInfo[parseInt(x)][0])
     //handle edition
     var result=false;
-    const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/organization/'+id,{
+    const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/organization/'+x,{
       method: "DELETE" , headers : {
                 "Authorization": "Bearer "+cookies.access_token,
                 "type" : "text"} ,})
@@ -427,6 +438,7 @@ export default function Organizations() {
           return result;
         }          
       });
+      getOrganizationsData();
       return result
   }
 
