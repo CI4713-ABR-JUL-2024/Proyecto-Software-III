@@ -13,6 +13,7 @@ const project_update_object_body = z.object({
   year: z.string().optional(),
   aproach_id: z.number().optional(),
   organization_id: z.number().optional(),
+  area: z.string().optional(),
 }).refine(data => {
   // Si start o end no están definidos, la validación pasa
   if (!data.start || !data.end) return true;
@@ -64,6 +65,7 @@ const project_create_object_body = z.object({
   organization_id: z.number(),
   trimester: z.string(),
   year: z.string(),
+  area: z.string().optional(),
 }).refine(data => {
   return data.start < data.end;
 }, {
