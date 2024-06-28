@@ -1,5 +1,5 @@
 'use client';
-import { FaPen, FaTrash, FaPrint, FaFilePdf,FaPlay, FaCross } from "react-icons/fa";
+import { FaPen, FaTrash, FaPrint, FaFilePdf,FaPlay, FaCross, FaPlus } from "react-icons/fa";
 import Table from "../components/ObjectivesTable"
 import { IoSearchCircle } from "react-icons/io5";
 import { use, useState } from "react";
@@ -36,7 +36,7 @@ export default function ObjectivesTable({ role, objectivesInfo, projectInfo}: Ob
   const tableProp = {
       header : ["ID","Objectivos"], 
       info: objectivesInfo,
-      buttons:[FaCross, FaPen,FaTrash], 
+      buttons:[FaPlus, FaPen,FaTrash], 
       buttons_message:["Agregar","Editar","Eliminar"]}
   const [objectivesTable, setObjectivesTable] = useState(tableProp);
   const handleClick = async (e: any,id: string[]) => {
@@ -81,7 +81,6 @@ export default function ObjectivesTable({ role, objectivesInfo, projectInfo}: Ob
         if(e == 1){
             console.log("Editar");
         }
-      //rellenar con el manejo del click hecho dependiendo del boton y el usuario 
   };
 
   function handleSearchClick() {
@@ -99,13 +98,13 @@ export default function ObjectivesTable({ role, objectivesInfo, projectInfo}: Ob
     <main className="flex">
         <Sidebar role="admin" />
         <div className="m-10 flex flex-col w-full">
-            <div className=" flex w-1/3">
-            <span className="text-2xl font-bold text-[#3A4FCC]">Organización:</span>
-                <span className="flex w-1/3"> 
+            <div>
+            <span className="text-2xl font-bold text-[#3A4FCC]">Organización:      </span>
+                <span className="font-bold margin"> 
                 {projectInfo[0]}
                 </span>
-                <span className="text-2xl font-bold text-[#3A4FCC]">Area:</span>
-                <span className="flex w-1/3"> 
+                <span className="text-2xl font-bold text-[#3A4FCC]">      Area:     </span>
+                <span className="font-bold"> 
                 {projectInfo[1]}
                 </span>
             </div>

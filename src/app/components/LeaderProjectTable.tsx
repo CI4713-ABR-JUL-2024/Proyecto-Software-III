@@ -4,12 +4,13 @@ import { FaPlus, FaPen, FaTrash } from "react-icons/fa";
 import Table from '../components/Table';
 import Sidebar from "../components/Sidebar";
 import { useCookies } from 'react-cookie';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { IoSearchCircle } from 'react-icons/io5';
 import ApproachModal from '../components/ApproachModal';
 import { set } from 'zod';
 
 export default function LeaderProjectTable(role: any) {
+    const router = useRouter();
     const [projectList, setProjectList] = useState<any>([]);
     const [cookies, setCookie] = useCookies(['access_token']);
     const [searchVal, setSearchVal] = useState("");
@@ -61,7 +62,7 @@ export default function LeaderProjectTable(role: any) {
    
     const handleClick = (e: any, id: any) => {
         if (e === 0) {
-            console.log('Generar diseño OKR');
+            router.push('/projects/objectives');
         }
         
         if (e === 1) {

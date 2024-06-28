@@ -5,7 +5,10 @@ VALUES
 ('general_management','Not an admin but can see everything'),
 ('operations_management','User with all operations privilages'),
 ('account_submanagement','User with some account privilages'),
-('account_analyst','User which analyzes accounts');
+('account_analyst','User which analyzes accounts'),
+('change_agents','some description to this'),
+('project_leader','some description to this'),
+('agile_coach','some description to this');
 
 INSERT INTO public."User"
 ("name", last_name, email, "password", telephone, role_name)
