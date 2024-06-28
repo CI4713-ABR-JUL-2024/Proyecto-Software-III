@@ -34,8 +34,29 @@ export default function LeaderProjectTable(role: any) {
 
     //AGREGAR NUEVA LLAMADA AL ENDPOINT DE PROYECTOS
     useEffect(() => {
-        getProjects();
-        
+        if (cookies.access_token != undefined) { 
+            fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/project', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${cookies.access_token}`,
+                },
+            }).then(response => {
+                return response.json();
+            }).then(data => {
+                console.log(data);
+                const list = listToArrayOfArrays(data.projects);
+                setProjectList(list);
+                setProjectTable({header: tableProps.header, info: list, buttons: tableProps.buttons, buttons_message: tableProps.buttons_message});    
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+        } else {
+            console.log('No hay token de acceso');
+        }
+
+        getApproachs();
+        getOrganizationsData();
     }, []);
 
 
@@ -47,9 +68,9 @@ export default function LeaderProjectTable(role: any) {
                 item.id.toString(),
                 item.trimester.toString(),
                 item.year.toString(),
-                item.organization.toString(),
-                item.approach.toString(),
-                item.area.toString()
+                item.organization_id,
+                item.aproach_id,
+                item.area || "Sin área",
             ]);
             
         });
@@ -87,56 +108,44 @@ export default function LeaderProjectTable(role: any) {
         setProjectTable({header: tableProps.header, info: filterBySearch, buttons: tableProps.buttons, buttons_message: tableProps.buttons_message});
     }
 
-    async function getProjects() { 
-        console.log('Se obtuvieron los proyectos')
-        try {
-            const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/project', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${cookies.access_token}`,
-                },
-            });
-            const data = await response.json();
-            //console.log(data);
-            const list = listToArrayOfArrays(data);
-            setProjectList(list);
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }
+
 
     async function createProject() {
-        console.log('Crear Proyecto')
+        console.log('Crear Proyecto');
+        const today = new Date();
+        const day = today.getDate();
+        const month = today.getMonth(); // Normalizamos el valor del mes (0-11)
+        const thisYear = today.getFullYear();
+        const nextYear = thisYear + 1;
+        const start = new Date(thisYear, month, day); // Restamos 1 al mes para que sea compatible con el rango 0-11
+        const end = new Date(nextYear, month, day);
+               
+
+        console.log(start, end);
+
         try {
-            const today = new Date();
-            const day = today.getDate();
-            const month = today.getMonth() + 1; // Normalizamos el valor del mes (0-11)
-            const year = today.getFullYear();
-            const formattedDate = `${day}/${month}/${year}`;
-            const start = new Date(formattedDate);
-            const end = start.setFullYear(start.getFullYear() + 1);
+            const newProject = {
+                description: 'Falta descripcion',
+                trimester: trimester,
+                year: year,
+                start: start,
+                end: end,
+                organization_id: Number(organization),
+                aproach_id: Number(approach),
+                area: area,
+            };
+            console.log(newProject);
             const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/project', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${cookies.access_token}`,
                 },
-                body: JSON.stringify({
-                    trimester: trimester,
-                    year: year,
-                    start: start,
-                    end: end,
-                    organization_id: organization.id,
-                    approach_id: approach.id,
-                    area: area,
-
-                }),
+                body: JSON.stringify(newProject),
             });
             const data = await response.json();
             console.log(data);
-            getApproachs();
-            getOrganizationsData();
+            
         } catch (error) {
             console.error('Error:', error);
         }
@@ -159,7 +168,21 @@ export default function LeaderProjectTable(role: any) {
             console.error('Error:', error);
         }
     }
+    /*
+    const findApproach = (id: any) => {
+        console.log(id);
+        const approach = approachList.find((item: any) => item.id === Number(id));
+        console.log(approach);
+        return approach.name.toString();
+    }
 
+    const findOrganization = (id: any) => {
+        console.log(id);
+        const organization = organizationList.find((item: any) => item.id === Number(id));
+        console.log(organization);
+        return organization.name.toString();
+    }
+    */
     async function getOrganizationsData()  {
         try {
             const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/organization', {
