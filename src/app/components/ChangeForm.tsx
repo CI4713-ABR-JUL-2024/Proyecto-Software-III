@@ -118,7 +118,7 @@ async function onSubmit(data: changeData) {
           </div>
           <div className="flex items-center justify-center flex-col">
             {errorMessage && <p className="text-red-600 text-sm p-3">Verifique que las contraseñas sean válidas.</p>}
-            <button type="submit" className=" bg-blue-500 text-white rounded-md p-2 shadow-md shadow-slate-700 hover:bg-blue-400 mb-4 text-lg font-bold p-[10px] w-[-webkit-fill-available]">
+            <button type="submit" className=" bg-blue-500 text-white rounded-md p-2 shadow-md shadow-slate-700 hover:bg-blue-400 mb-4 text-lg font-bold w-[-webkit-fill-available]">
               Cambiar contraseña
               </button>
           </div>
