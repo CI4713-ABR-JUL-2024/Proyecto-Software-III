@@ -17,8 +17,8 @@ export default function LeaderProjectTable(role: any) {
     const [addApproach, setAddApproach] = useState(false);
     const [trimester, setTrimester] = useState('');
     const [year, setYear] = useState('');
-    const [organization, setOrganization] = useState('');
-    const [approach, setApproach] = useState('');
+    const [organization, setOrganization] = useState<any>(undefined);
+    const [approach, setApproach] = useState<any>(undefined);
     const [area, setArea] = useState('');
     const [approachList, setApproachList] = useState<any>([]);
     const [organizationList, setOrganizationList] = useState<any>([]);
@@ -26,7 +26,7 @@ export default function LeaderProjectTable(role: any) {
 
     const tableProps = {
         header: ['ID','Trimestre', 'Año', 'Organización', 'Abordaje', 'Área'],
-        info: [['1', 'Enero-Marzo', '2024', 'Organización 1', 'Abordaje 1', 'Educacion']],
+        info: projectList,
         buttons: [FaPlus, FaPen, FaTrash],
         buttons_message: ['Generar diseño OKR', 'Editar Proyecto', 'Eliminar Proyecto'],
     };
@@ -34,11 +34,11 @@ export default function LeaderProjectTable(role: any) {
 
     //AGREGAR NUEVA LLAMADA AL ENDPOINT DE PROYECTOS
     useEffect(() => {
-        getApproachs();
-        getOrganizationsData();
+        getProjects();
+        
     }, []);
 
-    /*
+
     //Convertir la lista de proyectos en un array de arrays
     function listToArrayOfArrays(list: any) : string[][] { 
         var array : string[][] = [];
@@ -56,8 +56,7 @@ export default function LeaderProjectTable(role: any) {
         //console.log("arrayOf");
         //console.log(array);
         return array;
-    }
-    */  
+    } 
    
     const handleClick = (e: any, id: any) => {
         if (e === 0) {
@@ -88,9 +87,59 @@ export default function LeaderProjectTable(role: any) {
         setProjectTable({header: tableProps.header, info: filterBySearch, buttons: tableProps.buttons, buttons_message: tableProps.buttons_message});
     }
 
+    async function getProjects() { 
+        console.log('Se obtuvieron los proyectos')
+        try {
+            const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/project', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${cookies.access_token}`,
+                },
+            });
+            const data = await response.json();
+            //console.log(data);
+            const list = listToArrayOfArrays(data);
+            setProjectList(list);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
     async function createProject() {
         console.log('Crear Proyecto')
-        //AGREGAR CONEXION NUEVA PARA AGREGAR PROYECTO
+        try {
+            const today = new Date();
+            const day = today.getDate();
+            const month = today.getMonth() + 1; // Normalizamos el valor del mes (0-11)
+            const year = today.getFullYear();
+            const formattedDate = `${day}/${month}/${year}`;
+            const start = new Date(formattedDate);
+            const end = start.setFullYear(start.getFullYear() + 1);
+            const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/project', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${cookies.access_token}`,
+                },
+                body: JSON.stringify({
+                    trimester: trimester,
+                    year: year,
+                    start: start,
+                    end: end,
+                    organization_id: organization.id,
+                    approach_id: approach.id,
+                    area: area,
+
+                }),
+            });
+            const data = await response.json();
+            console.log(data);
+            getApproachs();
+            getOrganizationsData();
+        } catch (error) {
+            console.error('Error:', error);
+        }
     }
 
     async function getApproachs() {
