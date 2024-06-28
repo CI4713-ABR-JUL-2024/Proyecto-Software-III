@@ -22,7 +22,11 @@ export default function Sidebar(props: { role: string }) {
 
     async function viewLogger(){
       router.push("/logger");
-  }
+    }
+
+    async function viewOrganizations(){
+      router.push("/organizations");
+    }
 
     async function logOut(){
     removeCookie('access_token', { path: '/', domain: 'localhost' });
@@ -65,6 +69,14 @@ export default function Sidebar(props: { role: string }) {
                             onClick={viewLogger}
                         >
                             Logger
+                        </button>
+                    }
+                    {role === 'admin' &&
+                        <button
+                            className="w-[-webkit-fill-available] hover:bg-[#3A4FCC] hover:text-white font-bold py-2 px-4 rounded-full"
+                            onClick={viewOrganizations}
+                        >
+                            Organizaciones
                         </button>
                     }
                     {/* <button className="w-[-webkit-fill-available] hover:bg-[#3A4FCC] hover:text-white font-bold py-2 px-4 rounded-full">Ayuda</button> */}
