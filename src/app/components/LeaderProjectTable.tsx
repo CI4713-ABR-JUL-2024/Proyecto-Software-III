@@ -4,7 +4,7 @@ import { FaPlus, FaPen, FaTrash } from "react-icons/fa";
 import Table from '../components/Table';
 import Sidebar from "../components/Sidebar";
 import { useCookies } from 'react-cookie';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { IoSearchCircle } from 'react-icons/io5';
 import ApproachModal from '../components/ApproachModal';
 import EditLeaderProjectModal from './EditLeaderProjectModal';
@@ -12,6 +12,7 @@ import { set } from 'zod';
 import DeleteLeaderProjectModal from './DeleteLeaderProjectModal';
 
 export default function LeaderProjectTable(role: any) {
+    const router = useRouter();
     const [projectList, setProjectList] = useState<any>([]);
     const [cookies, setCookie] = useCookies(['access_token']);
     const [searchVal, setSearchVal] = useState("");
@@ -19,10 +20,11 @@ export default function LeaderProjectTable(role: any) {
     const [addApproach, setAddApproach] = useState(false);
     const [trimester, setTrimester] = useState('');
     const [year, setYear] = useState('');
-    const [organization, setOrganization] = useState('');
-    const [approach, setApproach] = useState('');
+    const [organization, setOrganization] = useState<any>(undefined);
+    const [approach, setApproach] = useState<any>(undefined);
     const [area, setArea] = useState('');
     const [approachList, setApproachList] = useState<any>([]);
+    const [organizationList, setOrganizationList] = useState<any>([]);
     const [errorCreatingProject, setErrorCreatingProject] = useState(false);
     const [selectedProject, setSelectedProject] = useState<any>(null); // Estado para almacenar el proyecto seleccionado para editar
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // Estado para abrir el modal de eliminación
@@ -33,7 +35,7 @@ export default function LeaderProjectTable(role: any) {
 
     const tableProps = {
         header: ['ID','Trimestre', 'Año', 'Organización', 'Abordaje', 'Área'],
-        info: [['1', 'Enero-Marzo', '2024', 'Organización 1', 'Abordaje 1', 'Educacion']],
+        info: projectList,
         buttons: [FaPlus, FaPen, FaTrash],
         buttons_message: ['Generar diseño OKR', 'Editar Proyecto', 'Eliminar Proyecto'],
     };
@@ -41,7 +43,29 @@ export default function LeaderProjectTable(role: any) {
 
     //AGREGAR NUEVA LLAMADA AL ENDPOINT DE PROYECTOS
     useEffect(() => {
+        if (cookies.access_token != undefined) { 
+            fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/project', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${cookies.access_token}`,
+                },
+            }).then(response => {
+                return response.json();
+            }).then(data => {
+                console.log(data);
+                const list = listToArrayOfArrays(data.projects);
+                setProjectList(list);
+                setProjectTable({header: tableProps.header, info: list, buttons: tableProps.buttons, buttons_message: tableProps.buttons_message});    
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+        } else {
+            console.log('No hay token de acceso');
+        }
+
         getApproachs();
+        getOrganizationsData();
     }, []);
 
     useEffect(() => {
@@ -52,7 +76,7 @@ export default function LeaderProjectTable(role: any) {
         }
     }, [refreshList]);
 
-    /*
+
     //Convertir la lista de proyectos en un array de arrays
     function listToArrayOfArrays(list: any) : string[][] { 
         var array : string[][] = [];
@@ -61,21 +85,20 @@ export default function LeaderProjectTable(role: any) {
                 item.id.toString(),
                 item.trimester.toString(),
                 item.year.toString(),
-                item.organization.toString(),
-                item.approach.toString(),
-                item.area.toString()
+                item.organization_id,
+                item.aproach_id,
+                item.area || "Sin área",
             ]);
             
         });
         //console.log("arrayOf");
         //console.log(array);
         return array;
-    }
-    */  
+    } 
    
     const handleClick = (e: any, id: any) => {
         if (e === 0) {
-            console.log('Generar diseño OKR');
+            router.push('/projects/objectives');
         }
         
         if (e === 1) {
@@ -116,9 +139,47 @@ export default function LeaderProjectTable(role: any) {
         setProjectTable({header: tableProps.header, info: filterBySearch, buttons: tableProps.buttons, buttons_message: tableProps.buttons_message});
     }
 
+
+
     async function createProject() {
-        console.log('Crear Proyecto')
-        //AGREGAR CONEXION NUEVA PARA AGREGAR PROYECTO
+        console.log('Crear Proyecto');
+        const today = new Date();
+        const day = today.getDate();
+        const month = today.getMonth(); // Normalizamos el valor del mes (0-11)
+        const thisYear = today.getFullYear();
+        const nextYear = thisYear + 1;
+        const start = new Date(thisYear, month, day); // Restamos 1 al mes para que sea compatible con el rango 0-11
+        const end = new Date(nextYear, month, day);
+               
+
+        console.log(start, end);
+
+        try {
+            const newProject = {
+                description: 'Falta descripcion',
+                trimester: trimester,
+                year: year,
+                start: start,
+                end: end,
+                organization_id: Number(organization),
+                aproach_id: Number(approach),
+                area: area,
+            };
+            console.log(newProject);
+            const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/project', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${cookies.access_token}`,
+                },
+                body: JSON.stringify(newProject),
+            });
+            const data = await response.json();
+            console.log(data);
+            
+        } catch (error) {
+            console.error('Error:', error);
+        }
     }
 
     async function getApproachs() {
@@ -138,11 +199,42 @@ export default function LeaderProjectTable(role: any) {
             console.error('Error:', error);
         }
     }
+    /*
+    const findApproach = (id: any) => {
+        console.log(id);
+        const approach = approachList.find((item: any) => item.id === Number(id));
+        console.log(approach);
+        return approach.name.toString();
+    }
+
+    const findOrganization = (id: any) => {
+        console.log(id);
+        const organization = organizationList.find((item: any) => item.id === Number(id));
+        console.log(organization);
+        return organization.name.toString();
+    }
+    */
+    async function getOrganizationsData()  {
+        try {
+            const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/organization', {
+                method: "GET" , 
+                headers : {
+                    'Authorization': `Bearer ${cookies.access_token}`,
+                    "type" : "text",
+                },
+            });
+            const data = await response.json();
+            console.log(data);
+            setOrganizationList(data);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
 
 
     return (
         <main className='flex'>
-            <Sidebar role={role}/>
+            <Sidebar role={role.toString()}/>
             <div className="m-10 flex flex-col w-full">
                 <div className="flex justify-between w-full p-4">
                     <h3 className="text-2xl font-bold text-[#3A4FCC]">Proyectos OKRs</h3>
@@ -195,9 +287,9 @@ export default function LeaderProjectTable(role: any) {
                         required
                     >
                         <option disabled className="text-gray-400" value="">Seleccione una organización</option>
-                        <option value="1">Organización 1</option>
-                        <option value="2">Organización 2</option>
-                        <option value="3">Organización 3</option>
+                        {organizationList.map((item: any) => (
+                            <option key={item.id} value={item.id}>{item.name}</option>
+                        ))}
                     </select>
                     <select
                         id='approach'

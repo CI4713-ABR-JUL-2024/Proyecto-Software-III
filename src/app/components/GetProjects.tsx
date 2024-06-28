@@ -16,10 +16,10 @@ import { useRouter } from "next/navigation";
 
 type ProjectsTableProps = {
     projectInfo: string[][];
+    role: string;
   };
 
-export default function ProjectsTable(role: any, { projectInfo }: ProjectsTableProps) {
-  const router = useRouter();
+export default function ProjectsTable({ projectInfo, role }: ProjectsTableProps) {
   const [searchVal, setSearchVal] = useState("");
   const [addProject, setAddProject] = useState(false);
   const [descripcion, setDescripcion] = useState('');
@@ -31,15 +31,17 @@ export default function ProjectsTable(role: any, { projectInfo }: ProjectsTableP
   const [editDescripcion, setEditDescripcion] = useState('');
   const [editInicio, setEditInicio] = useState('');
   const [editCierre, setEditCierre] = useState('');
-  const [cookies, setCookie] = useCookies(['access_token'	]);
+  const [cookies, setCookie] = useCookies(['access_token','id']);
   const componentRef = useRef<HTMLDivElement>(null);
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
     
   console.log(projectInfo);
-  const p = [["1","Proyecto 1","2024-06-11T00:00:00.000Z","2024-06-11T00:00:00.000Z"],["2", "Proyecto 2","2024-06-11T00:00:00.000Z","2024-06-11T00:00:00.000Z"]]
-  //console.log(p);
+  if (projectInfo === undefined) {
+    projectInfo = [["1","Proyecto 1","2024-06-11T00:00:00.000Z","2024-06-11T00:00:00.000Z","ACTIVE"],["2", "Proyecto 2","2024-06-11T00:00:00.000Z","2024-06-11T00:00:00.000Z","ACTIVE"]]
+  }
+    console.log(projectInfo);
 
   const tableProp = {
       header : ["ID","Descripción","Inicio","Cierre"], 

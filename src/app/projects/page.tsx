@@ -41,17 +41,14 @@ export default function Projects() {
      const data = await response.json().then((data) => data);
       console.log(data.projects);
       setProjectList(data.projects);
-      //console.log(data.projects);
       setLoading(false);
-      //setProjectInfo(projectList.map((project) => ["1", project.description, project.start, project.end]))
-      //console.log(projectInfo);
     }; getProjectsData();
     }, []);
 
    if(loading){
     return <h1>Loading...</h1>
   }
-
+  console.log(projectList.map((project) => [project.id.toString(), project.description, project.start, project.end,project.status]));
   return (
     <> 
       {(role === 'change_agents' || role === 'agile_coach' || role === 'project_leader') && 

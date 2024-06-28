@@ -16,7 +16,7 @@ interface ActionProps {
 }
 
 
-const Actions = ({role,props, id, onClick, message} : ActionProps) => {
+const Actions = ({role, props, id, onClick, message} : ActionProps) => {
   const buttonProp = props;
   const idUser = id;
   const userRole = role;
@@ -55,6 +55,7 @@ const Table = ({role,props, onClick} : TableProps) => {
   var persons = {};
   const [currentAmount, setCurrentAmount] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
+  console.log(props.info);
   var pageNumber = Math.ceil(props.info.length/currentAmount);
 
   const options = [
@@ -270,61 +271,5 @@ const Table = ({role,props, onClick} : TableProps) => {
     </>
   );
 }
-
-//EJEMPLOS DE COMO PASAR LOS PROPS, LOS MENSAJES DE CADA BOTON, CADA BOTON Y LOS HEADERS
-//El header y la lista de listas info deben tener campos que coincidan para rellenar la tabla.
-//Se pasa al componente una funcion para manejar los eventos de click.
-//La funcion debe tener handleClick = (e,id) dos entradas
-// e es el numero del boton (para saber a que boton se le dio de la lista introducida)
-// id es el numero de posicion del usuario en la lista info (para saber a que usuario se le desea aplicar algun cambio)
-// la funcion handleClick se crea en la pagina donde se use el componente, y al haber un evento, se reciben los valores
-// del boton y del usuario
-/*
-const AA = () => {
-  const tableProp = {
-    header : ["Correo","Nombre","Apellido","Rol","Tipo de Usuario"] , 
-    info : [["adelina@mail.co","Adelina","Figueira","Admin","User"],["adelina@mail.co","Rosario","Figueira","Admin","User"]],
-    buttons:[FaPen,FaCircle], 
-    buttons_message:["Edit","Cancel"]}
-
-  const tableR = {
-    header : ["Correo","Nombre","Apellido","Rol","Tipo de Usuario"] , 
-    info : [["adelina@mail.co","Adelina","Figueira","Admin","User"],["adelina@mail.co","Rosario","Figueira","Admin","User"],
-      ["adelina@mail.co","Rosario","Figueira","Admin","User"],["adelina@mail.co","Rosario","Figueira","Admin","User"],
-      ["adelina@mail.co","Rosario","Figueira","Admin","User"],["adelina@mail.co","Rosario","Figueira","Admin","User"],
-      ["adelina@mail.co","Rosario","Figueira","Admin","User"],["adelina@mail.co","Rosario","Figueira","Admin","User"],
-      ["adelina@mail.co","Rosario","Figueira","Admin","User"],["adelina@mail.co","Rosario","Figueira","Admin","User"],
-      ["adelina@mail.co","Rosario","Figueira","Admin","User"],["adelina@mail.co","Rosario","Figueira","Admin","User"],
-      ["adelina@mail.co","Rosario","Figueira","Admin","User"]],
-    buttons:[FaPen,FaCircle,FaRegUser], 
-    buttons_message:["Edit","Cancel","User"]}
-
-  const propsc = {
-    header : ["Correo","Nombre","Apellido","Rol","Tipo de Usuario","Columna","Columna"] , 
-    info : [["adelina@mail.co","Adelina","Figueira","Admin","User","User","User"],
-      ["adelina@mail.co","Rosario","Figueira","Admin","User","User","User"]],
-    buttons:[FaPen,FaCircle,FaRegUser,FaRegUser,FaRegUser], 
-    buttons_message:["Edit","Cancel","Boton","Boton","Boton"]}
-
-  const role="admin";
-
-
-  const handleClick = (e: any,id: any) => {
-    //e number of button on list
-    //id position of user in info list
-    console.log(e);
-    //rellenar con el manejo del click hecho dependiendo del boton y el usuario 
-  };
-  return (
-    <main>
-    <Table role={role} props={tableProp} onClick={handleClick}/>
-    <Table role={role} props={tableR} onClick={handleClick}/>
-    <div style={{width : "70%"}}>
-    <Table role={role} props={propsc} onClick={handleClick}/>
-    </div>
-    </main>
-  );
-}
-*/
 
 export default Table;
