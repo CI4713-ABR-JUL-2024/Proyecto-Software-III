@@ -1,12 +1,9 @@
 'use client';
 import {useEffect, useState} from 'react';
-import * as z from "zod";
-import { roleSchema } from "@/zodSchema/role";
 import { useCookies } from 'react-cookie';
 import Modal from 'react-modal';
 
 
-type RoleData = z.infer<typeof roleSchema>;
 
 export default function DeleteUserModal({ isOpen, setIsOpen, userId, userList, setRefreshList }: { isOpen: boolean, setIsOpen: React.Dispatch<React.SetStateAction<boolean>>, userId: string | null, userList: any, setRefreshList: React.Dispatch<React.SetStateAction<boolean>>}) {
   const [name, setName] = useState('');

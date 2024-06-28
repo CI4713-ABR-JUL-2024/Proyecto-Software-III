@@ -14,6 +14,8 @@ COPY . .
 
 RUN npx prisma generate
 
+RUN apk add git
+
 EXPOSE 3000
 
 CMD npm run dev

@@ -7,9 +7,8 @@ import Sidebar from "../components/Sidebar";
 import EditRoleModal from "../components/EditRoleModal";
 import { useCookies } from 'react-cookie';
 import { useRouter } from 'next/navigation';
-import { list } from "postcss";
 import DeleteUserModal from "../components/DeleteUserModal";
-import { set } from "zod";
+
 
 const roleMapping: { [key: string]: string } = {
     'admin': "Administrador",
@@ -17,6 +16,9 @@ const roleMapping: { [key: string]: string } = {
     'operations_management': 'Gerente de Operaciones',
     'account_submanagement': 'Subgerente de Cuentas',
     'account_analyst': 'Analista de Cuentas',
+    'change_agents': 'Agente de Cambio',
+    'project_leader': 'Líder de Proyecto',
+    'agile_coach': 'Coach Ágil',
     'not_assigned': 'No asignado',
   };
   
@@ -229,6 +231,9 @@ return (
                     <option value="operations_management">Gerente de Operaciones</option>
                     <option value="account_submanagement">Sub-Gerente de Cuentas</option>
                     <option value="account_analyst">Analista de Cuentas</option>
+                    <option value="change_agents">Agente de Cambio</option>
+                    <option value="project_leader">Líder de Proyecto</option>
+                    <option value="agile_coach">Coach Ágil</option>
                 </select>
 
                 <input 

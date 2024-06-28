@@ -30,7 +30,7 @@ export const handle_error_http_response = (
   var error_object;
   if (error instanceof z.ZodError) {
     error_object = {
-      error_message: get_message_for_code(error_code),
+      error_message: get_message_for_code(error_code) + '. ' + error.errors[0].message,
       error_message_detail: 'Error en validación',
       error_code,
       status: 400,
@@ -65,6 +65,15 @@ const error_message_dict: error_message_dictionary = {
   '0013': 'Error modificando proyecto',
   '0014': 'Error borrando proyecto',
   '0015': 'Error obteniendo logs',
+  '0016': 'Error creando tipo de iniciativa',
+  '0017': 'Error Listando tipo de iniciativa',
+  '0018': 'Error actualizando tipo de iniciativa',
+  '0019': 'Error creando detalles de objetivo',
+  '0020': 'Error actualizando detalles de objetivo',
+  '0021': 'Error eliminando detalles de objetivo',
+  '0022': 'Error buscando detalles de objetivo',
+  '0023': 'Error listando detalles de objetivos',
+
 };
 
 function get_message_for_code(code: string): string {
