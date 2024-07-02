@@ -1,22 +1,37 @@
 'use client';
+import AppRouter from 'next/dist/client/components/app-router';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import Modal from 'react-modal';
 
 export default function EditLeaderProjectModal({
-    isOpen, setIsOpen, projectId,  setRefreshList }:
-    { isOpen: boolean, setIsOpen: React.Dispatch<React.SetStateAction<boolean>>, projectId: string | null, setRefreshList: React.Dispatch<React.SetStateAction<boolean>> }) {
+    isOpen, setIsOpen, projectId,  setRefreshList, approachList, organizationList}:
+    { isOpen: boolean, setIsOpen: React.Dispatch<React.SetStateAction<boolean>>, projectId: string | null, setRefreshList: React.Dispatch<React.SetStateAction<boolean>>,approachList:any, organizationList:any }) {
     const [projectTrimestre, setProjectTrimestre] = useState('');
     const [projectYear, setProjectYear] = useState('');
     const [projectOrg, setProjectOrg] = useState('');
     const [projectApproach, setProjectApproach] = useState('');
     const [projectArea, setProjectArea] = useState('');
     const [cookies] = useCookies(['access_token']);
+    const [organization, setOrganization] = useState<any>(undefined);
+    const [approach, setApproach] = useState<any>(undefined);
+    
+  
+    // UseEffect para obtener los detalles del proyecto al abrir el modal
 
     async function onClick (e: React.MouseEvent<HTMLButtonElement>){
         e.preventDefault();
 
         try {
+            const editProject = {
+              description: 'Falta descripcion',
+              trimester: projectTrimestre,
+              year: projectYear,
+              organization_id: Number(organization),
+              aproach_id: Number(approach),
+              area: projectArea,
+            }
+            console.log(projectId)
             const response = await fetch(
                 new URL(`api/project/${projectId}`, process.env.NEXT_PUBLIC_BASE_URL),
                 {
@@ -25,13 +40,7 @@ export default function EditLeaderProjectModal({
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${cookies.access_token}`,
                     },
-                    body: JSON.stringify({ 
-                        trimester: projectTrimestre,
-                        year: projectYear,
-                        organization: projectOrg,
-                        approach: projectApproach,
-                        area: projectArea 
-                    }),
+                    body: JSON.stringify(editProject),
                 }
             );
 
@@ -80,22 +89,30 @@ export default function EditLeaderProjectModal({
                         className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2.5"
                         onChange={(e) => setProjectYear(e.target.value)}
                     />
-                    <input
+                    <select
                         id='organization'
-                        type='text'
-                        value={projectOrg}
-                        placeholder='Organización'
-                        className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2.5"
-                        onChange={(e) => setProjectOrg(e.target.value)}
-                    />
-                    <input
+                        value={organization}
+                        onChange={(e) => setOrganization(e.target.value)}
+                        className="border invalid:text-gray-400  border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2.5"
+                        required
+                    >
+                        <option disabled className="text-gray-400" value="">Seleccione una organización</option>
+                        {organizationList.map((item: any) => (
+                            <option key={item.id} value={item.id}>{item.name}</option>
+                        ))}
+                    </select>
+                    <select
                         id='approach'
-                        type='text'
-                        value={projectApproach}
-                        placeholder='Abordaje'
-                        className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2.5"
-                        onChange={(e) => setProjectApproach(e.target.value)}
-                    />
+                        value={approach}
+                        onChange={(e) => setApproach(e.target.value)}
+                        className="border invalid:text-gray-400 border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2.5"
+                        required
+                    >
+                      <option disabled className="text-gray-400" value="">Seleccione un abordaje</option>
+                        {approachList.map((item: any) => (
+                            <option key={item.id} value={item.id}>{item.name}</option>
+                        ))}
+                    </select>
                     <input
                         id='area'
                         type='text'

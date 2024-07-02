@@ -114,6 +114,7 @@ export default function LeaderProjectTable(role: any) {
                     area: project[5],
                 });
                 setIsEditModalOpen(true);
+                setSelectedProjectId(id);
             }
         }
 
@@ -341,8 +342,11 @@ export default function LeaderProjectTable(role: any) {
                     isOpen={isEditModalOpen} 
                     setIsOpen={setIsEditModalOpen} 
 
-                    projectId={selectedProject} 
-                    setRefreshList={setRefreshList} 
+                    projectId={selectedProjectId} 
+                    setRefreshList={setRefreshList}
+
+                    approachList = {approachList}
+                    organizationList = {organizationList}
                 />
 
                 <DeleteLeaderProjectModal
