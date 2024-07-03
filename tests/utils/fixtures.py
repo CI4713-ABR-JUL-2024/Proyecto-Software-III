@@ -1,6 +1,6 @@
 import pytest
 import psycopg2
-from ..models.user import create_fake_user
+from ..models.user import User
 
 @pytest.fixture
 def admin():
@@ -11,7 +11,7 @@ def admin():
     cur = con.cursor()
 
     # Crear el usuario admin
-    user = create_fake_user()
+    user = User.create_fake()
     user.password = "12345678"
 
     cur.execute(

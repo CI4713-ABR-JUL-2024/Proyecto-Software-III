@@ -1,5 +1,5 @@
 from playwright.sync_api import Page, expect
-from ...models.user import User, create_fake_user
+from ...models.user import User
 
 
 page_home_url = "http://localhost:3000"
@@ -66,12 +66,12 @@ def change_password(page: Page, user: User, close_session: bool = False) -> None
 
 def test_register_user(page: Page):
     "Prueba el registro de usuarios en el sistema"
-    user = create_fake_user()
+    user = User.create_fake()
     register_user(page, user)
 
 
 def test_change_password(page: Page):
-    user = create_fake_user()
+    user = User.create_fake()
     register_user(page, user)
     login_with_user(page, user)    
     change_password(page, user, close_session=True)
