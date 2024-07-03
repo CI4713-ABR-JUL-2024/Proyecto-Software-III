@@ -82,7 +82,7 @@ export default function LeaderProjectTable(role: any) {
    
     const handleClick = (e: any, id: any) => {
         if (e === 0) {
-            router.push('/projects/objectives');
+            router.push('/projects/objectives/'+id.toString());
         }
         
         if (e === 1) {

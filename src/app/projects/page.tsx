@@ -39,7 +39,7 @@ export default function Projects() {
     const getProjectsData = async () => {
      const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/project')
      const data = await response.json().then((data) => data);
-      console.log(data.projects);
+      console.log(data);
       setProjectList(data.projects);
       setLoading(false);
     }; getProjectsData();

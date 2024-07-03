@@ -1,5 +1,5 @@
 'use client';
-import { FaPen, FaTrash, FaPrint, FaFilePdf,FaPlay } from "react-icons/fa";
+import { FaPen, FaTrash, FaPrint, FaPlus,FaPlay } from "react-icons/fa";
 import Table from "../components/ProjectTable";
 import { IoSearchCircle } from "react-icons/io5";
 import { use, useState } from "react";
@@ -47,7 +47,7 @@ export default function ProjectsTable({ projectInfo, role }: ProjectsTableProps)
   const tableProp = {
       header : ["ID","Descripción","Inicio","Cierre"], 
       info: projectInfo,
-      buttons:[FaPen,FaTrash,FaPrint,FaFilePdf,FaPlay], 
+      buttons:[FaPen,FaTrash,FaPrint,FaPlus,FaPlay], 
       buttons_message:["Editar","Eliminar","Imprimir","Generar","Deshabilitar"]}
   const [projectTable, setProjectTable] = useState(tableProp);
   const handleClick = async (e: any,id: string[]) => {
@@ -96,7 +96,7 @@ export default function ProjectsTable({ projectInfo, role }: ProjectsTableProps)
             window.print();
         }
         if(e == 3){
-            router.push('/projects/objectives');
+            router.push('/projects/objectives/'+id[0].toString());
         }
         if(e == 4){
             console.log("Deshabilitar");
