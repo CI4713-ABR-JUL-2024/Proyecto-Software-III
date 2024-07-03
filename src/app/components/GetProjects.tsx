@@ -40,6 +40,7 @@ export default function ProjectsTable({
   const [organizationList, setOrganizationList] = useState<any>([]);
   const router = useRouter();
 
+
   // handles fucntions
   const handleCreateProject = async () => {
     if (!trimester || !year || !organization || !approach || !area) {
@@ -118,6 +119,7 @@ export default function ProjectsTable({
     // info: [ [ '2', 'abril julio', 'ano', 11, 'ACTIVE' ] ],
     info: projectInfo,
     buttons: [FaPen, FaTrash, FaPrint, FaPlus, FaPlay],
+
     buttons_message: [
       "Editar",
       "Eliminar",
