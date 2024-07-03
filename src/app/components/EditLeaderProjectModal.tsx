@@ -67,17 +67,19 @@ export default function EditLeaderProjectModal({
             ariaHideApp={false}
             style={{ content: { width: '55vw', height: '55vh', margin: 'auto' } }}
         >
-            <div className="flex flex-col justify-center h-[40vh]">
-                <h1 className="text-4xl font-bold text-gray-900 mx-auto" style={{ color: "#3A4FCC" }}>
+            <div className="justify-center text-center items-center">
+                <h1 className="text-3xl font-bold text-gray-900 mx-auto" style={{ color: "#3A4FCC" }}>
                     Editar Proyecto
                 </h1>
-                <form className="mt-6 flex flex-col items-center justify-center w-[50vw] mx-auto shadow-2xl p-12 rounded-2xl">
+        
+                <form className="mt-2 flex flex-col items-center justify-center mx-auto shadow-2xl p-2 rounded-2xl">
+                    <div className='flex flex-col items-center space-x-2'>
                     <input
                         id='trimester'
                         type='text'
                         value={projectTrimestre}
                         placeholder='Trimestre'
-                        className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2.5"
+                        className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2.5 m-2 w-full"
                         onChange={(e) => setProjectTrimestre(e.target.value)}
                         required
                     />
@@ -86,14 +88,14 @@ export default function EditLeaderProjectModal({
                         type='number'
                         value={projectYear}
                         placeholder='Año'
-                        className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2.5"
+                        className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 m-2 w-full"
                         onChange={(e) => setProjectYear(e.target.value)}
                     />
                     <select
                         id='organization'
                         value={organization}
                         onChange={(e) => setOrganization(e.target.value)}
-                        className="border invalid:text-gray-400  border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2.5"
+                        className="border invalid:text-gray-400  border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 m-2 w-full"
                         required
                     >
                         <option disabled className="text-gray-400" value="">Seleccione una organización</option>
@@ -105,7 +107,7 @@ export default function EditLeaderProjectModal({
                         id='approach'
                         value={approach}
                         onChange={(e) => setApproach(e.target.value)}
-                        className="border invalid:text-gray-400 border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2.5"
+                        className="border invalid:text-gray-400 border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 m-2 w-full"
                         required
                     >
                       <option disabled className="text-gray-400" value="">Seleccione un abordaje</option>
@@ -118,18 +120,20 @@ export default function EditLeaderProjectModal({
                         type='text'
                         value={projectArea}
                         placeholder='Área'
-                        className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2.5"
+                        className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 m-2 w-full"
                         onChange={(e) => setProjectArea(e.target.value)}
                     />
+                    </div>
                     <button
                         type="submit"
-                        className="mt-10 block w-2/3 mx-auto cursor-pointer rounded bg-blue-500 px-4 py-2 text-center font-semibold text-white hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-500 focus:ring-opacity-80 focus:ring-offset-2 disabled:opacity-70col-span-2"
+                        className="mt-2 mb-4 block w-1/2 mx-auto cursor-pointer rounded bg-blue-500 px-4 py-2 text-center font-semibold text-white hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-500 focus:ring-opacity-80 focus:ring-offset-2 disabled:opacity-70col-span-2"
                         style={{ backgroundColor: "#3A4FCC" }}
                         onClick={onClick}
                     >
                         Guardar Cambios
                     </button>
                 </form>
+                
             </div>
         </Modal>
     );
