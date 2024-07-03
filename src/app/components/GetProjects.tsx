@@ -11,6 +11,7 @@ import { useCookies } from 'react-cookie';
 import { PrintProject } from "./PrintProject";
 import { Content } from "next/font/google";
 import { useRouter } from "next/navigation";
+import { Router } from "next/router";
 
 
 
@@ -20,13 +21,13 @@ type ProjectsTableProps = {
   };
 
 export default function ProjectsTable({ projectInfo, role }: ProjectsTableProps) {
+  const router = useRouter();
   const [searchVal, setSearchVal] = useState("");
   const [addProject, setAddProject] = useState(false);
   const [descripcion, setDescripcion] = useState('');
   const [inicio, setInicio] = useState('');
   const [cierre, setCierre] = useState('');
   const [errorCreatingProject, setErrorCreatingProject] = useState(false);
-  const [currentProject, setCurrentProject] = useState<string[]>();
   const [editingProject, setEditingProject] = useState<string[] | null>(null);
   const [editDescripcion, setEditDescripcion] = useState('');
   const [editInicio, setEditInicio] = useState('');
@@ -95,7 +96,7 @@ export default function ProjectsTable({ projectInfo, role }: ProjectsTableProps)
             window.print();
         }
         if(e == 3){
-            console.log("Generar");
+            router.push('/projects/objectives');
         }
         if(e == 4){
             console.log("Deshabilitar");
