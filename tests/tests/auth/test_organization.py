@@ -52,5 +52,4 @@ def test_delete_organization(page: Page, admin: User):  # noqa: F811
     page.locator("xpath=//div[./div/h3[text()='Organizaciones']]/div/div/button/*[name()='svg']").click()
     expect(page.locator("xpath=//tbody/tr")).to_have_count(1)
 
-    
-
+# TODO: Editar organizacion
