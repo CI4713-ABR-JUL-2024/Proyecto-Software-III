@@ -1,45 +1,11 @@
-import os
-import pytest
-import psycopg2
 from playwright.sync_api import Page, expect
-from ...models.user import User, create_fake_user
 from .test_register import login_with_user 
+from ...models.user import User, create_fake_user
+from ...utils.fixtures import admin  # noqa: F401
 
 page_home_url = "http://localhost:3000"
 
-@pytest.fixture
-def admin():
-    # Conectarse a la BD
-    con = psycopg2.connect(
-        dbname="db", user="postgres", password="1234", host="localhost", port="5432"
-    )
-    cur = con.cursor()
-
-    # Crear el usuario admin
-    user = create_fake_user()
-    user.password = "12345678"
-
-    cur.execute(
-    f"""
-    INSERT INTO public."User"
-        ("name", last_name, email, "password", telephone, role_name)
-        VALUES
-        (
-            '{user.first_name}', 
-            '{user.last_name}', 
-            '{user.email}', 
-            '$2b$10$rTdR9c0EfqT0QlqZDdzgMOGPWvTeEve1IrLE/4Sefj4VefYSJd/4q', 
-            '{user.phone_number}', 
-            'admin'
-        )"""
-    )
-    con.commit()
-    con.close()
-    
-    return user
-
-
-def test_check_profiles(page: Page, admin: User):
+def test_check_profiles(page: Page, admin: User):  # noqa: F811
     "Buscan en la vista de perfiles al usuario admin logeado"
     page.goto(f"{page_home_url}")
     login_with_user(page, admin)
@@ -53,7 +19,7 @@ def test_check_profiles(page: Page, admin: User):
     # TODO: Usar la barra de busqueda para encontrar al usuario
     # actual
 
-def test_create_user_in_profiles(page: Page, admin: User):
+def test_create_user_in_profiles(page: Page, admin: User):  # noqa: F811
     "Crea un usuario en la vista de perfiles"
     page.goto(f"{page_home_url}")
     login_with_user(page, admin)
