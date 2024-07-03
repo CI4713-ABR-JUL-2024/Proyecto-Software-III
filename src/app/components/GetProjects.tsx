@@ -1,10 +1,18 @@
-"use client";
-import { FaPen, FaTrash, FaPrint, FaFilePdf, FaPlay } from "react-icons/fa";
+'use client';
+import { FaPen, FaTrash, FaPrint, FaPlus,FaPlay } from "react-icons/fa";
 import Table from "../components/ProjectTable";
 import { IoSearchCircle } from "react-icons/io5";
-import { useEffect, useState } from "react";
-import Sidebar from "../components/Sidebar";
-import { useCookies } from "react-cookie";
+import { use, useState } from "react";
+import Sidebar from "../components/Sidebar"
+import CreateProject from "../components/CreateProject";
+import { useRef,useEffect } from "react";
+import { useReactToPrint } from "react-to-print";
+import { useCookies } from 'react-cookie';
+import { PrintProject } from "./PrintProject";
+import { Content } from "next/font/google";
+import { useRouter } from "next/navigation";
+import { Router } from "next/router";
+
 
 type ProjectsTableProps = {
   projectInfo: string[][];
@@ -30,6 +38,8 @@ export default function ProjectsTable({
   const [area, setArea] = useState("");
   const [approachList, setApproachList] = useState<any>([]);
   const [organizationList, setOrganizationList] = useState<any>([]);
+  const router = useRouter();
+
 
   // handles fucntions
   const handleCreateProject = async () => {
@@ -104,10 +114,12 @@ export default function ProjectsTable({
   }
 
   const tableProp = {
+
     header: ["ID", "Trimestre", "Año", "Organización", "Abordaje", "Área"],
     // info: [ [ '2', 'abril julio', 'ano', 11, 'ACTIVE' ] ],
     info: projectInfo,
-    buttons: [FaPen, FaTrash, FaPrint, FaFilePdf, FaPlay],
+    buttons: [FaPen, FaTrash, FaPrint, FaPlus, FaPlay],
+
     buttons_message: [
       "Editar",
       "Eliminar",

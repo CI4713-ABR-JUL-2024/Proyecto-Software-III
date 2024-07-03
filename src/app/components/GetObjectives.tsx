@@ -4,20 +4,21 @@ import Table from "../components/ObjectivesTable"
 import { IoSearchCircle } from "react-icons/io5";
 import { use, useState } from "react";
 import Sidebar from "../components/Sidebar"
-import CreateProject from "../components/CreateProject";
 import { useRef,useEffect } from "react";
 import { useReactToPrint } from "react-to-print";
 import { useCookies } from 'react-cookie';
+import CreateObjective from "./CreateObjective";
 
 
 
 type ObjectiveTableProps = {
     objectivesInfo: string[][];
-    projectInfo: string[];
+    projectInfo: string;
     role: string;
+    okrDesignId: number;
   };
 
-export default function ObjectivesTable({ role, objectivesInfo, projectInfo}: ObjectiveTableProps) {
+export default function ObjectivesTable({ role, objectivesInfo, projectInfo, okrDesignId}: ObjectiveTableProps) {
   const [searchVal, setSearchVal] = useState("");
   const [addObjective, setAddObjective] = useState(false);
   const [name, setName] = useState('');
@@ -45,18 +46,13 @@ export default function ObjectivesTable({ role, objectivesInfo, projectInfo}: Ob
       //id position of user in info list
       //console.log(e);
       if(e == 0){
-        //Editar proyecto
         console.log("Agregar");
-        //setEditDescripcion(id[1]);
       }
-      if(e == 2){
-        console.log("Eliminar");
-        //Eliminar proyecto
-        /*
+      if(e == 2){        
         console.log("Eliminar");
         try {
             const objectiveId = id[0]; 
-            const response = await fetch(`/api/project/${objectiveId}`, { method: 'DELETE',
+            const response = await fetch(`/api/objective/${objectiveId}`, { method: 'DELETE',
 
                 headers: {
                     'Content-Type': 'application/json',
@@ -70,16 +66,16 @@ export default function ObjectivesTable({ role, objectivesInfo, projectInfo}: Ob
             const data = await response.json();
             console.log(data); 
             //Actualizar pagina luego de eliminar proyecto
-            const updatedProjectInfo = projectInfo.filter(project => project[0] !== projectId);
-            setObjectivesTable(prevState => ({ ...prevState, info: updatedProjectInfo }));
           } catch (error) {
             console.error('Error:', error);
           }
-            */
+        
         
       }
         if(e == 1){
             console.log("Editar");
+            setEditingObjective(id);
+            setEditName(id[1]);
         }
   };
 
@@ -99,13 +95,9 @@ export default function ObjectivesTable({ role, objectivesInfo, projectInfo}: Ob
         <Sidebar role="admin" />
         <div className="m-10 flex flex-col w-full">
             <div>
-            <span className="text-2xl font-bold text-[#3A4FCC]">Organización:      </span>
+            <span className="text-2xl font-bold text-[#3A4FCC]">Proyecto:      </span>
                 <span className="font-bold margin"> 
-                {projectInfo[0]}
-                </span>
-                <span className="text-2xl font-bold text-[#3A4FCC]">      Area:     </span>
-                <span className="font-bold"> 
-                {projectInfo[1]}
+                {projectInfo}
                 </span>
             </div>
             <div className="flex justify-between w-full p-4">
@@ -145,8 +137,8 @@ export default function ObjectivesTable({ role, objectivesInfo, projectInfo}: Ob
                         }
                         setAddObjective(false);
                         console.log(name);
-                        //CreateProject(descripcion,inicio,cierre);
-                       // if (errorCreatingProject) setErrorCreatingProject(false);
+                        CreateObjective(name,okrDesignId,cookies);
+                        if (errorCreatingObjective) setErrorCreatingObjective(false);
                     }}
                 >
                     Crear
@@ -168,17 +160,17 @@ export default function ObjectivesTable({ role, objectivesInfo, projectInfo}: Ob
             <button
                 type="button"
                 className="bg-[#3A4FCC] text-white font-bold py-2 px-5 rounded-full"
-                onClick={() => {}}
-                    /*async () => /* {
+                onClick={
+                async () =>  {
                 if (!editName) {
                     console.error("Por favor completa todos los campos.");
                     setErrorCreatingObjective(true);
                     return;
                 }
                 console.log(editName);
-             /*   console.log(cookies.access_token);
-                const projectId = editingProject[0];
-                const response = await fetch(`/api/project/${projectId}`, {
+                console.log(cookies.access_token);
+                const objectiveId = editingObjective[0];
+                const response = await fetch(`/api/objective/${objectiveId}`, {
                     method: 'PUT',
                     headers: {
                     'Content-Type': 'application/json',
@@ -186,9 +178,7 @@ export default function ObjectivesTable({ role, objectivesInfo, projectInfo}: Ob
                     'type': 'text'
                     },
                     body: JSON.stringify({
-                    description: editDescripcion,
-                    start: editInicio,
-                    end: editCierre
+                    name: editName,
                     })
                 });
 
@@ -202,10 +192,9 @@ export default function ObjectivesTable({ role, objectivesInfo, projectInfo}: Ob
                 const data = await response.json();
                 console.log(data); 
                 
-                setEditingProject([projectId, editDescripcion, editInicio, editCierre, 'ACTIVE']);
-                setEditingProject(null);
-                
-                }} */
+                setEditingObjective([objectiveId,editName]);
+                setEditingObjective(null);
+                }} 
             > 
                 Guardar
             </button>
