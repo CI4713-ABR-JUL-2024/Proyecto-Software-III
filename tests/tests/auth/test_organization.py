@@ -30,5 +30,27 @@ def test_create_organization(page: Page, admin: User):  # noqa: F811
     page.get_by_placeholder("Buscar organización").fill(new_organization.email)
     page.locator("xpath=//div[./div/h3[text()='Organizaciones']]/div/div/button/*[name()='svg']").click()
     expect(page.locator("xpath=//tbody/tr")).to_have_count(2)
+
+def test_delete_organization(page: Page, admin: User):  # noqa: F811
+    "Crea y elimina una organización"
+    page.goto(f"{page_home_url}")
+    login_with_user(page, admin)
+    new_organization = Organization.create_fake()
+    create_organization(page, new_organization)
+    page.wait_for_timeout(500)
+    # Buscar la organización en la lista
+    page.get_by_placeholder("Buscar organización").fill(new_organization.email)
+    page.locator("xpath=//div[./div/h3[text()='Organizaciones']]/div/div/button/*[name()='svg']").click()
+    expect(page.locator("xpath=//tbody/tr")).to_have_count(2)
+    # Eliminar la organización
+    page.get_by_role("button", name="Delete").click()
+    page.get_by_role("button", name="Eliminar").click()
+    page.get_by_role("button", name="Cancelar").click()
+    page.wait_for_timeout(300)
+    page.reload()
+    page.get_by_placeholder("Buscar organización").fill(new_organization.email)
+    page.locator("xpath=//div[./div/h3[text()='Organizaciones']]/div/div/button/*[name()='svg']").click()
+    expect(page.locator("xpath=//tbody/tr")).to_have_count(1)
+
     
 
