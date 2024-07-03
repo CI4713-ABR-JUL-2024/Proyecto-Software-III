@@ -1,8 +1,6 @@
 from playwright.sync_api import Page, expect
 from ...models.user import User
-
-
-page_home_url = "http://localhost:3000"
+from ...conf import page_home_url
 
 
 def login_with_user(page: Page, user: User, close_session: bool = False) -> None:

@@ -2,8 +2,7 @@ from playwright.sync_api import Page, expect
 from .test_register import login_with_user 
 from ...models.user import User
 from ...utils.fixtures import admin  # noqa: F401
-
-page_home_url = "http://localhost:3000"
+from ...conf import page_home_url
 
 def test_check_profiles(page: Page, admin: User):  # noqa: F811
     "Buscan en la vista de perfiles al usuario admin logeado"
