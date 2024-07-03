@@ -26,6 +26,24 @@ export async function PUT(
   }
 }
 
+export async function GET(
+  req: NextRequest,
+  params: { params: { id: string } }
+) {
+  try {
+    const projects = await projectController.get_project_by_id(req, params);
+    return NextResponse.json(projects, { status: 200 });
+  } catch (err: any) {
+    const error_json = {
+      error_message: err.error_message,
+      error_message_detail: err.error_message_detail,
+      error_code: err.error_code,
+    };
+    return NextResponse.json(error_json, { status: err.status });
+  }
+}
+
+
 /**
  * Deletes a project based on the provided ID.
  * @param req - The NextRequest object.
