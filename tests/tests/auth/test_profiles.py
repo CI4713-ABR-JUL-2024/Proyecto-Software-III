@@ -9,9 +9,7 @@ def test_check_profiles(page: Page, admin: User):  # noqa: F811
     page.goto(f"{page_home_url}")
     login_with_user(page, admin)
 
-    profiles_button = page.get_by_text("Perfiles de Usuarios")
-    expect(profiles_button).to_be_visible()
-    profiles_button.click()
+    page.get_by_text("Perfiles de Usuarios").click()
 
     search_bar = page.get_by_placeholder("Buscar usuario")
     expect(search_bar).to_be_visible()
@@ -22,11 +20,9 @@ def test_create_user_in_profiles(page: Page, admin: User):  # noqa: F811
     "Crea un usuario en la vista de perfiles"
     page.goto(f"{page_home_url}")
     login_with_user(page, admin)
-    profiles_button = page.get_by_text("Perfiles de Usuarios")
-    expect(profiles_button).to_be_visible()
-    profiles_button.click()
-
+    page.get_by_text("Perfiles de Usuarios").click()
     page.get_by_text("Crear Usuario").click()
+    
     new_user = User.create_fake()
     new_user.password = "12345678" # Contraseña por defecto
     page.get_by_placeholder("Correo").fill(new_user.email)
