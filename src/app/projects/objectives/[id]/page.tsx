@@ -40,6 +40,7 @@ export default function Objectives({params,}:{params:{id:string}}) {
   const token = cookies.access_token;
   const [loading, setLoading] = useState(true);
   const [objectiveList, setObjectiveList] = useState<Objective[]>([]);
+  const [projectName, setProjectName] = useState("");
 
   useEffect(() => {
     if (token) {
@@ -67,6 +68,27 @@ export default function Objectives({params,}:{params:{id:string}}) {
     }; getObjectivesData();
     }, []);
 
+    useEffect(() => {
+      if (cookies.access_token != undefined) { 
+          fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/project/'+params.id, {
+              method: 'GET',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${cookies.access_token}`,
+              },
+          }).then(response => {
+              return response.json();
+          }).then(data => {
+              console.log(data);
+              setProjectName(data.description);
+          }).catch(error => {
+              console.error('Error:', error);
+          });
+      } else {
+          console.log('No hay token de acceso');
+      }
+  }, []);
+
 if (loading) {
     return <h1>Loading...</h1>;
 }
@@ -81,7 +103,7 @@ console.log(objectiveList.map((objective) => [objective.id.toString(), objective
         <ObjectivesTable
           role={role}
           objectivesInfo={objectiveList.map((objective) => [objective.id.toString(), objective.name])}
-          projectInfo={projectsExample}
+          projectInfo={projectName}
           okrDesignId={parseInt(params.id)}
         />
       )}
