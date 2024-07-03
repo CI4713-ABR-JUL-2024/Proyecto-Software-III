@@ -134,9 +134,28 @@ const create_project = async (
   }
 };
 
+const get_project_by_id = async (
+  req: NextRequest,
+  { params }: { params: { id: string } }) => {
+  try {
+    let id = parseInt(params.id);
+    const project = await projectService.get_project_by_id(id);
+    return project;
+  } catch (error: any) {
+    const handle_err: error_object = handle_error_http_response(error, '0011');
+    throw new custom_error(
+      handle_err.error_message,
+      handle_err.error_message_detail,
+      handle_err.error_code,
+      handle_err.status
+    );
+  }
+}
+
 export const projectController = {
   update_project,
   delete_project,
   get_all_projects,
   create_project,
+  get_project_by_id
 };
