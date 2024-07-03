@@ -1,26 +1,31 @@
 from dataclasses import dataclass
 from faker import Faker
-from random import randint
+from random import randint, choice
+
 
 @dataclass
 class Organization:
-    first_name: str
-    last_name: str
-    email: str
+    name: str
+    country: str
+    state: str
+    responsible: str
     phone_number: str
-    password: str
+    email: str
 
     @staticmethod
-    def create_fake() -> 'Organization':
+    def create_fake() -> "Organization":
         faker = Faker()
-        name, last_name = faker.first_name(), faker.last_name()
-        email = f"{name}_{last_name}_{randint(0, 9999999)}@test.com"
-        phone_number = f"0424{randint(1000000, 9999999)}"
-        password = "12345678"
+        name = faker.company()
+        country = faker.country()
+        state = faker.city()
+        resposible = faker.name()
+        phone_number = f"{choice(['0424', '0414'])}{randint(1000000, 9999999)}"
+        email = f"{resposible.replace(' ', '_')}_{randint(0, 9999999)}@gmail.com"        
         return Organization(
-            first_name=name,
-            last_name=last_name,
-            email=email,
+            name=name,
+            country=country,
+            state=state,
+            responsible=resposible,
             phone_number=phone_number,
-            password=password,
+            email=email,
         )
