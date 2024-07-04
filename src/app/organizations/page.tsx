@@ -323,6 +323,7 @@ export default function Organizations() {
         console.error('error', error);
       })
     };
+    
 
   const handleInfo = (data : any) : Array<Array<string>> => {
       var infoChanged = new Array();
