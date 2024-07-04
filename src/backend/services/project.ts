@@ -138,6 +138,13 @@ export const create_project = async (data: ProjectCreateInput) => {
       throw new Error('La organización no existe');
     }
     const project = await prisma.project.create({ data });
+    const okrDesign = await prisma.okrDesing.create(
+      {
+        data: {
+          project_id: project.id,
+        },
+      }
+    );
     return project;
   } catch (error) {
     throw error;
