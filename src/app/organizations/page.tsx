@@ -10,6 +10,7 @@ import { IoSearchCircle } from "react-icons/io5";
 import { useCookies } from 'react-cookie';
 import Table from "../components/Table";
 import DeleteModal from "./DeleteModal"
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
 import settings from './settings.json';
 
@@ -74,7 +75,7 @@ const Add = ({role, ID, valuesOf, placeholders,ids,types,save,handleClosing} : A
     console.log(pc)
     var found : Array<any> = []
     pc.map((B,j) => {
-      if (role === "admin") {
+      if (role === "admin" || role == 'project_leader') {
         console.log(B)
         console.log(j)
         found.push(
@@ -277,14 +278,65 @@ const TablePage = ({information,data,role,buttons,click,search,save,editF,delete
 );
 }
 
+
+interface NoPermissionsPageProps {
+  role: string,
+}
+
+const NoPermissionsPage = ({role} : NoPermissionsPageProps) => {
+  return (
+    <main className="flex">
+        <Sidebar role={role} />
+        <div className="m-10 flex flex-col w-full">
+
+        <h1> No tienes permisos para acceder a esta página</h1>
+        
+        </div>
+    </main>
+);
+}
+
+interface LoadingPageProps {
+  role: string,
+}
+
+const LoadingPage = ({role} : LoadingPageProps) => {
+  return (
+    <main className="flex">
+        <Sidebar role={role} />
+        <div className="m-10 flex flex-col w-full">
+
+        <h1> ... </h1>
+        
+        </div>
+    </main>
+);
+}
+
+
+
 export default function Organizations() {
   const [tableInfo, setTableInfo] = useState<string[][]>([]);
   const [role, setRole] = useState("");
   const [cookies, setCookie] = useCookies(["access_token","id"]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+
   useEffect(() => {
-    if (cookies.access_token != undefined){
+    if (cookies.access_token) {
+      try {
+        const decoded = jwt.decode(cookies.access_token, {}) as JwtPayload;
+        const role_c = decoded?.role_name || 'Rol no encontrado';
+        setRole(role_c);
+      } catch (error) {
+        console.error('Error al decodificar el token:', error);
+      }
+    }
+    else{
+      router.push("/");
+    }
+
+    /*if (cookies.access_token != undefined){
       fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/user/'+cookies.id,{
       method: "GET" , headers : {
                 "Authorization": "Bearer "+cookies.access_token,
@@ -295,13 +347,14 @@ export default function Organizations() {
       .then(data => {
         console.log(data.role_name)
         setRole(data.role_name)
+
       }).catch(error => {
         console.error('error', error);
       })
     }
     else{
       router.push("/");
-    }
+    }*/
     getOrganizationsData();
     
   }, []);
@@ -442,8 +495,24 @@ export default function Organizations() {
       return result
   }
 
+  const page = () => {
+    console.log(role);
+    console.log(role === 'admin')
+    if (role === 'admin' || role === 'project_leader'){
+      return(<TablePage information={settings.organization} data={tableInfo} buttons={[FaPen,FaTrash]}
+        click = {handleClick} search={onSearch} save={onSave} editF={onEdit} deleteF={onDelete} role={role}/>)
+    }
+    else if (role === ''){
+      return (<LoadingPage role={role}/>) 
+    }
+    else{
+      return (<NoPermissionsPage role={role}/>)      
+    }
+  }
+
   return(
-    <TablePage information={settings.organization} data={tableInfo} buttons={[FaPen,FaTrash]}
-    click = {handleClick} search={onSearch} save={onSave} editF={onEdit} deleteF={onDelete} role={role}/>
+    <>
+    {page()}
+    </>
     );
 }
