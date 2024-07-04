@@ -109,7 +109,6 @@ model ObjectiveDetail {
 
 model KeyResult {
   id          Int      @id @default(autoincrement())
-  name String
   keyResult String
   keyIndicator String
   initiative String
