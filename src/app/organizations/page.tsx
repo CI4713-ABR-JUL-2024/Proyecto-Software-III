@@ -225,7 +225,7 @@ const TablePage = ({information,data,role,buttons,click,search,save,editF,delete
       }
       console.log(found)
       //console.log(propsc.info[id_n]);
-      setValuesOf(found);
+      setValuesOf(found.slice(1, found.length));
       console.log(valuesOf)
     }
     if (importing.buttons_message[e] == "Delete"){
