@@ -213,8 +213,20 @@ const TablePage = ({information,data,role,buttons,click,search,save,editF,delete
       setEdit(true);
       setEditing(id);
       console.log(propsc.info)
-      console.log(propsc.info[id]);
-      setValuesOf(propsc.info[id]);
+      const id_n = parseInt(id)
+      var found = [];
+      for (var x in propsc.info){
+        console.log(x);
+        if (propsc.info[x][0] == id_n){
+          found=propsc.info[x];
+          console.log(propsc.info[x])
+          break;
+        }
+      }
+      console.log(found)
+      //console.log(propsc.info[id_n]);
+      setValuesOf(found);
+      console.log(valuesOf)
     }
     if (importing.buttons_message[e] == "Delete"){
       console.log("deleting organization")
