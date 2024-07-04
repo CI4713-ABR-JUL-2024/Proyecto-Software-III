@@ -214,10 +214,10 @@ const TablePage = ({information,data,role,buttons,click,search,save,editF,delete
       setEditing(id);
       console.log(propsc.info)
       const id_n = parseInt(id)
-      var found = [];
+      var found : Array<any> = [];
       for (var x in propsc.info){
         console.log(x);
-        if (propsc.info[x][0] == id_n){
+        if (propsc.info[x][0] == id){
           found=propsc.info[x];
           console.log(propsc.info[x])
           break;
