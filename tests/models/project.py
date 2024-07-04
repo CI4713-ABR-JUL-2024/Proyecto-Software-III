@@ -18,7 +18,7 @@ class Project:
         faker = Faker()
         quarter = "enero-marzo"
         year = randint(2000, 2024)
-        area = faker.sentence(randint(1, 3))
+        area = faker.sentence(randint(1, 3)).replace(".", "")
         return Project(
             quarter=quarter,
             year=year,

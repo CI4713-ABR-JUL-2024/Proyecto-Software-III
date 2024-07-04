@@ -1,4 +1,4 @@
-from playwright.sync_api import Page, expect
+from playwright.sync_api import Page
 from .test_register import login_with_user 
 from ...models import User, Approach
 from ...utils.fixtures import admin  # noqa: F401
