@@ -1,0 +1,20 @@
+                                             List of databases
+   Name    |  Owner   | Encoding | Collate |  Ctype  | ICU Locale | Locale Provider |   Access privileges   
+-----------+----------+----------+---------+---------+------------+-----------------+-----------------------
+ postgres  | postgres | UTF8     | C.UTF-8 | C.UTF-8 |            | libc            | 
+ template0 | postgres | UTF8     | C.UTF-8 | C.UTF-8 |            | libc            | =c/postgres          +
+           |          |          |         |         |            |                 | postgres=CTc/postgres
+ template1 | postgres | UTF8     | C.UTF-8 | C.UTF-8 |            | libc            | =c/postgres          +
+           |          |          |         |         |            |                 | postgres=CTc/postgres
+(3 rows)
+
+                                             List of databases
+   Name    |  Owner   | Encoding | Collate |  Ctype  | ICU Locale | Locale Provider |   Access privileges   
+-----------+----------+----------+---------+---------+------------+-----------------+-----------------------
+ postgres  | postgres | UTF8     | C.UTF-8 | C.UTF-8 |            | libc            | 
+ template0 | postgres | UTF8     | C.UTF-8 | C.UTF-8 |            | libc            | =c/postgres          +
+           |          |          |         |         |            |                 | postgres=CTc/postgres
+ template1 | postgres | UTF8     | C.UTF-8 | C.UTF-8 |            | libc            | =c/postgres          +
+           |          |          |         |         |            |                 | postgres=CTc/postgres
+(3 rows)
+

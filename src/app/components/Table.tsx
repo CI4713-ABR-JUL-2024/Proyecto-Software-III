@@ -49,6 +49,66 @@ const DateSelector = ({pos,id,onClick} : DateProp) => {
   );
 }
 
+interface TextProp {
+  id: number,
+  value : any,
+  pos : number,
+  posrow : number,
+  onClick: any,
+}
+
+const Text = ({value,pos,posrow,id,onClick} : TextProp) => {
+  const handleClick = onClick;
+  const position = pos;
+  const idUser = id;
+  const [cvalue,setValue] = useState(value);
+
+  const call = (e : any) => {
+    handleClick([pos,posrow,e.target.value],id); 
+    setValue(e.target.value);
+  }
+
+  return(
+  <>
+  <input type="text" id="text" name="textselected" onChange={(e) => call(e)}
+  placeholder="..." value={cvalue}/>
+  </>
+  );
+}
+
+
+const Dropdown = () => {
+  const options = [
+    {
+      value: 1,
+      label: '5'
+    },
+    {
+      value: 2,
+      label: '10'
+    },
+    {
+      value: 3,
+      label: '20'
+    }
+  ];
+  const [selectedOption, setSelected] = useState(options[0]);
+  const setValues = (e: any) => {
+    const l = e[0].label;    
+  } 
+  const handleChange = (e : any) => {
+    console.log(e)
+    setSelected(e)
+  }
+  return (
+      <Select
+        values={[]}
+        onChange={(values) => setValues(values)}
+        options={options}
+      />
+  );
+}
+
 
 interface propsInterface {
   header: Array<string>,
@@ -172,21 +232,34 @@ const Table = ({props, onClick} : TableProps) => {
       <tbody key="tbody">
       <tr key="tr1">
       {tableProps.header.map((header,j) =>
-      
-      <td key={j} style={{width : "8%", paddingTop : "2%",border: "2px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}>{header} </td>
+      {
+        if (tableProps.header[0] == "matrix" && j>0){
+          return (<td key={j} style={{width : "8%", paddingTop : "2%",border: "2px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}>{header} <Dropdown /> </td>)
+        }
+        if (tableProps.header[0] != "matrix"){
+          return (<td key={j} style={{width : "8%", paddingTop : "2%",border: "2px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}>{header} </td>)
+        }
+      }
+       
       )}
       </tr>
 
       {tableProps.info.map((info,j) =>{
-        
+
         if (getPages[j] == currentPage){
           return (<tr key={"tr2"+j}>
 
 
           {info.map((value,i) => 
+
             
-            {if (value != "date"){
+            { console.log(value)
+              if (value != "date" && !value.toString().includes("input")){
               return (<td key={"info_"+i+"_"+j} style={{width : "8%", paddingTop : "2%", border: "1px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> {value} </td>)
+            }
+            else if (value.includes("input")){
+              const val = value.split(/(\s+)/);
+              return (<td key={"input_"+i+"_"+j} style={{width : "8%", paddingTop : "2%", border: "1px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> <Text value={val[2]} pos={i} posrow={j} id={parseInt(info[0])} onClick={handleClick}/> </td>)
             }
             else{
               return (<td key={"date_"+i+"_"+j} style={{width : "8%", paddingTop : "2%", border: "1px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> <DateSelector pos={i} id={parseInt(info[0])} onClick={handleClick}/> </td>)
