@@ -9,7 +9,7 @@ class Approach:
     @staticmethod
     def create_fake() -> 'Approach':
         faker = Faker()
-        name = faker.sentence(randint(1, 3))
+        name = faker.sentence(randint(1, 3)).replace(".", "")
         return Approach(
             name=name
         )
