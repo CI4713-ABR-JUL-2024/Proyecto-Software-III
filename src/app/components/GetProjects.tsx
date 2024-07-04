@@ -1,18 +1,18 @@
-'use client';
-import { FaPen, FaTrash, FaPrint, FaPlus,FaPlay } from "react-icons/fa";
+"use client";
+import { FaPen, FaTrash, FaPrint, FaPlus, FaPlay } from "react-icons/fa";
 import Table from "../components/ProjectTable";
 import { IoSearchCircle } from "react-icons/io5";
 import { use, useState } from "react";
-import Sidebar from "../components/Sidebar"
+import Sidebar from "../components/Sidebar";
 import CreateProject from "../components/CreateProject";
-import { useRef,useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { useReactToPrint } from "react-to-print";
-import { useCookies } from 'react-cookie';
+import { useCookies } from "react-cookie";
 import { PrintProject } from "./PrintProject";
 import { Content } from "next/font/google";
 import { useRouter } from "next/navigation";
 import { Router } from "next/router";
-
+import ApproachModal from "./ApproachModal";
 
 type ProjectsTableProps = {
   projectInfo: string[][];
@@ -38,8 +38,9 @@ export default function ProjectsTable({
   const [area, setArea] = useState("");
   const [approachList, setApproachList] = useState<any>([]);
   const [organizationList, setOrganizationList] = useState<any>([]);
-  const router = useRouter();
+  const [addApproach, setAddApproach] = useState(false);
 
+  const router = useRouter();
 
   // handles fucntions
   const handleCreateProject = async () => {
@@ -114,7 +115,6 @@ export default function ProjectsTable({
   }
 
   const tableProp = {
-
     header: ["ID", "Trimestre", "Año", "Organización", "Abordaje", "Área"],
     // info: [ [ '2', 'abril julio', 'ano', 11, 'ACTIVE' ] ],
     info: projectInfo,
@@ -278,6 +278,12 @@ export default function ProjectsTable({
               className="ml-5 bg-[#3A4FCC] text-white font-bold py-2 px-4 rounded-full"
             >
               Crear Proyecto
+            </button>
+            <button
+              onClick={() => setAddApproach(true)}
+              className="ml-5 bg-[#3A4FCC] text-white font-bold py-2 px-4 rounded-full"
+            >
+              Modificar abordajes
             </button>
           </div>
         </div>
@@ -446,6 +452,7 @@ export default function ProjectsTable({
             Por favor completa todos los campos necesarios.
           </p>
         )}
+        <ApproachModal isOpen={addApproach} setIsOpen={setAddApproach} />
         <Table role={role} props={projectTable} onClick={handleClick} />
       </div>
     </main>
