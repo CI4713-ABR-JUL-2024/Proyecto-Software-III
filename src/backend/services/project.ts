@@ -138,15 +138,39 @@ export const create_project = async (data: ProjectCreateInput) => {
       throw new Error('La organización no existe');
     }
     const project = await prisma.project.create({ data });
+    const okrDesign = await prisma.okrDesing.create(
+      {
+        data: {
+          project_id: project.id,
+        },
+      }
+    );
     return project;
   } catch (error) {
     throw error;
   }
 };
 
+export const get_project_by_id = async (id: number) => {
+  try {
+    const project = await prisma.project.findFirst({
+      where: {
+        id: id,
+        status: {
+          in: ['ACTIVE', 'INACTIVE'],
+        },
+      },
+    });
+    return project;
+  } catch (error) {
+    throw error;
+  }
+}
+
 export const projectService = {
   update_project,
   delete_project,
   get_all_projects,
   create_project,
+  get_project_by_id,
 };

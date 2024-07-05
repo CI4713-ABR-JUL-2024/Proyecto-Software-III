@@ -103,15 +103,24 @@ model ObjectiveDetail {
   id          Int      @id @default(autoincrement())
   objective Objective @relation(fields: [objective_id], references: [id])
   objective_id Int
+  keyResult  KeyResult @relation(fields: [keyResult_id], references: [id])
+  keyResult_id Int
+}
+
+model KeyResult {
+  id          Int      @id @default(autoincrement())
   keyResult String
   keyIndicator String
   initiative String
   initiativeType InitiativeType @relation(fields: [initiativeType_id], references: [id])
   initiativeType_id Int
+  objectiveDetail ObjectiveDetail []
+  priority Int
+  value Float
+  typeOfValue String
 }
-
 model  InitiativeType {
   id         Int      @id @default(autoincrement())
   name String
-  objectiveDetails ObjectiveDetail[]
+  keyResult KeyResult[]
 }
