@@ -19,6 +19,7 @@ export default function ApproachModal({ isOpen, setIsOpen }: { isOpen: boolean, 
     const [edit, setEdit] = useState(false);
     const [name, setName] = useState('');
     const [approachId, setApproachId] = useState<string | null>('');
+    const [shouldRefresh, setShouldRefresh] = useState(false);
     const tableProp = {
         header: ['ID', 'Tipo'],
         info: approachList,
@@ -127,7 +128,10 @@ export default function ApproachModal({ isOpen, setIsOpen }: { isOpen: boolean, 
     return (
         <Modal
             isOpen={isOpen}
-            onRequestClose={() => setIsOpen(false)}
+            onRequestClose={() => {
+                setIsOpen(false);
+                setShouldRefresh(true);
+            }}
             ariaHideApp={false}
             style={{ content: { width: '70vw', height: '70vh', margin: 'auto' } }}
         >
