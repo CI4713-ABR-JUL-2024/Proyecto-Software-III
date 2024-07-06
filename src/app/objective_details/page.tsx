@@ -10,6 +10,7 @@ import { PageTable } from "../components/PageWithTable";
 const TablePage = PageTable.TablePage;
 const LoadingPage = PageTable.LoadingPage;
 const NoPermissionsPage = PageTable.NoPermissionsPage;
+import { useSearchParams } from "next/navigation";
 
 import settings from './settings.json';
 
@@ -24,6 +25,15 @@ export default function ObjectiveDetails() {
   const [cookies, setCookie] = useCookies(["access_token","id"]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+
+  const searchParams = useSearchParams();
+  let property1 = searchParams.get("name");
+  let property2 = searchParams.get("id");
+
+  console.log(property1);
+  console.log(property2);
+
+  const subtitle = "Objetivo 3 : Este es el objetivo";
 
   useEffect(() => {
     if (cookies.access_token) {
@@ -190,7 +200,7 @@ export default function ObjectiveDetails() {
     console.log(role === 'admin')
     if (role === 'admin' || role === 'project_leader'){
       return(<TablePage information={settings.organization} data={tableInfo} buttons={[FaPen,FaPen,FaTrash]}
-        click = {handleClick} search={onSearch} save={onSave} editF={onEdit} deleteF={onDelete} role={role}/>)
+        click = {handleClick} search={onSearch} save={onSave} editF={onEdit} deleteF={onDelete} role={role} subtitle={subtitle}/>)
     }
     else if (role === ''){
       return (<LoadingPage role={role}/>) 

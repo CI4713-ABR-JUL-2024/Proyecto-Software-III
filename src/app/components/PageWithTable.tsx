@@ -10,6 +10,8 @@ import { useCookies } from 'react-cookie';
 import Table from "../components/Table";
 import DeleteModal from "./DeleteModal"
 import jwt, { JwtPayload } from 'jsonwebtoken';
+import Select from "react-dropdown-select";
+import Dropdown from "../components/Dropdown";
 
 
 interface AddProps {
@@ -32,7 +34,9 @@ const Add = ({role, ID, valuesOf, placeholders,ids,types,save,handleClosing} : A
   const [info,setInfo] = useState(valuesOf);
   const [errorCreatingProject, setErrorCreatingProject] = useState(false);
 
-  function handleEdition(index : number,value : string) {
+  function handleEdition(value : string,index : number) {
+    console.log(value)
+    console.log(index)
     const nextInfo = info.map((c, i) => {
       if (i === index) {
         return value;
@@ -43,7 +47,15 @@ const Add = ({role, ID, valuesOf, placeholders,ids,types,save,handleClosing} : A
     setInfo(nextInfo);
   }
   function allFieldsFilled(){
-    for (let i = 0; i < info.length; i++) {
+    console.log(info)
+    var val = 0
+    if (newid == -1){
+      val = 1
+    }
+    else{
+      val = 0
+    }
+    for (let i = val; i < info.length; i++) {
       console.log (info[i]);
       if (info[i] == ""){
         return false;
@@ -53,7 +65,8 @@ const Add = ({role, ID, valuesOf, placeholders,ids,types,save,handleClosing} : A
   }
 
   function idFound(){
-    if (id != null){
+    console.log(newid);
+    if (newid != -1){
       return (<div key={"id"}>
               <input 
                     key="inputnumberid"
@@ -72,22 +85,34 @@ const Add = ({role, ID, valuesOf, placeholders,ids,types,save,handleClosing} : A
     console.log(pc)
     var found : Array<any> = []
     pc.map((B,j) => {
+      if (B == "Tipo de Iniciativa"){
+        //si esto existe hacer un get de las iniciativas que existen y pasarlas al dropdown
+        const iniciativas = ["iniciativa1"]
+        found.push(
+        <div key={"inputdiv"+j}>
+        <Dropdown key={"inputnew"+j} setValues={handleEdition} j={j+1} opt={iniciativas}/> 
+        </div>
+        )
+      }
+      else {
         console.log(B)
         console.log(j)
         found.push(
         <div key={"inputdiv"+j}>
         <input 
             key={"inputnew"+j}
-            id={id[j]+j}
-            type={type[j]}
-            value={info[j]}
+            id={id[j+1]+j}
+            type={type[j+1]}
+            value={info[j+1]}
             placeholder={B}
             className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2.5" 
-            onChange={(e) => { handleEdition(j,e.target.value) }}
+            onChange={(e) => { handleEdition(e.target.value,j+1) }}
             required
         />
         </div>
         )
+    }
+      
     })
     return found;
   }
@@ -96,6 +121,7 @@ const Add = ({role, ID, valuesOf, placeholders,ids,types,save,handleClosing} : A
   <>
     <div className="flex flex-wrap p-5 bg-gray-300">
         
+        {idFound()}
         
         {mapping()}
             
@@ -134,14 +160,19 @@ interface TableHeaderProps {
   handleSearchClick: any,
   setAdd : any,
   name : string,
+  subtitle : string,
 }
 
-const TableHeader = ({title,placeholder,handleSearchClick,setAdd,name}:TableHeaderProps) => {
+const TableHeader = ({title,placeholder,handleSearchClick,setAdd,name,subtitle}:TableHeaderProps) => {
   const [searchVal, setSearchVal] = useState("");
   return (
   <>
   <div className="flex justify-between w-full p-4">
       <h3 className="text-2xl font-bold text-[#3A4FCC]">{title}</h3>
+      {name == "Crear KR, KPI e Iniciativas" &&
+        <h4 className="text-2xl font-bold text-[#3A4FCC]"> {subtitle} </h4>
+        }
+      { name != "matrix" &&
       <div className="flex w-1/3"> 
           <input
               type="text"
@@ -155,6 +186,7 @@ const TableHeader = ({title,placeholder,handleSearchClick,setAdd,name}:TableHead
           <button onClick={() => setAdd(true)}
               className="ml-5 bg-[#3A4FCC] text-white font-bold py-2 px-4 rounded-full">{name}</button>
       </div>
+      }
   </div>
   </>
   );
@@ -170,16 +202,17 @@ interface TablePageProps {
   save : any,
   editF : any,
   deleteF:any,
+  subtitle : string,
 }
 
-const TablePage = ({information,data,role,buttons,click,search,save,editF,deleteF}:TablePageProps) => {
+const TablePage = ({information,data,role,buttons,click,search,save,editF,deleteF,subtitle}:TablePageProps) => {
   const [add, setAdd] = useState(false);
   const [edit, setEdit] = useState(false);
   const [editing, setEditing] = useState<string[] | null>(null);
   const importing = information
-  const [valuesOf, setValuesOf] = useState(Array(importing.tableHeader.length-1).fill(""));
+  const [valuesOf, setValuesOf] = useState(Array(importing.tableHeader.length).fill(""));
   const [isOpen,setModalOpen] = useState(false);
-  const [text, setText] = useState(importing.modal_texti);
+  const [text, setText] = useState("¿Estás seguro de eliminar la organización?");
   const [deleteID,setDeleteID] = useState(0);
   const router = useRouter();
 
@@ -198,13 +231,27 @@ const TablePage = ({information,data,role,buttons,click,search,save,editF,delete
     }
   }
 
-  var newId = handleValue();
+  var newId = -1; //handleValue();
+  var editingMatrix = "Editar";
+  const [e,setE] = useState("Editar");
 
   const handleClick = async (e: any,id: any) => {
     //when the buttons inside the table are clicked
     console.log(e)
     console.log(id)
-    console.log(importing.buttons_message[e])
+    if (importing.name == "matrix" && id==-1){
+      
+      if (e == "Editar"){
+        editingMatrix = "Guardar";
+        setE("Guardar");
+      }
+      else{
+        editingMatrix = "Editar";
+        setE("Editar");
+      }
+      e = editingMatrix;
+    }
+
     if (importing.buttons_message[e] == "Edit"){
       setEdit(true);
       setEditing(id);
@@ -221,7 +268,7 @@ const TablePage = ({information,data,role,buttons,click,search,save,editF,delete
       }
       console.log(found)
       //console.log(propsc.info[id_n]);
-      setValuesOf(found.slice(1, found.length));
+      setValuesOf(found);
       console.log(valuesOf)
     }
     if (importing.buttons_message[e] == "Delete"){
@@ -240,6 +287,7 @@ const TablePage = ({information,data,role,buttons,click,search,save,editF,delete
     const a = await save(info);
     if (a == true){
       setAdd(false);
+      setValuesOf(Array(importing.tableHeader.length).fill(""));
     }
   }
   const onEdit = async (info : Array<string>) => {
@@ -247,18 +295,21 @@ const TablePage = ({information,data,role,buttons,click,search,save,editF,delete
     console.log(a);
     if (a == true){
       setEdit(false);
+      newId = -1
+      setValuesOf(Array(importing.tableHeader.length).fill(""));
     }
   }
   const closingAddEdit = () => {
     if (add == true){
       setAdd(false);
-      setValuesOf(Array(importing.tableHeader.length-1).fill(""));
+      setValuesOf(Array(importing.tableHeader.length).fill(""));
     }
     if (edit== true){
       setEdit(false);
-      setValuesOf(Array(importing.tableHeader.length-1).fill(""));
+      setValuesOf(Array(importing.tableHeader.length).fill(""));
+      newId = -1
     }
-    setValuesOf(Array(importing.tableHeader.length-1).fill(""));
+    setValuesOf(Array(importing.tableHeader.length).fill(""));
   }
 
   return (
@@ -266,11 +317,15 @@ const TablePage = ({information,data,role,buttons,click,search,save,editF,delete
         <Sidebar role={role} />
         <div className="m-10 flex flex-col w-full">
 
-        <DeleteModal isOpen={isOpen} texti={text} fun={deleteF} ID={deleteID} setModalOpen={setModalOpen}
-        title = {importing.modal_title} text_success={importing.modal_textsuccess} text_failed={importing.modal_textfail}/>
+        <DeleteModal isOpen={isOpen} texti={text} fun={deleteF} ID={deleteID} setModalOpen={setModalOpen}/>
 
         <TableHeader title={importing.title} placeholder={importing.search} 
-        handleSearchClick={onSearch} setAdd={setAdd} name={importing.name}/>
+        handleSearchClick={onSearch} setAdd={setAdd} name={importing.name} subtitle={subtitle}/>
+
+        {importing.name == "matrix" && 
+            <button onClick={(p) => handleClick(-1,"back")}
+              className="ml-5 bg-[#3A4FCC] text-white font-bold py-2 px-4 rounded-full"> Volver a los detalles</button>
+        }
         
         {add &&
         <Add role={role} ID={newId} valuesOf={valuesOf} placeholders={importing.placeholders} 
@@ -282,6 +337,13 @@ const TablePage = ({information,data,role,buttons,click,search,save,editF,delete
         }
                     
         <Table props={propsc} onClick={handleClick}/>
+
+        {importing.name == "matrix" && 
+            <button onClick={(p) => handleClick(e,-1)}
+              className="ml-5 bg-[#3A4FCC] text-white font-bold py-2 px-4 rounded-full">{e}</button>
+        }
+        
+
         </div>
     </main>
 );
@@ -321,6 +383,7 @@ const LoadingPage = ({role} : LoadingPageProps) => {
     </main>
 );
 }
+
 
 export const PageTable = {
   LoadingPage,

@@ -6,6 +6,7 @@ import { IconType } from "react-icons";
 import { useEffect } from 'react';
 
 import Select from "react-dropdown-select";
+import Dropdown from "../components/Dropdown";
 
 
 interface ActionProps {
@@ -70,44 +71,12 @@ const Text = ({value,pos,posrow,id,onClick} : TextProp) => {
 
   return(
   <>
-  <input type="text" id="text" name="textselected" onChange={(e) => call(e)}
+  <input className="e-input" type="text" id="text" name="textselected" onChange={(e) => call(e)}
   placeholder="..." value={cvalue}/>
   </>
   );
 }
 
-
-const Dropdown = () => {
-  const options = [
-    {
-      value: 1,
-      label: '5'
-    },
-    {
-      value: 2,
-      label: '10'
-    },
-    {
-      value: 3,
-      label: '20'
-    }
-  ];
-  const [selectedOption, setSelected] = useState(options[0]);
-  const setValues = (e: any) => {
-    const l = e[0].label;    
-  } 
-  const handleChange = (e : any) => {
-    console.log(e)
-    setSelected(e)
-  }
-  return (
-      <Select
-        values={[]}
-        onChange={(values) => setValues(values)}
-        options={options}
-      />
-  );
-}
 
 
 interface propsInterface {
@@ -225,6 +194,10 @@ const Table = ({props, onClick} : TableProps) => {
     })
   }
 
+  const pagination = () => {
+    return 
+  }
+
   return (
     <>
     <div className="items-center" >
@@ -234,7 +207,18 @@ const Table = ({props, onClick} : TableProps) => {
       {tableProps.header.map((header,j) =>
       {
         if (tableProps.header[0] == "matrix" && j>0){
-          return (<td key={j} style={{width : "8%", paddingTop : "2%",border: "2px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}>{header} <Dropdown /> </td>)
+          if (j==1){
+            return (<td key={j} style={{width : "8%", paddingTop : "2%",border: "2px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}>{header} </td>)
+          }
+          else{
+            const types = ["tipo1","tipo2"]
+            if (tableProps.info[0][1].includes("input")){
+              return (<td key={j} style={{width : "8%", paddingTop : "2%",border: "2px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}>{header[0]} <Dropdown key={"inputnew"+j} setValues={handleClick} j={[-1,j-1]} opt={types} current={header[1]}/>  </td>)
+            }
+            else{
+              return (<td key={j} style={{width : "8%", paddingTop : "2%",border: "2px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}>{header[0]} {header[1]} </td>)
+            }
+          }      
         }
         if (tableProps.header[0] != "matrix"){
           return (<td key={j} style={{width : "8%", paddingTop : "2%",border: "2px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}>{header} </td>)
@@ -276,7 +260,9 @@ const Table = ({props, onClick} : TableProps) => {
       </tbody>
       </table>
 
-      <div style={{ display: 'flex', paddingTop : "2%", paddingLeft : "5%"}}>
+
+
+      {tableProps.header[0] != "matrix" && <div style={{ display: 'flex', paddingTop : "2%", paddingLeft : "5%"}}>
 
       {directionalButton("PREV")}
 
@@ -289,7 +275,7 @@ const Table = ({props, onClick} : TableProps) => {
         placeholder = "5"
         values={[]}
       />
-      </div>
+      </div>}
 
       </div>
       </>

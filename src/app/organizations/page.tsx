@@ -46,7 +46,15 @@ const Add = ({role, ID, valuesOf, placeholders,ids,types,save,handleClosing} : A
     setInfo(nextInfo);
   }
   function allFieldsFilled(){
-    for (let i = 0; i < info.length; i++) {
+    console.log(info)
+    var val = 0
+    if (newid == -1){
+      val = 1
+    }
+    else{
+      val = 0
+    }
+    for (let i = val; i < info.length; i++) {
       console.log (info[i]);
       if (info[i] == ""){
         return false;
@@ -56,7 +64,8 @@ const Add = ({role, ID, valuesOf, placeholders,ids,types,save,handleClosing} : A
   }
 
   function idFound(){
-    if (id != null){
+    console.log(newid);
+    if (newid != -1){
       return (<div key={"id"}>
               <input 
                     key="inputnumberid"
@@ -82,12 +91,12 @@ const Add = ({role, ID, valuesOf, placeholders,ids,types,save,handleClosing} : A
         <div key={"inputdiv"+j}>
         <input 
             key={"inputnew"+j}
-            id={id[j]+j}
-            type={type[j]}
-            value={info[j]}
+            id={id[j+1]+j}
+            type={type[j+1]}
+            value={info[j+1]}
             placeholder={B}
             className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2.5" 
-            onChange={(e) => { handleEdition(j,e.target.value) }}
+            onChange={(e) => { handleEdition(j+1,e.target.value) }}
             required
         />
         </div>
@@ -101,6 +110,7 @@ const Add = ({role, ID, valuesOf, placeholders,ids,types,save,handleClosing} : A
   <>
     <div className="flex flex-wrap p-5 bg-gray-300">
         
+        {idFound()}
         
         {mapping()}
             
@@ -182,7 +192,7 @@ const TablePage = ({information,data,role,buttons,click,search,save,editF,delete
   const [edit, setEdit] = useState(false);
   const [editing, setEditing] = useState<string[] | null>(null);
   const importing = information
-  const [valuesOf, setValuesOf] = useState(Array(importing.tableHeader.length-1).fill(""));
+  const [valuesOf, setValuesOf] = useState(Array(importing.tableHeader.length).fill(""));
   const [isOpen,setModalOpen] = useState(false);
   const [text, setText] = useState("¿Estás seguro de eliminar la organización?");
   const [deleteID,setDeleteID] = useState(0);
@@ -203,7 +213,7 @@ const TablePage = ({information,data,role,buttons,click,search,save,editF,delete
     }
   }
 
-  var newId = handleValue();
+  var newId = -1; //handleValue();
 
   const handleClick = async (e: any,id: any) => {
     //when the buttons inside the table are clicked
@@ -225,7 +235,7 @@ const TablePage = ({information,data,role,buttons,click,search,save,editF,delete
       }
       console.log(found)
       //console.log(propsc.info[id_n]);
-      setValuesOf(found.slice(1, found.length));
+      setValuesOf(found);
       console.log(valuesOf)
     }
     if (importing.buttons_message[e] == "Delete"){
@@ -244,6 +254,7 @@ const TablePage = ({information,data,role,buttons,click,search,save,editF,delete
     const a = await save(info);
     if (a == true){
       setAdd(false);
+      setValuesOf(Array(importing.tableHeader.length).fill(""));
     }
   }
   const onEdit = async (info : Array<string>) => {
@@ -251,18 +262,21 @@ const TablePage = ({information,data,role,buttons,click,search,save,editF,delete
     console.log(a);
     if (a == true){
       setEdit(false);
+      newId = -1
+      setValuesOf(Array(importing.tableHeader.length).fill(""));
     }
   }
   const closingAddEdit = () => {
     if (add == true){
       setAdd(false);
-      setValuesOf(Array(importing.tableHeader.length-1).fill(""));
+      setValuesOf(Array(importing.tableHeader.length).fill(""));
     }
     if (edit== true){
       setEdit(false);
-      setValuesOf(Array(importing.tableHeader.length-1).fill(""));
+      setValuesOf(Array(importing.tableHeader.length).fill(""));
+      newId = -1
     }
-    setValuesOf(Array(importing.tableHeader.length-1).fill(""));
+    setValuesOf(Array(importing.tableHeader.length).fill(""));
   }
 
   return (
@@ -428,6 +442,7 @@ export default function Organizations() {
 
     // ["ID","Nombre","País","Estado","Responsable","Teléfono","Correo electrónico"]
     console.log(info);
+    info.shift();
     var result = false 
     const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/organization',{
       method: "POST" , headers : {
