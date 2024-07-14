@@ -317,7 +317,8 @@ const TablePage = ({information,data,role,buttons,click,search,save,editF,delete
         <Sidebar role={role} />
         <div className="m-10 flex flex-col w-full">
 
-        <DeleteModal isOpen={isOpen} texti={text} fun={deleteF} ID={deleteID} setModalOpen={setModalOpen}/>
+        <DeleteModal isOpen={isOpen} texti={text} fun={deleteF} ID={deleteID} setModalOpen={setModalOpen}
+         title={"Titulo"} text_success={"Se eliminó con éxito"} text_failed={"Falló la eliminación"}/>
 
         <TableHeader title={importing.title} placeholder={importing.search} 
         handleSearchClick={onSearch} setAdd={setAdd} name={importing.name} subtitle={subtitle}/>

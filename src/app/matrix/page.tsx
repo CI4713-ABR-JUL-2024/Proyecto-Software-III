@@ -24,12 +24,13 @@ export default function Matrix() {
 
 
   var iniciativas = ["matrix","Iniciativas / Resultados Clave",["Iniciativa 1","float"],["Iniciativa 2","float"],["Iniciativa 3","float"],["Iniciativa 4","float"]]
+  var iniciativas2 = ["matrix","Iniciativas / Resultados Clave","Iniciativa 1","Iniciativa 2","Iniciativa 3","Iniciativa 4"]
   
   const resultadosClave = ["Resultado 1","Resultado 2","Resultado 3","Resultado 4"]
 
   const [S, setS] = useState(settings.matrix);
 
-  const createTable = (editing) => {
+  const createTable = (editing : any) => {
     var lista = [];
     for (var res in resultadosClave){
       var a = []
@@ -48,7 +49,7 @@ export default function Matrix() {
 
   const [tableInfo, setTableInfo] = useState(createTable(false));
 
-  const updateTable = (editing) => {
+  const updateTable = (editing : any) => {
     console.log(S);
     const nextInfo = tableInfo.map((c, r) => {
       const x = c.map((p,c) => {
@@ -105,7 +106,7 @@ export default function Matrix() {
 
 
   useEffect(() => {
-    settings.matrix.tableHeader = iniciativas;
+    settings.matrix.tableHeader = iniciativas2;
     console.log(settings.matrix.tableHeader)
     if (cookies.access_token) {
       try {
@@ -153,9 +154,14 @@ export default function Matrix() {
     }
 
   function updateType (pos : number, value : any) {
-    iniciativas[pos+1][1] = value
+    //modificar esto porque los tipos no coinciden
+    //iniciativas[pos+1][1] = value
+
     var Z = S.tableHeader
-    Z[pos+1][1] = value;
+
+    //Z[pos+1][1] = value;
+
+    //Z[pos+1][1] = value;
     console.log(iniciativas);
     var c = S
     c.tableHeader = Z;
@@ -183,9 +189,6 @@ export default function Matrix() {
 
     }
     else{
-      console.log(typeof id === Array);
-      console.log(typeof id === Array<number>);
-      console.log(typeof id);
       if (typeof id === 'object'){
         //header que id sea arreglo
         //headerTypes[id[1]] = e
