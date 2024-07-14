@@ -90,7 +90,7 @@ const Add = ({role, ID, valuesOf, placeholders,ids,types,save,handleClosing} : A
         const iniciativas = ["iniciativa1"]
         found.push(
         <div key={"inputdiv"+j}>
-        <Dropdown key={"inputnew"+j} setValues={handleEdition} j={j+1} opt={iniciativas}/> 
+        <Dropdown key={"inputnew"+j} current={iniciativas[0]} setValues={handleEdition} j={j+1} opt={iniciativas}/> 
         </div>
         )
       }
