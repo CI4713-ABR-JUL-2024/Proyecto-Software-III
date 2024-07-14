@@ -1,0 +1,17 @@
+{
+	"matrix" : {
+		"title" : "Análisis de Capacidad y Priorización",
+		"search" : "Buscar",
+		"name": "matrix",
+		"placeholders"  : ["Resultados Clave","Indicador clave de rendimiento","Iniciativas","Tipo de Iniciativa"],
+		"ids" : ["resultado","indicador","iniciativa","tipo_iniciativa"],
+		"types" : ["input","input","input","input"],
+		"tableHeader" : ["matrix"],
+		"buttons_message" : [],
+		"modal_texti" : "¿Estás seguro de eliminar esta definición de KR, KPI e iniciativas?",
+		"modal_title" : "Eliminar definición de KR, KPI e iniciativas", 
+		"modal_textsuccess" : "Se ha eliminado la definición de KR, KPI e iniciativas con éxito",
+		"modal_textfail" : "No se ha podido eliminar la definición de KR, KPI e iniciativas"
+	}
+
+}
