@@ -7,7 +7,8 @@ export async function GET(
   ) {
     try {
       const id = parseInt(params.params.id);
-      const keyResultsByObjective = await keyResultController.getKeyResultsByObjective(req, id);
+      const keyResultsByObjective = await keyResultController.getMatrixKeyResults(req, id);
+
       return NextResponse.json(keyResultsByObjective, { status: 200 });
     } catch (err: any) {
       const error_json = {
@@ -18,5 +19,4 @@ export async function GET(
       return NextResponse.json(error_json, { status: err.status });
     }
   }
-  
   
