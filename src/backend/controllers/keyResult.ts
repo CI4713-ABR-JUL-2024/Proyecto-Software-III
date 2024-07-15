@@ -41,7 +41,29 @@ const getKeyResultsByObjective = async (req: NextRequest, id: number) => {
     const accessToken = headers().get('Authorization');
     if (!accessToken) throw new Error('No autorizado');
 
-    const keyResultsByObjective = await keyResultService.getKeyResultsByObjective(
+    const keyResultsByObjective = await keyResultService.getKeyResultsByObjectiveDistinct(
+      id,
+      accessToken
+    );
+
+    return keyResultsByObjective;
+  } catch (error: any) {
+    const handle_err: error_object = handle_error_http_response(error, '0000');
+    throw new custom_error(
+      handle_err.error_message,
+      handle_err.error_message_detail,
+      handle_err.error_code,
+      handle_err.status
+    );
+  }
+}
+
+const getMatrixKeyResults = async (req: NextRequest, id: number) => {
+  try {
+    const accessToken = headers().get('Authorization');
+    if (!accessToken) throw new Error('No autorizado');
+
+    const keyResultsByObjective = await keyResultService.getMatrixKeyResults(
       id,
       accessToken
     );
@@ -61,4 +83,5 @@ const getKeyResultsByObjective = async (req: NextRequest, id: number) => {
 export const keyResultController = {
   postKeyResult,
   getKeyResultsByObjective,
+  getMatrixKeyResults,
 };
