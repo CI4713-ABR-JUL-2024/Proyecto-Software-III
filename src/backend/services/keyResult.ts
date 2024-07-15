@@ -106,8 +106,6 @@ export const createKeyResult = async (
   
     const arrayForEach = (await Promise.all(promises)).flat();
 
-    console.log('arrayForEach', arrayForEach);
-
     const keyResultsByObjective = await prisma.keyResult.findMany({
       where: {
         id: {
@@ -357,7 +355,7 @@ const getMatrixKeyResults = async (id: number, token: string) => {
       for (let j = 0; j < groupedByInitiativeKeyResult[initiative].length; j++) {
         
         const keyResult = groupedByInitiativeKeyResult[initiative][j];
-        console.log('keyResult', keyResultsByObjective);
+
         const keyResultData = keyResultsByObjective.find(kr => kr.keyResult === keyResult && kr.initiative === initiative);
         matrix[initiative][keyResult] = keyResultData?.value || 0.0;
         if (i === 0) { 
@@ -428,10 +426,10 @@ const updateMatrixKeyResults = async (id: number, body: TMatrixKeyResultsUpdateB
     });
 
     keyResultsArray.sort((a, b) => a.id - b.id);
-    console.log('keyResultsArray', keyResultsArray);
+
     for (let i = 0; i < keyResultsArray.length; i++) {
       const keyResult = keyResultsArray[i];
-      console.log('keyResult', keyResult, 'para el indice', i);
+
       if (body.priority) {
         await prisma.keyResult.update({
           where: {
