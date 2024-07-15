@@ -353,15 +353,21 @@ const getMatrixKeyResults = async (id: number, token: string) => {
     
     const matrix: Record<string, Record<string, number | string>> = {};
     for (let i = 0; i < uniqueInitiatives.length; i++) {
+      if (i === 0) {
+        matrix['tipos'] = {};
+      }
       const initiative = uniqueInitiatives[i];
       matrix[initiative] = {};
       for (let j = 0; j < groupedByInitiativeKeyResult[initiative].length; j++) {
+        
         const keyResult = groupedByInitiativeKeyResult[initiative][j];
         console.log('keyResult', keyResultsByObjective);
         const keyResultData = keyResultsByObjective.find(kr => kr.keyResult === keyResult && kr.initiative === initiative);
         matrix[initiative][keyResult] = keyResultData?.value || 0.0;
+        if (i === 0) { 
+          matrix['tipos'][j] = keyResultData?.typeOfValue || 'entero';
+        }
       }
-      matrix[initiative]['tipo'] = keyResultsByObjective.find(kr => kr.initiative === initiative)?.typeOfValue || '';
       matrix[initiative]['prioridad'] = keyResultsByObjective.find(kr => kr.initiative === initiative)?.priority || 0;
     }
     return matrix;
