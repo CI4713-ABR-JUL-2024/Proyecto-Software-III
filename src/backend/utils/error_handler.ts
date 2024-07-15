@@ -73,7 +73,7 @@ const error_message_dict: error_message_dictionary = {
   '0021': 'Error eliminando detalles de objetivo',
   '0022': 'Error buscando detalles de objetivo',
   '0023': 'Error listando detalles de objetivos',
-
+  '0024': 'Error'
 };
 
 function get_message_for_code(code: string): string {

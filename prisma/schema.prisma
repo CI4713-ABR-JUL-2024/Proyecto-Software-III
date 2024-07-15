@@ -100,11 +100,11 @@ model OkrDesing {
 }
 
 model ObjectiveDetail {
-  id          Int      @id @default(autoincrement())
-  objective Objective @relation(fields: [objective_id], references: [id])
+  id           Int       @id @default(autoincrement())
+  objective    Objective @relation(fields: [objective_id], references: [id])
   objective_id Int
-  keyResult  KeyResult @relation(fields: [keyResult_id], references: [id])
-  keyResult_id Int
+  keyResult    KeyResult? @relation(fields: [keyResult_id], references: [id])
+  keyResult_id Int?
 }
 
 model KeyResult {
