@@ -357,11 +357,12 @@ const getMatrixKeyResults = async (id: number, token: string) => {
       matrix[initiative] = {};
       for (let j = 0; j < groupedByInitiativeKeyResult[initiative].length; j++) {
         const keyResult = groupedByInitiativeKeyResult[initiative][j];
-        const keyResultData = keyResultsByObjective.find(kr => kr.keyResult === keyResult);
-        matrix[initiative][keyResult] = keyResultData?.value.toString() || '';
+        console.log('keyResult', keyResultsByObjective);
+        const keyResultData = keyResultsByObjective.find(kr => kr.keyResult === keyResult && kr.initiative === initiative);
+        matrix[initiative][keyResult] = keyResultData?.value || 0.0;
       }
       matrix[initiative]['tipo'] = keyResultsByObjective.find(kr => kr.initiative === initiative)?.typeOfValue || '';
-      matrix[initiative]['prioridad'] = keyResultsByObjective.find(kr => kr.initiative === initiative)?.priority || '';
+      matrix[initiative]['prioridad'] = keyResultsByObjective.find(kr => kr.initiative === initiative)?.priority || 0;
     }
     return matrix;
   } catch (error) {
