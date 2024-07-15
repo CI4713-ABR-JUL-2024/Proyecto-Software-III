@@ -11,6 +11,7 @@ import { error_object } from '../interfaces/error';
 
 import {
   TKeyOrganizationCreateObjectBody,
+  TMatrixKeyResultsUpdateBody
 } from '../validators/keyResult';
 
 const arrayOfRolesAdmitted = [
@@ -79,6 +80,7 @@ export const createKeyResult = async (
 
     const id_keyResult = {
       keyResult_id: newKeyResult.id,
+      show: true,
     };
 
     for (let i = 0; i < body.objectiveDetail.length; i++) {
@@ -96,25 +98,28 @@ export const createKeyResult = async (
           objective_id: obj?.objective_id,
           keyResult_id: {
             not: null,
-          }
+          },
+          show: true,
         },
         });
     });
   
     const arrayForEach = (await Promise.all(promises)).flat();
 
+    console.log('arrayForEach', arrayForEach);
+
     const keyResultsByObjective = await prisma.keyResult.findMany({
       where: {
         id: {
-          in: arrayForEach.map((item) => item?.keyResult_id).filter((id) => id !== null && id !== undefined) as number[],
-        },
+          in: arrayForEach.map((item) => item.keyResult_id).filter((item) => item !== null)
+        }
       },
     });
 
     for (let i = 0; i < keyResultsByObjective.length; i++) {
         if (keyResultsByObjective[i].initiative !== body.initiative) {
-          console.log('objectiveDetailsByObjective[j]', keyResultsByObjective[i]);
-          await prisma.keyResult.create({
+          const obj1 = arrayForEach.find((item) => item.keyResult_id === keyResultsByObjective[i].id)?.objective_id as number;
+          const key1 = await prisma.keyResult.create({
             data: {
               keyResult: body.keyResult,
               keyIndicator: body.keyIndicator,
@@ -125,7 +130,13 @@ export const createKeyResult = async (
               typeOfValue: 'entero'
             },
           });
-          await prisma.keyResult.create({
+          await prisma.objectiveDetail.create({
+            data: {
+              objective_id: obj1,
+              keyResult_id: key1.id,
+            },
+          });
+          const key2 = await prisma.keyResult.create({
             data: {
               keyResult: keyResultsByObjective[i].keyResult,
               keyIndicator: keyResultsByObjective[i].keyIndicator,
@@ -134,6 +145,12 @@ export const createKeyResult = async (
               priority: 0,
               value: 0.0,
               typeOfValue: 'entero'
+            },
+          });
+          await prisma.objectiveDetail.create({
+            data: {
+              objective_id: obj1,
+              keyResult_id: key2.id,
             },
           });
         }
@@ -201,30 +218,8 @@ export const getKeyResultsByObjective = async (id: number, token: string) => {
       },
     });
 
-
-    const finalKeyResultsArray: KeyResult[] = keyResultsArray.map(keyResult => ({ ...keyResult }));
-    console.log('finalKeyResultsArray', finalKeyResultsArray);
-    for (let i = 0; i < keyResultsArray.length; i++) {
-      const keyResult = keyResultsArray[i];
-      const others = await prisma.keyResult.findMany({
-        where: {
-          keyResult: keyResult.keyResult,
-          keyIndicator: keyResult.keyIndicator,
-          initiativeType_id: keyResult.initiativeType_id,
-          id: { not: keyResult.id }
-        },
-      });
-      console.log('others', others);
-      
-      if (others.length > 0) {
-        for (let j = 0; j < others.length; j++) {
-          finalKeyResultsArray.push(others[j]);
-        }
-      }
-    }
-
     
-    return finalKeyResultsArray;
+    return keyResultsArray;
   } catch (error) {
     throw error;
   }
@@ -265,6 +260,7 @@ const getKeyResultsByObjectiveDistinct = async (id: number, token: string) => {
     const objectiveDetailsByObjective = await prisma.objectiveDetail.findMany({
       where: {
         objective_id: id,
+        show: true,
       },
     });
 
@@ -282,7 +278,7 @@ const getKeyResultsByObjectiveDistinct = async (id: number, token: string) => {
       where: {
         id: {
           in: Array.from(keyResultsIdSet),
-        },
+        }
       },
     });
 
@@ -376,6 +372,141 @@ const getMatrixKeyResults = async (id: number, token: string) => {
   }
 }
 
+const updateMatrixKeyResults = async (id: number, body: TMatrixKeyResultsUpdateBody, token: string) => {
+  try {
+    const userWithToken = verifyJwt(token);
+
+    if (!userWithToken) {
+      const handle_err: error_object = handle_error_http_response(
+        new Error('Error en el token'),
+        '0024'
+      );
+      throw new custom_error(
+        handle_err.error_message,
+        handle_err.error_message_detail,
+        handle_err.error_code,
+        handle_err.status
+      );
+    }
+
+    if (!arrayOfRolesAdmitted.includes(userWithToken.role_name)) {
+      const handle_err: error_object = handle_error_http_response(
+        new Error(
+          'Error no posee los permisos adecuados para realizar esta acción'
+        ),
+        '0024'
+      );
+      throw new custom_error(
+        handle_err.error_message,
+        handle_err.error_message_detail,
+        handle_err.error_code,
+        handle_err.status
+      );
+    }
+    const objectiveDetailsByObjective = await prisma.objectiveDetail.findMany({
+      where: {
+        objective_id: id,
+      },
+    });
+
+    const keyResultsIdSet: Set<number> = new Set();
+
+    for (let i = 0; i < objectiveDetailsByObjective.length; i++) {
+      if (objectiveDetailsByObjective[i].keyResult_id) {
+        const keyId = objectiveDetailsByObjective[i].keyResult_id as number;
+        keyResultsIdSet.add(keyId);
+      }
+    }
+
+    const keyResultsArray = await prisma.keyResult.findMany({
+      where: {
+        id: {
+          in: Array.from(keyResultsIdSet).filter((item) => item !== null),
+        },
+        initiative: body.initiative,
+      },
+    });
+
+    keyResultsArray.sort((a, b) => a.id - b.id);
+    console.log('keyResultsArray', keyResultsArray);
+    for (let i = 0; i < keyResultsArray.length; i++) {
+      const keyResult = keyResultsArray[i];
+      console.log('keyResult', keyResult, 'para el indice', i);
+      if (body.priority) {
+        await prisma.keyResult.update({
+          where: {
+            id: keyResult.id,
+          },
+          data: {
+            priority: body.priority,
+          },
+        });
+      }
+      if (body.values) {
+        const value = body.values[i];
+        await prisma.keyResult.update({
+          where: {
+            id: keyResult.id,
+          },
+          data: {
+            value: value,
+          },
+        });
+      }
+    }
+    const keyResultsByObjective = await getKeyResultsByObjective(id, token);
+    keyResultsByObjective.sort((a, b) => {
+      const initiativeComparison = a.initiative.localeCompare(b.initiative);
+      if (initiativeComparison !== 0) {
+        return initiativeComparison;
+      }
+      return a.id - b.id;
+    });
+
+    const groupedByKeyResult = keyResultsByObjective.reduce<Record<string, KeyResult[]>>((acc, keyResult) => {
+      if (!acc[keyResult.initiative]) {
+        acc[keyResult.initiative] = [];
+      }
+      acc[keyResult.initiative].push(keyResult);
+      return acc;
+    }, {});
+
+    Object.keys(groupedByKeyResult).forEach(key => {
+      groupedByKeyResult[key].sort();
+    });
+  
+    const uniqueInitiatives = Object.keys(groupedByKeyResult);
+    const sortedUniqueInitiatives = uniqueInitiatives.sort();
+
+    for (let i = 0; i < sortedUniqueInitiatives.length; i++) {
+      const initiative = sortedUniqueInitiatives[i];
+      const keyResults = groupedByKeyResult[initiative];
+      for (let j = 0; j < keyResults.length; j++) {
+        const keyResult = keyResults[j];
+          if (keyResult) {
+            if (body.types) {
+            await prisma.keyResult.update({
+              where: {
+                id: keyResult.id,
+              },
+              data: {
+                typeOfValue: body?.types[j],
+              },
+            });
+          } 
+      }
+    }
+  }
+    return groupedByKeyResult;
+  } catch (error) {
+    throw error;
+  }
+  
+
+
+
+}
+
 
     
 
@@ -383,4 +514,5 @@ export const keyResultService = {
     createKeyResult,
     getKeyResultsByObjectiveDistinct,
     getMatrixKeyResults,
+    updateMatrixKeyResults,
 };
