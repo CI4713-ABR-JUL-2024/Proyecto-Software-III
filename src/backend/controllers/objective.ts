@@ -105,6 +105,34 @@ const update_objective = async (
   }
 };
 
+
+const update_completed_objective = async (
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) => {
+  try {
+   
+    let objective;
+    let prams_id = params.id;
+    let id = parseInt(prams_id);
+
+    const accessToken = headers().get('Authorization');
+    objective = await objectiveService.update_completed_objective(id, accessToken);
+
+    return objective;
+  } catch (error: any) {
+    const handle_err: error_object = handle_error_http_response(error, '0032');
+    throw new custom_error(
+      handle_err.error_message,
+      handle_err.error_message_detail,
+      handle_err.error_code,
+      handle_err.status
+    );
+  }
+};
+
+
+
 const delete_objective = async (
     req: NextRequest,
     { params }: { params: { id: string } }
@@ -148,6 +176,7 @@ export const objectiveController = {
   post_objective,
   get_objectives,
   update_objective,
+  update_completed_objective,
   delete_objective,
 
 };
