@@ -75,11 +75,9 @@ export default function Projects() {
           role={role}
           projectInfo={projectList?.map((project) => [
             project.id.toString(),
-            project.trimester,
-            project.year,
-            project.organization_id,
-            project.aproach_id,
-            project.area,
+            project.description,
+            project.start,
+            project.end,
             project.status,
           ])}
         />

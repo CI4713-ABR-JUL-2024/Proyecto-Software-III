@@ -1,5 +1,5 @@
 "use client";
-import { FaPen, FaTrash, FaPrint, FaPlus, FaPlay } from "react-icons/fa";
+import { FaPen, FaTrash, FaPrint, FaPlus, FaStop } from "react-icons/fa";
 import Table from "../components/ProjectTable";
 import { IoSearchCircle } from "react-icons/io5";
 import { use, useState } from "react";
@@ -116,10 +116,10 @@ export default function ProjectsTable({
   }
 
   const tableProp = {
-    header: ["ID", "Trimestre", "Año", "Organización", "Abordaje", "Área"],
+    header: ["ID", "Descripción" , "Fecha de Inicio", "Fecha de Cierre"],
     // info: [ [ '2', 'abril julio', 'ano', 11, 'ACTIVE' ] ],
     info: projectInfo,
-    buttons: [FaPen, FaTrash, FaPrint, FaPlus, FaPlay],
+    buttons: [FaPen, FaTrash, FaPrint, FaPlus, FaStop],
 
     buttons_message: [
       "Editar",
