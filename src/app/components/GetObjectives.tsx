@@ -37,7 +37,7 @@ export default function ObjectivesTable({ role, objectivesInfo, projectInfo, okr
   console.log(objectivesInfo);
 
   const tableProp = {
-      header : ["ID","Objectivos"], 
+      header : ["ID","Objetivos"], 
       info: objectivesInfo,
       buttons:[FaPlus, FaPen,FaTrash], 
       buttons_message:["Agregar","Editar","Eliminar"]}
