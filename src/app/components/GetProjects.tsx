@@ -41,6 +41,7 @@ export default function ProjectsTable({
 
   const router = useRouter();
 
+
   // handles fucntions
   const handleCreateProject = async () => {
     if (!trimester || !year || !organization || !approach || !area) {
@@ -61,8 +62,29 @@ export default function ProjectsTable({
     const nextYear = thisYear + 1;
     const start = new Date(thisYear, month, day); // Restamos 1 al mes para que sea compatible con el rango 0-11
     const end = new Date(nextYear, month, day);
-
+    
     console.log(start, end);
+    const creatOkr = async (newProjectId: number) => {
+      console.log("Crear Okr");
+      const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL + "/api/okrDesign", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${cookies.access_token}`,
+        },
+        body: JSON.stringify({
+          project_id: newProjectId,
+        }),
+      })
+      if (response.ok) {
+        console.log("OKR creado");
+        const data = await response.json();
+        return data;
+      } else {
+        console.error("Error al crear OKR");
+        return null;
+      }
+    }
 
     try {
       const newProject = {
@@ -89,6 +111,7 @@ export default function ProjectsTable({
       );
       const data = await response.json();
       console.log(data);
+      creatOkr(data.id);
     } catch (error) {
       console.error("Error:", error);
     }
