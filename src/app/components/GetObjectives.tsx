@@ -94,7 +94,7 @@ export default function ObjectivesTable({ role, objectivesInfo, projectInfo, okr
       setObjectivesTable({header: tableProp.header, info: filterBySearch, buttons: tableProp.buttons, buttons_message: tableProp.buttons_message});
   }return (
     <main className="flex">
-        <Sidebar role="admin" />
+        <Sidebar role={role.toString()} />
         <div className="m-10 flex flex-col w-full">
             <div>
             <span className="text-2xl font-bold text-[#3A4FCC]">Proyecto:      </span>
