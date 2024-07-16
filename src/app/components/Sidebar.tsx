@@ -86,7 +86,7 @@ export default function Sidebar(props: { role: string }) {
         <div className="border-t border-gray-700 py-4 flex items-center flex-col">
             <button onClick={logOut} className="h-[65px] text-center inline-flex items-center justify-center w-[-webkit-fill-available] hover:bg-gray-200 font-bold px-5 py-2.5 rounded-full text-xl">
                 <RiLogoutBoxRFill className="w-8 h-10 me-2" color="#3A4FCC" />
-                Cerrar Sesion
+                Cerrar Sesión
             </button>
         </div>
         </aside>

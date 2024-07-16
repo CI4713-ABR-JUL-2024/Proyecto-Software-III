@@ -285,6 +285,12 @@ export default function ProjectsTable({
             >
               Modificar abordajes
             </button>
+            <button
+              onClick={() => router.push("/projects/statusObjectives")}
+              className="ml-5 bg-[#3A4FCC] text-white font-bold py-2 px-4 rounded-full"
+            >
+              Estatus de objetivos
+            </button>
           </div>
         </div>
         {addProject && (
