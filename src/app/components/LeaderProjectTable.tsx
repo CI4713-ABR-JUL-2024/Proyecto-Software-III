@@ -1,7 +1,7 @@
 'use client'
 import {use, useEffect, useState} from 'react';
 import { FaPlus, FaPen, FaTrash } from "react-icons/fa";
-import Table from '../components/Table';
+import Table from '../components/GenericTable';
 import Sidebar from "../components/Sidebar";
 import { useCookies } from 'react-cookie';
 import { redirect, useRouter } from 'next/navigation';

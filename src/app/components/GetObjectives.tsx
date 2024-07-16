@@ -7,6 +7,7 @@ import Sidebar from "../components/Sidebar"
 import { useRef,useEffect } from "react";
 import { useReactToPrint } from "react-to-print";
 import { useCookies } from 'react-cookie';
+import { useRouter } from "next/navigation";
 import CreateObjective from "./CreateObjective";
 
 
@@ -27,6 +28,7 @@ export default function ObjectivesTable({ role, objectivesInfo, projectInfo, okr
   const [editName, setEditName] = useState('');
   const [cookies, setCookie] = useCookies(['access_token','id']);
   const componentRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
@@ -35,7 +37,7 @@ export default function ObjectivesTable({ role, objectivesInfo, projectInfo, okr
   console.log(objectivesInfo);
 
   const tableProp = {
-      header : ["ID","Objectivos"], 
+      header : ["ID","Objetivos"], 
       info: objectivesInfo,
       buttons:[FaPlus, FaPen,FaTrash], 
       buttons_message:["Agregar","Editar","Eliminar"]}
@@ -46,7 +48,7 @@ export default function ObjectivesTable({ role, objectivesInfo, projectInfo, okr
       //id position of user in info list
       //console.log(e);
       if(e == 0){
-        console.log("Agregar");
+        router.push('/objective_details');
       }
       if(e == 2){        
         console.log("Eliminar");

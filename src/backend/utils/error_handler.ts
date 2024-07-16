@@ -81,7 +81,6 @@ const error_message_dict: error_message_dictionary = {
   '0029': 'Error listando okr designs',
   '0030': 'Error actualiazndo okr design',
   '0031': 'Error eliminando okr design'
-
 };
 
 function get_message_for_code(code: string): string {

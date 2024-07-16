@@ -57,7 +57,7 @@ const checkAuth = (token:string) => {
 export const createObjectiveDetail = async (
   body: TobjetiveDetailCreateObjectBody,
   token: string
-): Promise<TobjetiveDetailCreateObjectBody> => {
+) => {
   try {
     const userWithToken = checkAuth(token)
 

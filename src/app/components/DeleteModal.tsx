@@ -9,10 +9,13 @@ interface ModalProps {
   texti : string,
   fun : any,
   ID : any,
+  title : string,
+  text_success : string,
+  text_failed : string,
   setModalOpen : any,
 }
 
-export default function DeleteModal({isOpen,texti,fun,ID,setModalOpen} : ModalProps) {
+export default function DeleteModal({isOpen,texti,title,text_success,text_failed,fun,ID,setModalOpen} : ModalProps) {
   const [name, setName] = useState('');
   const [lastName, setLastName] = useState('');
   const [text,setText] = useState(texti)
@@ -22,10 +25,10 @@ export default function DeleteModal({isOpen,texti,fun,ID,setModalOpen} : ModalPr
     const a = await fun(ID);
     console.log(a)
     if (a == true){
-      setText("La organización se eliminó con éxito.");
+      setText(text_success);
     }
     else{
-      setText("La organización no pudo ser eliminada.");
+      setText(text_failed);
     }
     console.log("CLICLING")
   }
@@ -41,7 +44,7 @@ export default function DeleteModal({isOpen,texti,fun,ID,setModalOpen} : ModalPr
           className="text-4xl font-bold text-gray-900 mx-auto"
           style={{ color: "#3A4FCC" }}
         >
-          Eliminar organización
+          {title}
         </h1>
         <form
           className="mt-6 flex flex-col items-center justify-center w-[50vw] mx-auto shadow-2xl p-12 rounded-2xl"
