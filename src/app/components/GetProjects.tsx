@@ -178,7 +178,7 @@ export default function ProjectsTable({
       window.print();
     }
     if (e == 3) {
-      console.log("Generar");
+        router.push('/projects/objectives/'+id[0].toString());
     }
     if (e == 4) {
       console.log("Deshabilitar");
