@@ -2,10 +2,7 @@ import { z } from 'zod';
 
 const objetiveDetailCreateObjectBody = z.object({
   objective_id: z.number(),
-  keyResult: z.string(),
-  keyIndicator: z.string(),
-  initiative: z.string(),
-  initiativeType_id: z.number(),
+  keyResult_id: z.number().optional(),
 });
 
 export type TobjetiveDetailCreateObjectBody = z.infer<
@@ -19,10 +16,8 @@ export const validatorObjectiveDetailCreate = (body: unknown) => {
 
 const objetiveDetailUpdateObjectBody = z.object({
   objective_id: z.number().optional(),
-  keyResult: z.string().optional(),
-  keyIndicator: z.string().optional(),
-  initiative: z.string().optional(),
-  initiativeType_id: z.number().optional(),
+  keyResult_id: z.number().optional(),
+  show: z.boolean().optional(),
 });
 
 export type TobjetiveDetailUpdateObjectBody = z.infer<
