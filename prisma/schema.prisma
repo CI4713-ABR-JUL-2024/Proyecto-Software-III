@@ -105,6 +105,7 @@ model ObjectiveDetail {
   objective_id Int
   keyResult    KeyResult? @relation(fields: [keyResult_id], references: [id])
   keyResult_id Int?
+  show         Boolean @default(false)
 }
 
 model KeyResult {

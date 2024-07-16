@@ -21,3 +21,19 @@ export const validatorketResultCreate = (body: unknown) => {
 export const keyResultValidator = {
     validatorketResultCreate,
 };
+
+export const matrixKeyResultsUpdateBody = z.object({
+    initiative: z.string(),
+    values: z.array(z.number()).optional(),
+    priority: z.number().optional(),
+    types: z.array(z.string()).optional(),
+});
+
+export const validatormatrixUpdate = (body: unknown) => {
+  const its_validated = matrixKeyResultsUpdateBody.parse(body);
+  return its_validated;
+};
+
+export type TMatrixKeyResultsUpdateBody = z.infer<
+  typeof matrixKeyResultsUpdateBody
+>;

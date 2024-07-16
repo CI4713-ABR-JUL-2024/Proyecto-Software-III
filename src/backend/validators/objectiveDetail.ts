@@ -17,6 +17,7 @@ export const validatorObjectiveDetailCreate = (body: unknown) => {
 const objetiveDetailUpdateObjectBody = z.object({
   objective_id: z.number().optional(),
   keyResult_id: z.number().optional(),
+  show: z.boolean().optional(),
 });
 
 export type TobjetiveDetailUpdateObjectBody = z.infer<
