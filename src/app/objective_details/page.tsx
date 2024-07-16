@@ -86,7 +86,7 @@ export default function ObjectiveDetails() {
     console.log(id)
     console.log("HANDLING")
     if (e == 0){
-      console.log("CREAR MATRIZ");
+      router.push('/matrix');
       //router.push("/");
     }
   }
