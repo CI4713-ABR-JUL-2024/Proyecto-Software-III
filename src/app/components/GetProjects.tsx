@@ -8,8 +8,6 @@ import CreateProject from "../components/CreateProject";
 import { useRef, useEffect } from "react";
 import { useReactToPrint } from "react-to-print";
 import { useCookies } from "react-cookie";
-import { PrintProject } from "./PrintProject";
-import { Content } from "next/font/google";
 import { useRouter } from "next/navigation";
 import { Router } from "next/router";
 import ApproachModal from "./ApproachModal";
