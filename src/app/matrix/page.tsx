@@ -15,34 +15,42 @@ import { useSearchParams } from "next/navigation";
 import settings from './info.json';
 
 export default function Matrix() {
-  //const [tableInfo, setTableInfo] = 
-  //const location = useLocation();
-  //const queryParam = new URLSearchParams(location.search);
-  //console.log(queryParam.get("type"))
-  /////
-  //falta lo de los parametros que se pasan por el url aqui y en la otra pagina de objectivedetails
-
-
-  var iniciativas = [["matrix"],["Iniciativas / Resultados Clave"],["Iniciativa 1","float"],["Iniciativa 2","float"],["Iniciativa 3","float"],["Iniciativa 4","float"]]
-  var iniciativas2 = ["matrix","Iniciativas / Resultados Clave","Iniciativa 1","Iniciativa 2","Iniciativa 3","Iniciativa 4"]
+  var iniciativas = [["matrix"],["Iniciativas / Resultados Clave"],["Iniciativa 1","float"],["Iniciativa 2","float"],["Iniciativa 3","float"],["Iniciativa 4","float"],["Prioridad"]]
   
   const resultadosClave = ["Resultado 1","Resultado 2","Resultado 3","Resultado 4"]
 
   const [S, setS] = useState(settings.matrix);
+
+  const createIniciative = (i : Array<string>, t : Array<string>) : Array<Array<string>> => {
+    var iniciativa = [["matrix"],["Iniciativas / Resultados Clave"]]
+    for (var x in i){
+      const arreglo = [i[x],t[x]];
+      iniciativa.push(arreglo);
+    }
+    return iniciativa
+  }
+
+  //Como inicializar la tabla
+  //En resultadosClave son una lista de los resultados (los valores de cada fila)
+  //en las iniciativas introducir los valores de las columnas y los tipos (con la funcion anterior luego de llamar al endpoint)
+  //crear iniciativas luego de llamar al endpoint y antes de generar la tabla
+  //luego al crear la tabla llamar a crearTable y modificar la funcion para que se llene con los valores del back
 
   const createTable = (editing : any) => {
     var lista = [];
     for (var res in resultadosClave){
       var a = []
       if (editing){
-        a = Array(iniciativas.length-2).fill("input 4")
+        a = Array(iniciativas.length-3).fill("input 4")
       }
       else{
-        a = Array(iniciativas.length-2).fill("4")
+        a = Array(iniciativas.length-3).fill("4")
       }
       a.unshift(resultadosClave[res]);
+      a.push("priority 1");
       lista.push(a)      
     }
+    //lista.push(["priority 1"])
     console.log(lista)
     return lista
   }
@@ -74,9 +82,22 @@ export default function Matrix() {
     const nextInfo = tableInfo.map((c, r) => {
       console.log(r==row)
       const x = c.map((p,s) => {
-        if (p.includes("input") && editing == false && r == row){
+        if (p.includes("input") && !p.includes("inputpriority") && editing == false && r == row){
           const val = p.split(/(\s+)/);
           return val[2];
+        }
+        else if (p.includes("inputpriority") && editing == false && r == row){
+          const val = p.split(/(\s+)/);
+          return "priority "+val[2];
+        }
+        else if (p.includes("inputpriority") && editing == true && r == row){
+          return p;
+        }
+        else if (p.includes("priority") && !p.includes("inputpriority") && editing == false && r == row){
+          return p;
+        }
+        else if (p.includes("priority") && !p.includes("inputpriority") && editing == true && r == row){
+          return "input"+p;
         }
         else if (editing && r==row && s>0){
           return "input "+p;
@@ -123,6 +144,7 @@ export default function Matrix() {
   const searchParams = useSearchParams();
   let property1 = searchParams.get("name");
   let property2 = searchParams.get("id");
+  //PASAR AQUI LOS PARAMETROS DE CONSOLA ANTES DE LLAMAR AL ENDPOINT Y ENTRAR PARA SABER QUE MATRIZ SE ABRIO
 
   console.log(property1);
   console.log(property2);
@@ -192,9 +214,31 @@ export default function Matrix() {
     return c;
   }
 
+  const changePriority = (row : any, value : any) => {
+    const nextInfo = tableInfo.map((c, r) => {
+      console.log(r==row)
+      const x = c.map((p,s) => {
+        if (p.includes("inputpriority") && r==row){
+          const val = p.split(/(\s+)/);
+          return "inputpriority "+value;
+        }
+        else{
+          return p
+        }
+      })
+      return x
+    });
+    return nextInfo;
+  }
+
   const handleClick = async (e: any,id: any) => {
     console.log(e)
     console.log(id)
+    if (typeof id === 'object'){
+      if (id[0]=="priority"){
+        setTableInfo(changePriority(id[1],e));
+      }
+    }
     if (typeof e === 'number' && typeof id === 'number'){
       if (e == 0){
         setTableInfo(updateRow(true,id));
@@ -350,7 +394,7 @@ export default function Matrix() {
     console.log(role);
     console.log(role === 'admin')
     if (role === 'admin' || role === 'project_leader'){
-      return(<TablePage information={S} data={tableInfo} buttons={[FaPen,FaPen]}
+      return(<TablePage information={S} data={tableInfo} buttons={[FaPen,FaCircle]}
         click = {handleClick} search={onSearch} save={onSave} editF={onEdit} deleteF={onDelete} role={role} subtitle={""}/>)
     }
     else if (role === ''){

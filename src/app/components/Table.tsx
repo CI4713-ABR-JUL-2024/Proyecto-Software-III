@@ -222,6 +222,9 @@ const Table = ({props, onClick} : TableProps) => {
           else{
             const types = ["tipo1","tipo2"]
             console.log(header)
+            if (header[0]=="Prioridad"){
+              return (<td key={j} style={{width : "8%", paddingTop : "2%",border: "2px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}>{header[0]} </td>)
+            }
             if (tableProps.info[0][1].includes("input")){
               return (<td key={j} style={{width : "8%", paddingTop : "2%",border: "2px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}>{header[0]} <Dropdown key={"inputnew"+j} setValues={handleClick} j={[-1,j-1]} opt={types} current={header[1]}/>  </td>)
             }
@@ -249,16 +252,26 @@ const Table = ({props, onClick} : TableProps) => {
             
             { //console.log(value);
               //console.log(info);
-              if (value != "date" && !value.toString().includes("input")){
-              return (<td key={"info_"+i+"_"+j} style={{width : "8%", paddingTop : "2%", border: "1px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> {value} </td>)
-            }
-            else if (value.includes("input")){
-              const val = value.split(/(\s+)/);
-              return (<td key={"input_"+i+"_"+j} style={{width : "8%", paddingTop : "2%", border: "1px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> <Text value={val[2]} pos={i} posrow={j} id={parseInt(info[0])} onClick={handleClick}/> </td>)
-            }
-            else{
-              return (<td key={"date_"+i+"_"+j} style={{width : "8%", paddingTop : "2%", border: "1px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> <DateSelector pos={i} id={parseInt(info[0])} onClick={handleClick}/> </td>)
-            }
+              if (value != "date" && !value.toString().includes("input") && !value.includes("priority")){
+                return (<td key={"info_"+i+"_"+j} style={{width : "8%", paddingTop : "2%", border: "1px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> {value} </td>)
+              }
+              else if (value.includes("input") && !value.includes("inputpriority")){
+                const val = value.split(/(\s+)/);
+                return (<td key={"input_"+i+"_"+j} style={{width : "8%", paddingTop : "2%", border: "1px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> <Text value={val[2]} pos={i} posrow={j} id={parseInt(info[0])} onClick={handleClick}/> </td>)
+              }
+              else if (value.includes("inputpriority")){
+                const val = value.split(/(\s+)/);
+                const types = [1,2,3,4,5]
+                return (<td key={"inputpr_"+i+"_"+j} style={{width : "8%", paddingTop : "2%", border: "1px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> <Dropdown key={"inputpriority"+j} setValues={handleClick} j={["priority",j]} opt={types} current={val[2]}/> </td>)
+              }
+              else if (value.includes("priority")){
+                const val = value.split(/(\s+)/);
+                const types = [1,2,3,4,5]
+                return (<td key={"priority_"+i+"_"+j} style={{width : "8%", paddingTop : "2%", border: "1px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> {val[2]} </td>)
+              }
+              else{
+                return (<td key={"date_"+i+"_"+j} style={{width : "8%", paddingTop : "2%", border: "1px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> <DateSelector pos={i} id={parseInt(info[0])} onClick={handleClick}/> </td>)
+              }
             }
           )}
 
