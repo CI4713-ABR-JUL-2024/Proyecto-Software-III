@@ -13,6 +13,7 @@ import { Content } from "next/font/google";
 import { useRouter } from "next/navigation";
 import { Router } from "next/router";
 import ApproachModal from "./ApproachModal";
+import InactivateProject from "./InactiveProject";
 
 type ProjectsTableProps = {
   projectInfo: string[][];
@@ -182,6 +183,7 @@ export default function ProjectsTable({
     }
     if (e == 4) {
       console.log("Deshabilitar");
+      InactivateProject(id[0], cookies);
     }
 
     //rellenar con el manejo del click hecho dependiendo del boton y el usuario

@@ -203,7 +203,7 @@ const Table = ({role,props, onClick} : TableProps) => {
             </tr>
 
             {tableProps.info.map((info,j) =>{
-              if (getPages[j] == currentPage && info[4] ==="INACTIVE"){
+              if (getPages[j] == currentPage && info[6] ==="INACTIVE"){
                 return (
                   <tr key={"tr2"+j}>
                     {info.filter(value => value != "INACTIVE").map((value,i) =>  
