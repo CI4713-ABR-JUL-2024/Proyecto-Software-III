@@ -80,3 +80,5 @@ jspm_packages
 data/**
 
 .env
+
+settings.json

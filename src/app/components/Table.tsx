@@ -6,6 +6,7 @@ import { IconType } from "react-icons";
 import { useEffect } from 'react';
 
 import Select from "react-dropdown-select";
+import Dropdown from "../components/Dropdown";
 
 
 interface ActionProps {
@@ -48,6 +49,34 @@ const DateSelector = ({pos,id,onClick} : DateProp) => {
   </>
   );
 }
+
+interface TextProp {
+  id: number,
+  value : any,
+  pos : number,
+  posrow : number,
+  onClick: any,
+}
+
+const Text = ({value,pos,posrow,id,onClick} : TextProp) => {
+  const handleClick = onClick;
+  const position = pos;
+  const idUser = id;
+  const [cvalue,setValue] = useState(value);
+
+  const call = (e : any) => {
+    handleClick([pos,posrow,e.target.value],id); 
+    setValue(e.target.value);
+  }
+
+  return(
+  <>
+  <input className="e-input" type="text" id="text" name="textselected" onChange={(e) => call(e)}
+  placeholder="..." value={cvalue}/>
+  </>
+  );
+}
+
 
 
 interface propsInterface {
@@ -165,6 +194,19 @@ const Table = ({props, onClick} : TableProps) => {
     })
   }
 
+  const pagination = () => {
+    return 
+  }
+
+  const getButtons = (info : any, j : any) => {
+    if (tableProps.header[0] != "matrix"){
+      return (<td style={{width : "8%", paddingTop : "2%", border: "2px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> <Actions props={tableProps.buttons} id={parseInt(info[0])} message={tableProps.buttons_message} onClick={handleClick}/> </td>)
+      }
+    else{
+      return (<td style={{width : "8%", paddingTop : "2%", border: "2px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> <Actions props={tableProps.buttons} id={j} message={tableProps.buttons_message} onClick={handleClick}/> </td>)
+    }
+  }
+
   return (
     <>
     <div className="items-center" >
@@ -172,28 +214,55 @@ const Table = ({props, onClick} : TableProps) => {
       <tbody key="tbody">
       <tr key="tr1">
       {tableProps.header.map((header,j) =>
-      
-      <td key={j} style={{width : "8%", paddingTop : "2%",border: "2px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}>{header} </td>
+      {
+        if (tableProps.header[0][0] == "matrix" && j>0){
+          if (j==1){
+            return (<td key={j} style={{width : "8%", paddingTop : "2%",border: "2px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}>{header} </td>)
+          }
+          else{
+            const types = ["tipo1","tipo2"]
+            console.log(header)
+            if (tableProps.info[0][1].includes("input")){
+              return (<td key={j} style={{width : "8%", paddingTop : "2%",border: "2px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}>{header[0]} <Dropdown key={"inputnew"+j} setValues={handleClick} j={[-1,j-1]} opt={types} current={header[1]}/>  </td>)
+            }
+            else{
+              return (<td key={j} style={{width : "8%", paddingTop : "2%",border: "2px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}>{header[0]} {header[1]} </td>)
+            }
+          }      
+        }
+        if (tableProps.header[0] != "matrix"){
+          return (<td key={j} style={{width : "8%", paddingTop : "2%",border: "2px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}>{header} </td>)
+        }
+      }
+       
       )}
       </tr>
 
       {tableProps.info.map((info,j) =>{
-        
+
         if (getPages[j] == currentPage){
           return (<tr key={"tr2"+j}>
 
 
           {info.map((value,i) => 
+
             
-            {if (value != "date"){
+            { //console.log(value);
+              //console.log(info);
+              if (value != "date" && !value.toString().includes("input")){
               return (<td key={"info_"+i+"_"+j} style={{width : "8%", paddingTop : "2%", border: "1px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> {value} </td>)
+            }
+            else if (value.includes("input")){
+              const val = value.split(/(\s+)/);
+              return (<td key={"input_"+i+"_"+j} style={{width : "8%", paddingTop : "2%", border: "1px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> <Text value={val[2]} pos={i} posrow={j} id={parseInt(info[0])} onClick={handleClick}/> </td>)
             }
             else{
               return (<td key={"date_"+i+"_"+j} style={{width : "8%", paddingTop : "2%", border: "1px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> <DateSelector pos={i} id={parseInt(info[0])} onClick={handleClick}/> </td>)
             }
             }
           )}
-          <td style={{width : "8%", paddingTop : "2%", border: "2px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> <Actions props={tableProps.buttons} id={parseInt(info[0])} message={tableProps.buttons_message} onClick={handleClick}/> </td>
+
+          {getButtons(info,j)}
 
           </tr>);
         }
@@ -203,7 +272,9 @@ const Table = ({props, onClick} : TableProps) => {
       </tbody>
       </table>
 
-      <div style={{ display: 'flex', paddingTop : "2%", paddingLeft : "5%"}}>
+
+
+      {tableProps.header[0] != "matrix" && <div style={{ display: 'flex', paddingTop : "2%", paddingLeft : "5%"}}>
 
       {directionalButton("PREV")}
 
@@ -216,7 +287,7 @@ const Table = ({props, onClick} : TableProps) => {
         placeholder = "5"
         values={[]}
       />
-      </div>
+      </div>}
 
       </div>
       </>

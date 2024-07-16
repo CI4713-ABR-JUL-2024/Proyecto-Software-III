@@ -10,11 +10,11 @@ RUN npm install next
 
 RUN npm i
 
+RUN apk add git
+
 COPY . .
 
 RUN npx prisma generate
-
-RUN apk add git
 
 EXPOSE 3000
 
