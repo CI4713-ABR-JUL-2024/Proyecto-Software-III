@@ -109,7 +109,7 @@ export const createKeyResult = async (
     const keyResultsByObjective = await prisma.keyResult.findMany({
       where: {
         id: {
-          in: arrayForEach.map((item) => item.keyResult_id).filter((item) => item !== null)
+          in: arrayForEach.map((item) => item.keyResult_id).filter((item): item is number => item !== null) as number[]
         }
       },
     });
