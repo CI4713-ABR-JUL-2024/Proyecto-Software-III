@@ -12,7 +12,7 @@ const LoadingPage = PageTable.LoadingPage;
 const NoPermissionsPage = PageTable.NoPermissionsPage;
 import { useSearchParams } from "next/navigation";
 
-import settings from './settings.json';
+import settings from './info.json';
 
 export default function ObjectiveDetails() {
   //const [tableInfo, setTableInfo] = 

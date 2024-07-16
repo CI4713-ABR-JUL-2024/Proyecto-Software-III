@@ -252,7 +252,14 @@ const TablePage = ({information,data,role,buttons,click,search,save,editF,delete
       e = editingMatrix;
     }
 
-    if (importing.buttons_message[e] == "Edit"){
+    if (importing.name == "matrix" && importing.buttons_message[e] == "Edit"){
+      
+      console.log("EDITING THE LINE OF THE MATRIX");
+      console.log(e)
+      console.log(id)
+    }
+
+    if (importing.buttons_message[e] == "Edit" && importing.name != "matrix"){
       setEdit(true);
       setEditing(id);
       console.log(propsc.info)
@@ -271,7 +278,7 @@ const TablePage = ({information,data,role,buttons,click,search,save,editF,delete
       setValuesOf(found);
       console.log(valuesOf)
     }
-    if (importing.buttons_message[e] == "Delete"){
+    if (importing.buttons_message[e] == "Delete" && importing.name != "matrix"){
       console.log("deleting organization")
       setModalOpen(true);
       setDeleteID(id);
@@ -339,7 +346,7 @@ const TablePage = ({information,data,role,buttons,click,search,save,editF,delete
                     
         <Table props={propsc} onClick={handleClick}/>
 
-        {importing.name == "matrix" && 
+        {importing.name == "matrix NO PASA ELIMINAR" && 
             <button onClick={(p) => handleClick(e,-1)}
               className="ml-5 bg-[#3A4FCC] text-white font-bold py-2 px-4 rounded-full">{e}</button>
         }

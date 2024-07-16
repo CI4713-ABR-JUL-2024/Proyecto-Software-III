@@ -12,7 +12,7 @@ const LoadingPage = PageTable.LoadingPage;
 const NoPermissionsPage = PageTable.NoPermissionsPage;
 import { useSearchParams } from "next/navigation";
 
-import settings from './settings.json';
+import settings from './info.json';
 
 export default function Matrix() {
   //const [tableInfo, setTableInfo] = 
@@ -23,7 +23,7 @@ export default function Matrix() {
   //falta lo de los parametros que se pasan por el url aqui y en la otra pagina de objectivedetails
 
 
-  var iniciativas = ["matrix","Iniciativas / Resultados Clave",["Iniciativa 1","float"],["Iniciativa 2","float"],["Iniciativa 3","float"],["Iniciativa 4","float"]]
+  var iniciativas = [["matrix"],["Iniciativas / Resultados Clave"],["Iniciativa 1","float"],["Iniciativa 2","float"],["Iniciativa 3","float"],["Iniciativa 4","float"]]
   var iniciativas2 = ["matrix","Iniciativas / Resultados Clave","Iniciativa 1","Iniciativa 2","Iniciativa 3","Iniciativa 4"]
   
   const resultadosClave = ["Resultado 1","Resultado 2","Resultado 3","Resultado 4"]
@@ -69,6 +69,29 @@ export default function Matrix() {
     return nextInfo;
   }
 
+  const updateRow = (editing : any, row : number) => {
+    console.log(tableInfo);
+    const nextInfo = tableInfo.map((c, r) => {
+      console.log(r==row)
+      const x = c.map((p,s) => {
+        if (p.includes("input") && editing == false && r == row){
+          const val = p.split(/(\s+)/);
+          return val[2];
+        }
+        else if (editing && r==row && s>0){
+          return "input "+p;
+        }
+        else{
+          return p
+        }
+      })
+      return x
+    });
+    console.log(nextInfo);
+    return nextInfo;
+  }
+
+
   function updateInfo(value : string,row : number,col : number) {
     console.log(value)
     console.log(row)
@@ -106,8 +129,8 @@ export default function Matrix() {
 
 
   useEffect(() => {
-    settings.matrix.tableHeader = iniciativas2;
-    console.log(settings.matrix.tableHeader)
+    settings.matrix.tableHeader = iniciativas;
+    console.log(settings.matrix.tableHeader);
     if (cookies.access_token) {
       try {
         const decoded = jwt.decode(cookies.access_token, {}) as JwtPayload;
@@ -159,7 +182,7 @@ export default function Matrix() {
 
     var Z = S.tableHeader
 
-    //Z[pos+1][1] = value;
+    Z[pos+1][1] = value;
 
     //Z[pos+1][1] = value;
     console.log(iniciativas);
@@ -172,37 +195,48 @@ export default function Matrix() {
   const handleClick = async (e: any,id: any) => {
     console.log(e)
     console.log(id)
-    if (e == -1 && id=="back"){
-      console.log("backtopage");
-      const name = "objetivo"
-      const id = "12"
-      router.push(`/objective_details?name=${name}&id=${id}`);
-    }
-    if (e == "Guardar"){
-      //se esta editando
-      setTableInfo(updateTable(true))
-    }
-    else if (e == "Editar"){
-      //se esta guardando
-      console.log(S)
-      setTableInfo(updateTable(false))
-
-    }
-    else{
-      if (typeof id === 'object'){
-        //header que id sea arreglo
-        //headerTypes[id[1]] = e
-        console.log("header")
-        setS(updateType(id[1],e))
-        console.log(S);
-        
+    if (typeof e === 'number' && typeof id === 'number'){
+      if (e == 0){
+        setTableInfo(updateRow(true,id));
+        console.log(tableInfo);
       }
       else{
-        console.log("val of matrix")
-        const col = e[0];
-        const row = e[1];
-        const value = e[2];
-        updateInfo(value,row,col);
+        setTableInfo(updateRow(false,id));
+      }
+    }
+    else{
+      if (e == -1 && id=="back"){
+        console.log("backtopage");
+        const name = "objetivo"
+        const id = "12"
+        router.push(`/objective_details?name=${name}&id=${id}`);
+      }
+      if (e == "Guardar"){
+        //se esta editando
+        setTableInfo(updateTable(true))
+      }
+      else if (e == "Editar"){
+        //se esta guardando
+        console.log(S)
+        setTableInfo(updateTable(false))
+
+      }
+      else{
+        if (typeof id === 'object'){
+          //header que id sea arreglo
+          //headerTypes[id[1]] = e
+          console.log("header")
+          setS(updateType(id[1],e))
+          console.log(S);
+          
+        }
+        else{
+          console.log("val of matrix")
+          const col = e[0];
+          const row = e[1];
+          const value = e[2];
+          updateInfo(value,row,col);
+        }
       }
     }
     console.log("HANDLING")
@@ -316,7 +350,7 @@ export default function Matrix() {
     console.log(role);
     console.log(role === 'admin')
     if (role === 'admin' || role === 'project_leader'){
-      return(<TablePage information={S} data={tableInfo} buttons={[]}
+      return(<TablePage information={S} data={tableInfo} buttons={[FaPen,FaPen]}
         click = {handleClick} search={onSearch} save={onSave} editF={onEdit} deleteF={onDelete} role={role} subtitle={""}/>)
     }
     else if (role === ''){

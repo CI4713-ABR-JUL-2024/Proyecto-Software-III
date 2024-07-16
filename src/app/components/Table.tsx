@@ -198,6 +198,15 @@ const Table = ({props, onClick} : TableProps) => {
     return 
   }
 
+  const getButtons = (info : any, j : any) => {
+    if (tableProps.header[0] != "matrix"){
+      return (<td style={{width : "8%", paddingTop : "2%", border: "2px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> <Actions props={tableProps.buttons} id={parseInt(info[0])} message={tableProps.buttons_message} onClick={handleClick}/> </td>)
+      }
+    else{
+      return (<td style={{width : "8%", paddingTop : "2%", border: "2px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> <Actions props={tableProps.buttons} id={j} message={tableProps.buttons_message} onClick={handleClick}/> </td>)
+    }
+  }
+
   return (
     <>
     <div className="items-center" >
@@ -206,12 +215,13 @@ const Table = ({props, onClick} : TableProps) => {
       <tr key="tr1">
       {tableProps.header.map((header,j) =>
       {
-        if (tableProps.header[0] == "matrix" && j>0){
+        if (tableProps.header[0][0] == "matrix" && j>0){
           if (j==1){
             return (<td key={j} style={{width : "8%", paddingTop : "2%",border: "2px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}>{header} </td>)
           }
           else{
             const types = ["tipo1","tipo2"]
+            console.log(header)
             if (tableProps.info[0][1].includes("input")){
               return (<td key={j} style={{width : "8%", paddingTop : "2%",border: "2px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}>{header[0]} <Dropdown key={"inputnew"+j} setValues={handleClick} j={[-1,j-1]} opt={types} current={header[1]}/>  </td>)
             }
@@ -237,7 +247,8 @@ const Table = ({props, onClick} : TableProps) => {
           {info.map((value,i) => 
 
             
-            { console.log(value)
+            { //console.log(value);
+              //console.log(info);
               if (value != "date" && !value.toString().includes("input")){
               return (<td key={"info_"+i+"_"+j} style={{width : "8%", paddingTop : "2%", border: "1px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> {value} </td>)
             }
@@ -250,7 +261,8 @@ const Table = ({props, onClick} : TableProps) => {
             }
             }
           )}
-          <td style={{width : "8%", paddingTop : "2%", border: "2px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> <Actions props={tableProps.buttons} id={parseInt(info[0])} message={tableProps.buttons_message} onClick={handleClick}/> </td>
+
+          {getButtons(info,j)}
 
           </tr>);
         }
