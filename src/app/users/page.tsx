@@ -53,7 +53,7 @@ export default function UsersTable() {
     }
 
     const [userTable, setUserTable] = useState(tableProp);
-    
+
     useEffect(() => {
         //console.log("TOKEN")
         //console.log(cookies.access_token);

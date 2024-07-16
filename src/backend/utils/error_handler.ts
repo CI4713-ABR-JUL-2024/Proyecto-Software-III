@@ -73,7 +73,14 @@ const error_message_dict: error_message_dictionary = {
   '0021': 'Error eliminando detalles de objetivo',
   '0022': 'Error buscando detalles de objetivo',
   '0023': 'Error listando detalles de objetivos',
-  '0024': 'Error'
+  '0024': 'Error creando nuevo objetivo',
+  '0025': 'Error listando objetivos',
+  '0026': 'Error actualizando objetivo',
+  '0027': 'Error borrando objetivo',
+  '0028': 'Error creando nuevo okr design',
+  '0029': 'Error listando okr designs',
+  '0030': 'Error actualiazndo okr design',
+  '0031': 'Error eliminando okr design'
 };
 
 function get_message_for_code(code: string): string {
