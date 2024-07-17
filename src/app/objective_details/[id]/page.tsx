@@ -26,6 +26,7 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
   const router = useRouter();
   const [tableInfo, setTableInfo] = useState<Array<Array<string>>>([]);
   const [iniciative, setIniciative] = useState<IniciativeProps>();
+  const [objetive, setObjetive] = useState();
   const fetchKeyResult = async () => {
     try {
       console.log('params:', params.id);
@@ -85,17 +86,36 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
   }, []);
 
   const createIniciative = async(name: string) => {
-    const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/iniciativeType', {
+    console.log('Creando iniciativa')
+    console.log(name)
+    await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/iniciativeType', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${cookies.access_token}`,
       },
-      body: JSON.stringify({name}),
-    }).then((res) => res.json()
-    ).then((data) => {
+      body: JSON.stringify({name: name}),
+    }).then((res) => {
+      return res.json()
+    }).then((data) => {
       setIniciative(data);
       console.log('Se creo la iniciativa')
+    });
+  }
+
+  const getDetail = async () => {
+    console.log('Obteniendo detalle del objetivo',params.id)
+    await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/objective/'+params.id, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${cookies.access_token}`,
+      },
+    }).then((res) => res.json()
+    ).then((data) => {
+      setObjetive(data);
+      console.log('Se obtuvo el detalle del objetivo')
+      console.log(data);
     });
   }
 
@@ -143,7 +163,8 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
   const onSave = async (info : Array<string>) : Promise<boolean> =>{
     //handle saving organization
 
-    createIniciative(info[3]);
+    createIniciative(info[3].toString());
+    getDetail();
     console.log(info);
     var result = false 
     const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/keyResult',{
@@ -151,8 +172,8 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
                 "Authorization": "Bearer "+cookies.access_token,
                 "type" : "text"} , // se pasa la contrasena encriptada
       body : JSON.stringify({keyResult: info[1], keyIndicator: info[2], iniciative: info[3],
-        iniciativeType: iniciative, iniciativeType_id: iniciative!!.id, objetiveDetail: params.id}
-      ),})
+        iniciativeType: iniciative, iniciativeType_id: iniciative!!.id.toString(), objetiveDetail: objetive}
+      )})
       .then((res) => {
         return res.json();
       })
