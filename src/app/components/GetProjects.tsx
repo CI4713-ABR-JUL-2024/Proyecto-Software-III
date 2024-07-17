@@ -38,7 +38,7 @@ export default function ProjectsTable({
   const [approachList, setApproachList] = useState<any>([]);
   const [organizationList, setOrganizationList] = useState<any>([]);
   const [addApproach, setAddApproach] = useState(false);
-  const [trimVal, setTrimVal] = useState(false);
+  const [trimVal, setTrimVal] = useState(true);
 
   const router = useRouter();
 
@@ -50,6 +50,7 @@ export default function ProjectsTable({
       setErrorCreatingProject(true);
       return;
     }
+    setTrimVal(false);
     const trimestresValidos = ["enero-marzo", "febrero-abril", "marzo-mayo", "abril-junio",
       "mayo-julio", "junio-agosto", "julio-septiembre", "agosto-octubre", "septiembre-noviembre",
       "octubre-diciembre","noviembre-enero","diciembre-febrero"
@@ -57,10 +58,10 @@ export default function ProjectsTable({
     const trim_min = trimester.toLowerCase()
     for(var i =0; i<trimestresValidos.length; i++){
       if(trimestresValidos[i]==trim_min){
-        setTrimVal(true)
-        break
+        setTrimVal(true);
+        break;
       }
-      return
+      return;
     }
     setAddProject(false);
     console.log(trimester, year, organization, approach, area);
