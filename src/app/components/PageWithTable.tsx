@@ -12,7 +12,12 @@ import DeleteModal from "./DeleteModal"
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import Select from "react-dropdown-select";
 import Dropdown from "../components/Dropdown";
+import { cookies } from "next/headers";
 
+interface IniciativeProps {
+  id: number,
+  name: string,
+}
 
 interface AddProps {
   role : string,
@@ -25,6 +30,8 @@ interface AddProps {
   handleClosing : any,
 }
 
+
+
 const Add = ({role, ID, valuesOf, placeholders,ids,types,save,handleClosing} : AddProps) => {
   const pc = placeholders;
   const newid = ID;
@@ -33,8 +40,11 @@ const Add = ({role, ID, valuesOf, placeholders,ids,types,save,handleClosing} : A
   const onSave = save;
   const [info,setInfo] = useState(valuesOf);
   const [errorCreatingProject, setErrorCreatingProject] = useState(false);
+  const [cookies] = useCookies(['access_token']);
+  const [iniciatives, setIniciatives] = useState<Array<IniciativeProps>>([]);
 
-  function handleEdition(value : string,index : number) {
+
+  function handleEdition(value : string,index : number, list:any) {
     console.log(value)
     console.log(index)
     const nextInfo = info.map((c, i) => {
@@ -80,14 +90,37 @@ const Add = ({role, ID, valuesOf, placeholders,ids,types,save,handleClosing} : A
               </div>)
     }
   }
+  const getIniciatives = async () => {
+    console.log('Obteniendo las iniciativas')
+    await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/initiativeType', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${cookies.access_token}`,
+      },
+    }).then((res) => res.json()
+    ).then((data) => {
+      console.log(data);
+      setIniciatives(data);
+    });
+  }
+
+  function initiativesNames(list: any) {  
+    const listNames = list.map((item: any) => item.name);
+    return listNames;
+  }
 
   function mapping(){
     console.log(pc)
+    getIniciatives();
+    console.log(iniciatives[0])
+
     var found : Array<any> = []
     pc.map((B,j) => {
       if (B == "Tipo de Iniciativa"){
         //si esto existe hacer un get de las iniciativas que existen y pasarlas al dropdown
-        const iniciativas = ["iniciativa1"]
+        const iniciativas = initiativesNames(iniciatives)
+        console.log(iniciativas)
         found.push(
         <div key={"inputdiv"+j}>
         <Dropdown key={"inputnew"+j} current={iniciativas[0]} setValues={handleEdition} j={j+1} opt={iniciativas}/> 
@@ -100,18 +133,18 @@ const Add = ({role, ID, valuesOf, placeholders,ids,types,save,handleClosing} : A
         found.push(
         <div key={"inputdiv"+j}>
         <input 
-            key={"inputnew"+j}
-            id={id[j+1]+j}
-            type={type[j+1]}
-            value={info[j+1]}
-            placeholder={B}
-            className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2.5" 
-            onChange={(e) => { handleEdition(e.target.value,j+1) }}
-            required
+          key={"inputnew"+j}
+          id={id[j+1]+j}
+          type={type[j+1]}
+          value={info[j+1]}
+          placeholder={B}
+          className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2.5" 
+          onChange={(e) => { handleEdition(e.target.value,j+1,iniciatives) }}
+          required
         />
         </div>
-        )
-    }
+       )
+      }
       
     })
     return found;
@@ -215,6 +248,7 @@ const TablePage = ({information,data,role,buttons,click,search,save,editF,delete
   const [text, setText] = useState("¿Estás seguro de eliminar la organización?");
   const [deleteID,setDeleteID] = useState(0);
   const router = useRouter();
+  const [cookies] = useCookies(['access_token']);
 
   const propsc = {
     header : importing.tableHeader , 
@@ -291,6 +325,7 @@ const TablePage = ({information,data,role,buttons,click,search,save,editF,delete
   }
 
   const onSave = async (info : Array<string>) =>{
+    console.log("ABRE SAVE")
     const a = await save(info);
     if (a == true){
       setAdd(false);

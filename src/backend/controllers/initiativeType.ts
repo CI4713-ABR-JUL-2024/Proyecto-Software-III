@@ -105,12 +105,38 @@ const update_initiative = async (
   }
 };
 
+const delete_initiative = async (
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) => {
+  try {      
+
+    const accessToken = headers().get('Authorization');
+    if (!accessToken) throw new Error('No autorizado');
+
+    let id = parseInt(params.id);
+    const deleted_initiative = await initiativeService.delete_initiative(
+      id,
+      accessToken
+    );
+
+    return deleted_initiative;
+  } catch (error: any) {
+    const handle_err: error_object = handle_error_http_response(error, '0021');
+    throw new custom_error(
+      handle_err.error_message,
+      error.issues ?? error.meta,
+      handle_err.error_code,
+      handle_err.status
+    );
+  }
+};
 
 
 export const initiativeController = {
   post_initiative,
   get_initiatives,
-  update_initiative
-
+  update_initiative,
+  delete_initiative
 };
 

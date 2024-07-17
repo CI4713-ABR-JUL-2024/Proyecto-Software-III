@@ -6,7 +6,7 @@ import { create_log } from './log';
 import { TInitiative_create_object_body } from '../validators/initiativeType';
 import { add_object_to_array, add_property } from '../utils/utils';
 import { initiative_body_update } from '../interfaces/initiativetype';
-
+import { checkAuth } from './objectiveDetail';
 
 export const create_initiative = async (body: TInitiative_create_object_body, token: string | null) => {
   try {
@@ -122,12 +122,27 @@ export const update_initiative = async (id: number, body: initiative_body_update
   }
 };
 
+export const delete_initiative = async (id: number, token: string) => {
+  try {
+    checkAuth(token);  
 
+    const deleted_initiative = await prisma.initiativeType.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    return deleted_initiative;
+  } catch (error) {
+    throw error;
+  }
+};
 
 
 
 export const initiativeService = {
   create_initiative,
   list_initiatives,
-  update_initiative
+  update_initiative,
+  delete_initiative
 };

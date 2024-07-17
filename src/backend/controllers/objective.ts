@@ -172,9 +172,31 @@ const delete_objective = async (
     }
   };
 
+  const get_objective = async (
+    req: NextRequest,
+    { params }: { params: { id: string } }
+  ) => {
+    try {
+      let id = parseInt(params.id); 
+  
+      const objective = await objectiveService.get_objective(id);
+  
+      return objective;
+    } catch (error: any) {
+      const handle_err: error_object = handle_error_http_response(error, '0022');
+      throw new custom_error(
+        handle_err.error_message,
+        handle_err.error_message_detail,
+        handle_err.error_code,
+        handle_err.status
+      );
+    }
+  };
+
 export const objectiveController = {
   post_objective,
   get_objectives,
+  get_objective,
   update_objective,
   update_completed_objective,
   delete_objective,

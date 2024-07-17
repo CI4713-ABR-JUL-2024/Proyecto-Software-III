@@ -497,7 +497,7 @@ export default function ProjectsTable({
         )}
         {!trimVal && (
           <p className="text-red-500">
-            Se debe ingresar un periodo de tres meses sin espacios, pj "enero-marzo"
+            Se debe ingresar un periodo de tres meses sin espacios, pj &quot;enero-marzo&quot;
           </p>
         )}
         <ApproachModal isOpen={addApproach} setIsOpen={setAddApproach} />
