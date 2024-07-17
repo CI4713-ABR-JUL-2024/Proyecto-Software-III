@@ -11,6 +11,7 @@ import { error_object } from '../interfaces/error';
 
 import {
   TKeyOrganizationCreateObjectBody,
+  TKeyOrganizationUpdateObjectBody,
   TMatrixKeyResultsUpdateBody
 } from '../validators/keyResult';
 
@@ -505,12 +506,114 @@ const updateMatrixKeyResults = async (id: number, body: TMatrixKeyResultsUpdateB
 
 }
 
+export const updateKeyResults = async (
+  id: number,
+  data: TKeyOrganizationUpdateObjectBody,
+  token: string
+) => {
+  try {
+    const userWithToken = verifyJwt(token);
 
+    if (!userWithToken) {
+      const handle_err: error_object = handle_error_http_response(
+        new Error("Error en el token"),
+        "0000"
+      );
+      throw new custom_error(
+        handle_err.error_message,
+        handle_err.error_message_detail,
+        handle_err.error_code,
+        handle_err.status
+      );
+    }
+
+    if (!arrayOfRolesAdmitted.includes(userWithToken.role_name)) {
+      const handle_err: error_object = handle_error_http_response(
+        new Error(
+          "Error no posee los permisos adecuados para realizar esta acción"
+        ),
+        "0000"
+      );
+      throw new custom_error(
+        handle_err.error_message,
+        handle_err.error_message_detail,
+        handle_err.error_code,
+        handle_err.status
+      );
+    }
+
+    // Todos los objectives details asociados al id
+    const allObjectivesDetail = await prisma.keyResult.findMany({
+      select: {
+        id: true, // Selecciona el campo 'id' de KeyResult
+        keyResult: true, // Selecciona el campo 'keyResult' de KeyResult
+        objectiveDetail: {
+          select: {
+            objective_id: true, // Selecciona el campo 'objective_id' de ObjectiveDetail
+          },
+        },
+      },
+      where: {
+        id, // Filtra KeyResult basado en su 'id'
+      },
+    });
+
+    if (allObjectivesDetail.length === 0){
+
+      const handle_err: error_object = handle_error_http_response(
+        new Error('No existe el keyResult con ese id'),
+        '0024'
+      );
+      throw new custom_error(
+        handle_err.error_message,
+        handle_err.error_message_detail,
+        handle_err.error_code,
+        handle_err.status
+      );
+    }
+
+    if(allObjectivesDetail[0].objectiveDetail.length === 0){
+      const handle_err: error_object = handle_error_http_response(
+        new Error('El keyResult no tiene objectiveDetail asociados'),
+        '0024'
+      );
+      
+      throw new custom_error(
+        handle_err.error_message,
+        handle_err.error_message_detail,
+        handle_err.error_code,
+        handle_err.status
+      );
+    }
+
+
+    const [{ keyResult, objectiveDetail }] = allObjectivesDetail;
+    const objective_ids = objectiveDetail.map((elem) => elem.objective_id);
+
+    const result = await prisma.keyResult.updateMany({
+      where: {
+        keyResult,
+        objectiveDetail: {
+          some: {
+            objective_id: {
+              in: objective_ids,
+            },
+          },
+        },
+      },
+      data,
+    });
+
+    return {"rows_updated": result.count};
+  } catch (error) {
+    throw error;
+  }
+};
     
-
 export const keyResultService = {
     createKeyResult,
     getKeyResultsByObjectiveDistinct,
     getMatrixKeyResults,
     updateMatrixKeyResults,
+    updateKeyResults,
 };
