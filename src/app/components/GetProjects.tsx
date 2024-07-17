@@ -38,6 +38,7 @@ export default function ProjectsTable({
   const [approachList, setApproachList] = useState<any>([]);
   const [organizationList, setOrganizationList] = useState<any>([]);
   const [addApproach, setAddApproach] = useState(false);
+  const [trimVal, setTrimVal] = useState(false);
 
   const router = useRouter();
 
@@ -48,6 +49,18 @@ export default function ProjectsTable({
       console.error("Por favor completa todos los campos.");
       setErrorCreatingProject(true);
       return;
+    }
+    const trimestresValidos = ["enero-marzo", "febrero-abril", "marzo-mayo", "abril-junio",
+      "mayo-julio", "junio-agosto", "julio-septiembre", "agosto-octubre", "septiembre-noviembre",
+      "octubre-diciembre","noviembre-enero","diciembre-febrero"
+    ]
+    const trim_min = trimester.toLowerCase()
+    for(var i =0; i<trimestresValidos.length; i++){
+      if(trimestresValidos[i]==trim_min){
+        setTrimVal(true)
+        break
+      }
+      return
     }
     setAddProject(false);
     console.log(trimester, year, organization, approach, area);
@@ -479,6 +492,11 @@ export default function ProjectsTable({
         {errorCreatingProject && (
           <p className="text-red-500">
             Por favor completa todos los campos necesarios.
+          </p>
+        )}
+        {!trimVal && (
+          <p className="text-red-500">
+            Se debe ingresar un periodo de tres meses sin espacios, pj "enero-marzo"
           </p>
         )}
         <ApproachModal isOpen={addApproach} setIsOpen={setAddApproach} />
