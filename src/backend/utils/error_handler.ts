@@ -76,6 +76,7 @@ const error_message_dict: error_message_dictionary = {
   '0024': 'Error creando nuevo objetivo',
   '0025': 'Error listando objetivos',
   '0026': 'Error actualizando objetivo',
+  '0032': 'Error actualizando el stado del objetivo',
   '0027': 'Error borrando objetivo',
   '0028': 'Error creando nuevo okr design',
   '0029': 'Error listando okr designs',

@@ -26,6 +26,7 @@ export const create_objective = async (
         okrDesignId: body.okrDesignId 
       },
     });
+    console.log(userWithToken);
 
     const body_log = {
       user_id: userWithToken?.id,
@@ -163,6 +164,48 @@ export const list_objectives = async (
     }
   };
 
+  export const update_completed_objective = async (id: number, token: string | null) => {
+    try {
+      const read_objective = await prisma.objective.findFirst({
+        where: {
+          id: id,
+        },
+      });
+  
+      if (!read_objective) {
+        throw new Error('Objective does not exists');
+      }
+  
+      let userWithToken;
+      
+      if (token) {
+        userWithToken = verifyJwt(token);
+      }
+
+      const value = !read_objective.completed;
+
+   
+      const updated_objective = await prisma.objective.update({
+      where: { id: id },
+      data: { completed: value },
+     });
+
+      const body_log = {
+        user_id:userWithToken?.id,
+        module:"Objective",
+        event:" update_completed_objective",
+        date: new Date()
+      }
+      const log = await create_log(body_log);
+  
+      return updated_objective;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+
+
   export const delete_objective = async (id: number, token: string) => {
     try {
       const userWithoutPass = verifyJwt(token);
@@ -206,4 +249,4 @@ export const list_objectives = async (
       throw error;
     }
   };
-  export const objectiveService = {update_objective, list_objectives, create_objective, delete_objective, get_objective}
+  export const objectiveService = {update_objective, list_objectives, update_completed_objective,create_objective, delete_objective, get_objective}
