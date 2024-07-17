@@ -85,7 +85,7 @@ const Add = ({role, ID, valuesOf, placeholders,ids,types,save,handleClosing} : A
     console.log(pc)
     var found : Array<any> = []
     pc.map((B,j) => {
-      if (B == "Tipo de Iniciativa"){
+      /*if (B == "Tipo de Iniciativa"){
         //si esto existe hacer un get de las iniciativas que existen y pasarlas al dropdown
         const iniciativas = ["iniciativa1"]
         found.push(
@@ -94,24 +94,24 @@ const Add = ({role, ID, valuesOf, placeholders,ids,types,save,handleClosing} : A
         </div>
         )
       }
-      else {
-        console.log(B)
-        console.log(j)
-        found.push(
-        <div key={"inputdiv"+j}>
-        <input 
-            key={"inputnew"+j}
-            id={id[j+1]+j}
-            type={type[j+1]}
-            value={info[j+1]}
-            placeholder={B}
-            className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2.5" 
-            onChange={(e) => { handleEdition(e.target.value,j+1) }}
-            required
-        />
-        </div>
-        )
-    }
+      else {*/
+      console.log(B)
+      console.log(j)
+      found.push(
+      <div key={"inputdiv"+j}>
+      <input 
+          key={"inputnew"+j}
+          id={id[j+1]+j}
+          type={type[j+1]}
+          value={info[j+1]}
+          placeholder={B}
+          className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2.5" 
+          onChange={(e) => { handleEdition(e.target.value,j+1) }}
+          required
+      />
+      </div>
+      )
+    //}
       
     })
     return found;
