@@ -91,6 +91,7 @@ model Objective {
   objectiveDetails ObjectiveDetail[]
   okrDesignId       Int                // New field for foreign key
   okrDesign         OkrDesing          @relation(fields: [okrDesignId], references: [id])
+  completed   Boolean            @default(false)
 }
 model OkrDesing {
   id          Int      @id @default(autoincrement())
