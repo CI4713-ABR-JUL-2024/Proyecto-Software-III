@@ -20,4 +20,16 @@ VALUES
     '$2b$10$rTdR9c0EfqT0QlqZDdzgMOGPWvTeEve1IrLE/4Sefj4VefYSJd/4q', 
     '00000000', 
     'admin'
-)
+);
+
+INSERT INTO public."User"
+("name", last_name, email, "password", telephone, role_name)
+VALUES
+(
+    'leader', 
+    'leader', 
+    'leader@leader.com', 
+    '$2b$10$rTdR9c0EfqT0QlqZDdzgMOGPWvTeEve1IrLE/4Sefj4VefYSJd/4q', 
+    '1111111', 
+    'project_leader'
+);
