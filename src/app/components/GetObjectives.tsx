@@ -48,7 +48,8 @@ export default function ObjectivesTable({ role, objectivesInfo, projectInfo, okr
       //id position of user in info list
       //console.log(e);
       if(e == 0){
-        router.push('/objective_details');
+        const objetiveId = id[0];
+        router.push('/objective_details/'+ objetiveId);
       }
       if(e == 2){        
         console.log("Eliminar");

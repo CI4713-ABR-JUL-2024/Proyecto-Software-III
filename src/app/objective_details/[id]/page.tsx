@@ -3,29 +3,55 @@ import { use, useState } from "react";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useCookies } from 'react-cookie';
-import { FaRegUser, FaPen, FaCircle, FaTrash} from "react-icons/fa";
+import { FaBorderNone, FaPen, FaTrash} from "react-icons/fa";
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
-import { PageTable } from "../components/PageWithTable";
+import { PageTable } from "../../components/PageWithTable";
 const TablePage = PageTable.TablePage;
 const LoadingPage = PageTable.LoadingPage;
 const NoPermissionsPage = PageTable.NoPermissionsPage;
 import { useSearchParams } from "next/navigation";
 
-import settings from './info.json';
+import settings from '../info.json';
 
-export default function ObjectiveDetails() {
-  //const [tableInfo, setTableInfo] = 
-  const tableInfo = [["1","40 art publicados","# articulos","organizar","tarea"],
+export default function ObjectiveDetails({params} : {params : {id : string}}) {
+  const [role, setRole] = useState("");
+  const [cookies, setCookie] = useCookies(["access_token"]);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const [tableInfo, setTableInfo] = useState<Array<Array<string>>>([]);
+  const fetchKeyResult = async () => {
+    try {
+      console.log('params:', params.id);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/keyResult/${params.id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${cookies.access_token}`,
+        },
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Datos del keyResult:', data);
+        setTableInfo(data);
+      } else {
+        console.error('Error al obtener los datos del keyResult');
+      }
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    }
+  };
+
+
+ 
+
+
+  const tableInfoDummy = [["1","40 art publicados","# articulos","organizar","tarea"],
     ["2","40 art publicados","# articulos","organizar","tarea"],
     ["3","40 art publicados","# articulos","organizar","tarea"]];
 
   //useState<string[][]>([]);
-  const [role, setRole] = useState("");
-  const [cookies, setCookie] = useCookies(["access_token","id"]);
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
-
   const searchParams = useSearchParams();
   let property1 = searchParams.get("name");
   let property2 = searchParams.get("id");
@@ -33,7 +59,7 @@ export default function ObjectiveDetails() {
   console.log(property1);
   console.log(property2);
 
-  const subtitle = "Objetivo 3 : Este es el objetivo";
+  const subtitle = `Objetivo con el ID ${params.id}`;
 
   useEffect(() => {
     if (cookies.access_token) {
@@ -48,7 +74,7 @@ export default function ObjectiveDetails() {
     else{
       router.push("/");
     }
-    getOrganizationsData();
+    fetchKeyResult();
     
   }, []);
 
@@ -117,7 +143,7 @@ export default function ObjectiveDetails() {
     // ["ID","Nombre","País","Estado","Responsable","Teléfono","Correo electrónico"]
     console.log(info);
     var result = false 
-    const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/organization',{
+    const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'api/keyResult',{
       method: "POST" , headers : {
                 "Authorization": "Bearer "+cookies.access_token,
                 "type" : "text"} , // se pasa la contrasena encriptada
@@ -199,7 +225,7 @@ export default function ObjectiveDetails() {
     console.log(role);
     console.log(role === 'admin')
     if (role === 'admin' || role === 'project_leader'){
-      return(<TablePage information={settings.organization} data={tableInfo} buttons={[FaPen,FaPen,FaTrash]}
+      return(<TablePage information={settings.organization} data={tableInfo} buttons={[FaBorderNone,FaPen,FaTrash]}
         click = {handleClick} search={onSearch} save={onSave} editF={onEdit} deleteF={onDelete} role={role} subtitle={subtitle}/>)
     }
     else if (role === ''){
