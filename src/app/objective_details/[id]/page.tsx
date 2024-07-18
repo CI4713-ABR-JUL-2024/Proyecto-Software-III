@@ -3,10 +3,11 @@ import { use, useState } from "react";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useCookies } from 'react-cookie';
-import { FaBorderNone, FaPen, FaTrash} from "react-icons/fa";
+import { FaBorderNone, FaDiaspora, FaPen, FaTrash} from "react-icons/fa";
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
 import { PageTable } from "../../components/PageWithTable";
+
 const TablePage = PageTable.TablePage;
 const LoadingPage = PageTable.LoadingPage;
 const NoPermissionsPage = PageTable.NoPermissionsPage;
@@ -28,6 +29,7 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
   const [iniciatives, setIniciatives] = useState<Array<IniciativeProps>>([]);
   const [iniciative, setIniciative] = useState<IniciativeProps>();
   const [objetive, setObjetive] = useState();
+
   const fetchKeyResult = async () => {
     try {
       console.log('params:', params.id);
@@ -146,7 +148,7 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
     if (e == 0){
       router.push('/matrix');
       //router.push("/");
-    }
+    } 
   }
 
   const onSearch = async (value : string) => {
