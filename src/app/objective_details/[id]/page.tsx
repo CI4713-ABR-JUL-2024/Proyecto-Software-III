@@ -3,10 +3,11 @@ import { use, useState } from "react";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useCookies } from 'react-cookie';
-import { FaBorderNone, FaPen, FaTrash} from "react-icons/fa";
+import { FaBorderNone, FaDiaspora, FaPen, FaTrash} from "react-icons/fa";
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
 import { PageTable } from "../../components/PageWithTable";
+
 const TablePage = PageTable.TablePage;
 const LoadingPage = PageTable.LoadingPage;
 const NoPermissionsPage = PageTable.NoPermissionsPage;
@@ -27,6 +28,7 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
   const [tableInfo, setTableInfo] = useState<Array<Array<string>>>([]);
   const [iniciative, setIniciative] = useState<IniciativeProps>();
   const [objetive, setObjetive] = useState();
+
   const fetchKeyResult = async () => {
     try {
       console.log('params:', params.id);
@@ -88,7 +90,7 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
   const createIniciative = async(name: string) => {
     console.log('Creando iniciativa')
     console.log(name)
-    await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/iniciativeType', {
+    await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/initiativeType', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -137,7 +139,7 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
     if (e == 0){
       router.push('/matrix');
       //router.push("/");
-    }
+    } 
   }
 
   const onSearch = async (value : string) => {
