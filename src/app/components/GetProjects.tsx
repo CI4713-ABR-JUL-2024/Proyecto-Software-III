@@ -61,8 +61,11 @@ export default function ProjectsTable({
         setTrimVal(true);
         break;
       }
-      return;
+      if(i == trimestresValidos.length -1){
+        return;
+      }
     }
+    
     setAddProject(false);
     console.log(trimester, year, organization, approach, area);
     if (errorCreatingProject) {
