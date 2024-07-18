@@ -109,14 +109,13 @@ export default function StatusObjectives() {
           <div className="flex justify-between w-full p-4">
             <h3 className="text-2xl font-bold text-[#3A4FCC]">Objetivos Completados Por Proyectos</h3>
           </div>
-          {compObj.map((projObj:any)=>{
+          {compObj.map((projObj:any, index:number)=>{
             return(
-              <div className="flex flex-col">
+              <div key={index} className="flex flex-col">
                 <div className="flex flex-row rounded-md bg-blue-100 p-4 m-4 shadow-md shadow-slate-600 font-bold">
                   <p className="mr-16">{projObj.project}</p>
                   <p>{`${projObj.completed}/${projObj.count}`}</p>
                 </div>
-
               </div>
             )
           })}
