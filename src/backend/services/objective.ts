@@ -95,6 +95,20 @@ export const list_objectives = async (
     }
   };
 
+  export const get_objective = async (id: number) => {
+    try {
+      const objective = await prisma.objective.findUniqueOrThrow({
+        where: {
+          id: id,
+        },
+      });
+  
+      return objective;
+    } catch (error) {
+      throw error;
+    }
+  };
+
 
   export const update_objective = async (id: number, body: objective_body_update, token: string | null) => {
     try {
@@ -235,4 +249,4 @@ export const list_objectives = async (
       throw error;
     }
   };
-  export const objectiveService = {update_objective, list_objectives, update_completed_objective,create_objective, delete_objective}
+  export const objectiveService = {update_objective, list_objectives, update_completed_objective,create_objective, delete_objective, get_objective}

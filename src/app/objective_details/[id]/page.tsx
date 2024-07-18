@@ -3,29 +3,63 @@ import { use, useState } from "react";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useCookies } from 'react-cookie';
-import { FaRegUser, FaPen, FaCircle, FaTrash} from "react-icons/fa";
+import { FaBorderNone, FaPen, FaTrash} from "react-icons/fa";
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
-import { PageTable } from "../components/PageWithTable";
+import { PageTable } from "../../components/PageWithTable";
 const TablePage = PageTable.TablePage;
 const LoadingPage = PageTable.LoadingPage;
 const NoPermissionsPage = PageTable.NoPermissionsPage;
 import { useSearchParams } from "next/navigation";
 
-import settings from './info.json';
+import settings from '../info.json';
 
-export default function ObjectiveDetails() {
-  //const [tableInfo, setTableInfo] = 
-  const tableInfo = [["1","40 art publicados","# articulos","organizar","tarea"],
+interface IniciativeProps {
+  id: number,
+  name: string,
+}
+
+export default function ObjectiveDetails({params} : {params : {id : string}}) {
+  const [role, setRole] = useState("");
+  const [cookies, setCookie] = useCookies(["access_token"]);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const [tableInfo, setTableInfo] = useState<Array<Array<string>>>([]);
+  const [iniciatives, setIniciatives] = useState<Array<IniciativeProps>>([]);
+  const [iniciative, setIniciative] = useState<IniciativeProps>();
+  const [objetive, setObjetive] = useState();
+  const fetchKeyResult = async () => {
+    try {
+      console.log('params:', params.id);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/keyResult/${params.id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${cookies.access_token}`,
+        },
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Datos del keyResult:', data);
+        setTableInfo(data);
+      } else {
+        console.error('Error al obtener los datos del keyResult');
+      }
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    }
+  };
+
+
+ 
+
+
+  const tableInfoDummy = [["1","40 art publicados","# articulos","organizar","tarea"],
     ["2","40 art publicados","# articulos","organizar","tarea"],
     ["3","40 art publicados","# articulos","organizar","tarea"]];
 
   //useState<string[][]>([]);
-  const [role, setRole] = useState("");
-  const [cookies, setCookie] = useCookies(["access_token","id"]);
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
-
   const searchParams = useSearchParams();
   let property1 = searchParams.get("name");
   let property2 = searchParams.get("id");
@@ -33,7 +67,7 @@ export default function ObjectiveDetails() {
   console.log(property1);
   console.log(property2);
 
-  const subtitle = "Objetivo 3 : Este es el objetivo";
+  const subtitle = `Objetivo con el ID ${params.id}`;
 
   useEffect(() => {
     if (cookies.access_token) {
@@ -48,28 +82,52 @@ export default function ObjectiveDetails() {
     else{
       router.push("/");
     }
-    getOrganizationsData();
+    fetchKeyResult();
     
   }, []);
 
-  const getOrganizationsData = async () => {
-     const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/organization',{
-      method: "GET" , headers : {
-                "Authorization": "Bearer "+cookies.access_token,
-                "type" : "text"}})
-      .then(res => {
-        return res.json();
-      })
-      .then(data => {
-        console.log(data);
-        const values = handleInfo(data);
-        console.log(values);
-        //setTableInfo(values);
-        setLoading(false);       
-      }).catch(error => {
-        console.error('error', error);
-      })
-    };
+
+  const getIniciatives = async () => {
+    console.log('Obteniendo las iniciativas')
+    await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/initiativeType', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${cookies.access_token}`,
+      },
+    }).then((res) => res.json()
+    ).then((data) => {
+      console.log(data);
+      setIniciatives(data);
+    });
+  }
+
+  function matchIniciative(name: string, list:any) {
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].name == name) {
+        setIniciative(list[i]);
+      }
+    }
+    return null;
+  }
+
+
+  const getDetail = async () => {
+    console.log('Obteniendo detalle del objetivo', params.id)
+    await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/objective/'+params.id, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${cookies.access_token}`,
+      },
+    }).then((res) => res.json()
+    ).then((data) => {
+      setObjetive(data);
+      console.log('Se obtuvo el detalle del objetivo')
+      console.log(data);
+    });
+  }
+
 
   const handleInfo = (data : any) : Array<Array<string>> => {
       var infoChanged = new Array();
@@ -113,16 +171,18 @@ export default function ObjectiveDetails() {
 
   const onSave = async (info : Array<string>) : Promise<boolean> =>{
     //handle saving organization
-
-    // ["ID","Nombre","País","Estado","Responsable","Teléfono","Correo electrónico"]
+    getIniciatives();
+    getDetail();
+    matchIniciative(info[3], iniciatives);
     console.log(info);
     var result = false 
-    const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/organization',{
+    const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/keyResult',{
       method: "POST" , headers : {
                 "Authorization": "Bearer "+cookies.access_token,
                 "type" : "text"} , // se pasa la contrasena encriptada
-      body : JSON.stringify({name : info[0], country : info[1], estate : info[2], email : info[5], 
-        cellphone:info[4], personResponsible : info[3]}),})
+      body : JSON.stringify({keyResult: info[1], keyIndicator: info[2], iniciative: info[3],
+        iniciativeType: iniciative, iniciativeType_id: iniciative!!.id.toString(), objetiveDetail: objetive}
+      )})
       .then((res) => {
         return res.json();
       })
@@ -137,7 +197,6 @@ export default function ObjectiveDetails() {
           return result;
         }
       });
-    getOrganizationsData();
     console.log(tableInfo);
     return response;
   }
@@ -146,12 +205,11 @@ export default function ObjectiveDetails() {
     //handle edition
     const id = info[0]
     var result = false
-    const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/organization/'+id,{
-      method: "PUT" , headers : {
+    const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/matrix/'+params.id,{
+      method: "GET" , 
+      headers : {
                 "Authorization": "Bearer "+cookies.access_token,
-                "type" : "text"} , // se pasa la contrasena encriptada
-      body : JSON.stringify({name : info[1], country : info[2], estate : info[3], email : info[6], 
-        cellphone:info[5], personResponsible : info[4]}),})
+                "type" : "text"} ,})
       .then((res) => {
         return res.json();
       })
@@ -166,7 +224,7 @@ export default function ObjectiveDetails() {
           return result;
         }       
       });
-      getOrganizationsData();
+
       return response;
   }
   const onDelete = async (x : any) : Promise<boolean> => {
@@ -191,7 +249,6 @@ export default function ObjectiveDetails() {
           return result;
         }          
       });
-      getOrganizationsData();
       return result
   }
 
@@ -199,7 +256,7 @@ export default function ObjectiveDetails() {
     console.log(role);
     console.log(role === 'admin')
     if (role === 'admin' || role === 'project_leader'){
-      return(<TablePage information={settings.organization} data={tableInfo} buttons={[FaPen,FaPen,FaTrash]}
+      return(<TablePage information={settings.organization} data={tableInfo} buttons={[FaBorderNone,FaPen,FaTrash]}
         click = {handleClick} search={onSearch} save={onSave} editF={onEdit} deleteF={onDelete} role={role} subtitle={subtitle}/>)
     }
     else if (role === ''){
