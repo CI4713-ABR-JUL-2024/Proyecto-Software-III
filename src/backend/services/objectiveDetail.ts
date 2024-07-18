@@ -20,7 +20,7 @@ const arrayOfRolesAdmitted = [
   'agile_coach',
 ];
 
-const checkAuth = (token:string) => {
+export const checkAuth = (token:string) => {
   const userWithToken = verifyJwt(token);
 
   if (!userWithToken) {
