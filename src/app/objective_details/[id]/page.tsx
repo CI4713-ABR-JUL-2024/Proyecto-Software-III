@@ -29,6 +29,7 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
   const [iniciatives, setIniciatives] = useState<Array<IniciativeProps>>([]);
   const [iniciative, setIniciative] = useState<IniciativeProps>();
   const [objetive, setObjetive] = useState();
+  const [listOfNames, setListOfNames] = useState<Array<string>>([]);
 
   const fetchKeyResult = async () => {
     try {
@@ -113,6 +114,14 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
     return null;
   }
 
+  function getNames(list: any) {
+    var names = new Array();
+    for (var i = 0; i < list.length; i++) {
+      names.push(list[i].name);
+    }
+    setListOfNames(names);
+    return ;
+  }
 
   const getDetail = async () => {
     console.log('Obteniendo detalle del objetivo', params.id)
@@ -174,6 +183,7 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
   const onSave = async (info : Array<string>) : Promise<boolean> =>{
     //handle saving organization
     getIniciatives();
+    getNames(iniciatives);
     getDetail();
     matchIniciative(info[3], iniciatives);
     console.log(info); 
@@ -260,7 +270,7 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
     if (role === 'admin' || role === 'project_leader'){
       return(<TablePage information={settings.organization} data={tableInfo} buttons={[FaBorderNone,FaPen,FaTrash]}
         click = {handleClick} search={onSearch} save={onSave} editF={onEdit} deleteF={onDelete} role={role} subtitle={subtitle} 
-        iniciatives={["iniciativa1","iniciativa2"]}/>)
+        iniciatives={listOfNames}/>)
     }
     else if (role === ''){
       return (<LoadingPage role={role}/>) 
