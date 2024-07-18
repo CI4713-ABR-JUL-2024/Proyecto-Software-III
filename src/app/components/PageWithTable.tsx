@@ -12,6 +12,7 @@ import DeleteModal from "./DeleteModal"
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import Select from "react-dropdown-select";
 import Dropdown from "../components/Dropdown";
+import { cookies } from "next/headers";
 
 
 interface AddProps {
@@ -25,6 +26,8 @@ interface AddProps {
   handleClosing : any,
 }
 
+
+
 const Add = ({role, ID, valuesOf, placeholders,ids,types,save,handleClosing} : AddProps) => {
   const pc = placeholders;
   const newid = ID;
@@ -33,6 +36,7 @@ const Add = ({role, ID, valuesOf, placeholders,ids,types,save,handleClosing} : A
   const onSave = save;
   const [info,setInfo] = useState(valuesOf);
   const [errorCreatingProject, setErrorCreatingProject] = useState(false);
+
 
   function handleEdition(value : string,index : number) {
     console.log(value)
@@ -215,6 +219,7 @@ const TablePage = ({information,data,role,buttons,click,search,save,editF,delete
   const [text, setText] = useState("¿Estás seguro de eliminar la organización?");
   const [deleteID,setDeleteID] = useState(0);
   const router = useRouter();
+  const [cookies] = useCookies(['access_token']);
 
   const propsc = {
     header : importing.tableHeader , 
@@ -291,6 +296,7 @@ const TablePage = ({information,data,role,buttons,click,search,save,editF,delete
   }
 
   const onSave = async (info : Array<string>) =>{
+    console.log("ABRE SAVE")
     const a = await save(info);
     if (a == true){
       setAdd(false);
