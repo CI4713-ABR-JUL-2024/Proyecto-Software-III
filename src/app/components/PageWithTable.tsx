@@ -13,11 +13,13 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import Select from "react-dropdown-select";
 import Dropdown from "../components/Dropdown";
 import { cookies } from "next/headers";
+import IniciativaModal from '../components/IniciativaModal'; 
 
 interface IniciativeProps {
   id: number,
   name: string,
 }
+
 
 interface AddProps {
   role : string,
@@ -177,6 +179,10 @@ interface TableHeaderProps {
 
 const TableHeader = ({title,placeholder,handleSearchClick,setAdd,name,subtitle}:TableHeaderProps) => {
   const [searchVal, setSearchVal] = useState("");
+  const [showModal, setShowModal] = useState(false); //Modal Iniciativas
+  const toggleModal = () => {
+    setShowModal(!showModal);
+  };
   return (
   <>
   <div className="flex justify-between w-full p-4">
@@ -196,7 +202,23 @@ const TableHeader = ({title,placeholder,handleSearchClick,setAdd,name,subtitle}:
               <IoSearchCircle className="text-[#3A4FCC] w-10 h-10" />
           </button>
           <button onClick={() => setAdd(true)}
-              className="ml-5 bg-[#3A4FCC] text-white font-bold py-2 px-4 rounded-full">{name}</button>
+              className="ml-5 bg-[#3A4FCC] text-white font-bold py-2 px-4 rounded-full">{name}</button>   
+      
+          {/* Modal Iniciativas */}
+          <button
+            onClick={toggleModal}
+            className="ml-5 bg-[#3A4FCC] text-white font-bold py-2 px-4 rounded-full"
+          >
+            Iniciativas
+          </button>
+
+            {showModal && (
+              <IniciativaModal
+                isOpen={showModal}
+                setIsOpen={setShowModal}
+                
+              />
+            )}
       </div>
       }
   </div>
@@ -334,6 +356,8 @@ const TablePage = ({information,data,role,buttons,click,search,save,editF,delete
     setValuesOf(Array(importing.tableHeader.length).fill(""));
   }
 
+  
+  
   return (
     <main className="flex">
         <Sidebar role={role} />
