@@ -43,7 +43,7 @@ export default function Objectives({ params }: { params: { id: string } }) {
   const [loading, setLoading] = useState(true);
   const [objectiveList, setObjectiveList] = useState<Objective[]>([]);
   const [projectName, setProjectName] = useState('');
-  const [okrDesign, setOkrDesign] = useState<number | undefined>();
+  const [okrDesign, setOkrDesign] = useState<number>();
 
   const fetchOkrDesign = async () => {
     try {
@@ -60,8 +60,9 @@ export default function Objectives({ params }: { params: { id: string } }) {
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data.id);
+        console.log(data[0]);
         setOkrDesign(data[0].id);
+        return data[0].id;
       } else {
         console.error('Error al obtener los datos del diseño de OKR');
       }
@@ -83,7 +84,7 @@ export default function Objectives({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      await fetchOkrDesign();
+      const okrDesign = await fetchOkrDesign();
       console.log('params', params.id);
       console.log(okrDesign);
       const response = await fetch(

@@ -99,6 +99,8 @@ const Table = ({props, onClick} : TableProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   var pageNumber = Math.ceil(props.info.length/currentAmount);
 
+  console.log(props.info);
+
   useEffect(() => {
       console.log("props")
       console.log(props);
@@ -242,16 +244,16 @@ const Table = ({props, onClick} : TableProps) => {
       </tr>
 
       {tableProps.info.map((info,j) =>{
+        console.log(info);
 
         if (getPages[j] == currentPage){
           return (<tr key={"tr2"+j}>
 
-
           {info.map((value,i) => 
 
             
-            { //console.log(value);
-              //console.log(info);
+            { console.log(value);
+              console.log(info);
               if (value != "date" && !value.toString().includes("input") && !String(value).includes("priority")){
                 return (<td key={"info_"+i+"_"+j} style={{width : "8%", paddingTop : "2%", border: "1px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> {value} </td>)
               }

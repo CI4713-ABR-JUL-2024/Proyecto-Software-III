@@ -298,7 +298,7 @@ export default function ProjectsTable({
       <div className="m-10 flex flex-col w-full">
         <div className="flex justify-between w-full p-4">
           <h3 className="text-2xl font-bold text-[#3A4FCC]">
-            Portafolio de Proyetos de OKRs
+            Portafolio de Proyectos de OKRs
           </h3>
           <div className="flex w-1/3">
             <input

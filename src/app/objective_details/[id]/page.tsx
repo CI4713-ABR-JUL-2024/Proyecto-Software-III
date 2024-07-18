@@ -45,7 +45,7 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
       if (response.ok) {
         const data = await response.json();
         console.log('Datos del keyResult:', data);
-        setTableInfo(data);
+        setTableInfo(data.map((x: any) => [x.id, x.keyResult, x.keyIndicator, x.initiative, x.initiativeType_id]));
       } else {
         console.error('Error al obtener los datos del keyResult');
       }
