@@ -204,7 +204,8 @@ export default function Organizations() {
     console.log(role === 'admin')
     if (role === 'admin' || role === 'project_leader'){
       return(<TablePage information={settings.organization} data={tableInfo} buttons={[FaPen,FaTrash]}
-        click = {handleClick} search={onSearch} save={onSave} editF={onEdit} deleteF={onDelete} role={role} subtitle={""}/>)
+        click = {handleClick} search={onSearch} save={onSave} editF={onEdit} deleteF={onDelete} role={role} subtitle={""}
+        iniciatives={[]}/>)
     }
     else if (role === ''){
       return (<LoadingPage role={role}/>) 

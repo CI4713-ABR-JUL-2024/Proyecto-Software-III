@@ -395,7 +395,7 @@ export default function Matrix() {
     console.log(role === 'admin')
     if (role === 'admin' || role === 'project_leader'){
       return(<TablePage information={S} data={tableInfo} buttons={[FaPen,FaCircle]}
-        click = {handleClick} search={onSearch} save={onSave} editF={onEdit} deleteF={onDelete} role={role} subtitle={""}/>)
+        click = {handleClick} search={onSearch} save={onSave} editF={onEdit} deleteF={onDelete} role={role} subtitle={""} iniciatives={[]}/>)
     }
     else if (role === ''){
       return (<LoadingPage role={role}/>) 

@@ -28,11 +28,12 @@ interface AddProps {
   save : any,
   valuesOf : Array<string>,
   handleClosing : any,
+  iniciatives : Array<string>
 }
 
 
 
-const Add = ({role, ID, valuesOf, placeholders,ids,types,save,handleClosing} : AddProps) => {
+const Add = ({role, ID, valuesOf, placeholders,ids,types,save,handleClosing,iniciatives} : AddProps) => {
   const pc = placeholders;
   const newid = ID;
   const id = ids;
@@ -41,7 +42,6 @@ const Add = ({role, ID, valuesOf, placeholders,ids,types,save,handleClosing} : A
   const [info,setInfo] = useState(valuesOf);
   const [errorCreatingProject, setErrorCreatingProject] = useState(false);
   const [cookies] = useCookies(['access_token']);
-  const [iniciatives, setIniciatives] = useState<Array<IniciativeProps>>([]);
 
 
   function handleEdition(value : string,index : number, list:any) {
@@ -90,40 +90,19 @@ const Add = ({role, ID, valuesOf, placeholders,ids,types,save,handleClosing} : A
               </div>)
     }
   }
-  const getIniciatives = async () => {
-    console.log('Obteniendo las iniciativas')
-    await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/initiativeType', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${cookies.access_token}`,
-      },
-    }).then((res) => res.json()
-    ).then((data) => {
-      console.log(data);
-      setIniciatives(data);
-    });
-  }
-
-  function initiativesNames(list: any) {  
-    const listNames = list.map((item: any) => item.name);
-    return listNames;
-  }
 
   function mapping(){
     console.log(pc)
-    getIniciatives();
-    console.log(iniciatives[0])
 
     var found : Array<any> = []
     pc.map((B,j) => {
       if (B == "Tipo de Iniciativa"){
         //si esto existe hacer un get de las iniciativas que existen y pasarlas al dropdown
-        const iniciativas = initiativesNames(iniciatives)
-        console.log(iniciativas)
+        //const iniciativas = ["iniciativa1","iniciativa2"] //initiativesNames(iniciatives)
+        //console.log(iniciativas)
         found.push(
         <div key={"inputdiv"+j}>
-        <Dropdown key={"inputnew"+j} current={iniciativas[0]} setValues={handleEdition} j={j+1} opt={iniciativas}/> 
+        <Dropdown key={"inputnew"+j} current={iniciatives[0]} setValues={handleEdition} j={j+1} opt={iniciatives}/> 
         </div>
         )
       }
@@ -236,9 +215,10 @@ interface TablePageProps {
   editF : any,
   deleteF:any,
   subtitle : string,
+  iniciatives : Array<string>,
 }
 
-const TablePage = ({information,data,role,buttons,click,search,save,editF,deleteF,subtitle}:TablePageProps) => {
+const TablePage = ({information,data,role,buttons,click,search,save,editF,deleteF,subtitle,iniciatives}:TablePageProps) => {
   const [add, setAdd] = useState(false);
   const [edit, setEdit] = useState(false);
   const [editing, setEditing] = useState<string[] | null>(null);
@@ -372,20 +352,14 @@ const TablePage = ({information,data,role,buttons,click,search,save,editF,delete
         
         {add &&
         <Add role={role} ID={newId} valuesOf={valuesOf} placeholders={importing.placeholders} 
-                ids={importing.ids} types={importing.types} save={onSave} handleClosing={closingAddEdit}/> 
+                ids={importing.ids} types={importing.types} save={onSave} handleClosing={closingAddEdit} iniciatives={iniciatives}/> 
         }
         
         {edit && <Add role={role} ID={editing} valuesOf={valuesOf} placeholders={importing.placeholders} 
-        ids={importing.ids} types={importing.types} save={onEdit} handleClosing={closingAddEdit}/>
+        ids={importing.ids} types={importing.types} save={onEdit} handleClosing={closingAddEdit} iniciatives={iniciatives}/>
         }
                     
-        <Table props={propsc} onClick={handleClick}/>
-
-        {importing.name == "matrix NO PASA ELIMINAR" && 
-            <button onClick={(p) => handleClick(e,-1)}
-              className="ml-5 bg-[#3A4FCC] text-white font-bold py-2 px-4 rounded-full">{e}</button>
-        }
-        
+        <Table props={propsc} onClick={handleClick}/>        
 
         </div>
     </main>

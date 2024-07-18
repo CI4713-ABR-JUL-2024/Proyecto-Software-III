@@ -174,14 +174,14 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
     getIniciatives();
     getDetail();
     matchIniciative(info[3], iniciatives);
-    console.log(info);
+    console.log(info); 
     var result = false 
     const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/keyResult',{
       method: "POST" , headers : {
                 "Authorization": "Bearer "+cookies.access_token,
                 "type" : "text"} , // se pasa la contrasena encriptada
       body : JSON.stringify({keyResult: info[1], keyIndicator: info[2], iniciative: info[3],
-        iniciativeType: iniciative, iniciativeType_id: iniciative!!.id.toString(), objetiveDetail: objetive}
+        iniciativeType: info[4], iniciativeType_id: 1, objetiveDetail: "objective"}
       )})
       .then((res) => {
         return res.json();
@@ -198,7 +198,7 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
         }
       });
     console.log(tableInfo);
-    return response;
+    return result;
   }
   const onEdit = async (info : Array<string>) : Promise<boolean> => {
     console.log(info)
@@ -225,7 +225,7 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
         }       
       });
 
-      return response;
+      return result;
   }
   const onDelete = async (x : any) : Promise<boolean> => {
     //handle edition
@@ -257,7 +257,8 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
     console.log(role === 'admin')
     if (role === 'admin' || role === 'project_leader'){
       return(<TablePage information={settings.organization} data={tableInfo} buttons={[FaBorderNone,FaPen,FaTrash]}
-        click = {handleClick} search={onSearch} save={onSave} editF={onEdit} deleteF={onDelete} role={role} subtitle={subtitle}/>)
+        click = {handleClick} search={onSearch} save={onSave} editF={onEdit} deleteF={onDelete} role={role} subtitle={subtitle} 
+        iniciatives={["iniciativa1","iniciativa2"]}/>)
     }
     else if (role === ''){
       return (<LoadingPage role={role}/>) 
