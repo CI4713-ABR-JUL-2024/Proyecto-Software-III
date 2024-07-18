@@ -26,6 +26,7 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const [tableInfo, setTableInfo] = useState<Array<Array<string>>>([]);
+  const [iniciatives, setIniciatives] = useState<Array<IniciativeProps>>([]);
   const [iniciative, setIniciative] = useState<IniciativeProps>();
   const [objetive, setObjetive] = useState();
 
@@ -87,26 +88,34 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
     
   }, []);
 
-  const createIniciative = async(name: string) => {
-    console.log('Creando iniciativa')
-    console.log(name)
+
+  const getIniciatives = async () => {
+    console.log('Obteniendo las iniciativas')
     await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/initiativeType', {
-      method: 'POST',
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${cookies.access_token}`,
       },
-      body: JSON.stringify({name: name}),
-    }).then((res) => {
-      return res.json()
-    }).then((data) => {
-      setIniciative(data);
-      console.log('Se creo la iniciativa')
+    }).then((res) => res.json()
+    ).then((data) => {
+      console.log(data);
+      setIniciatives(data);
     });
   }
 
+  function matchIniciative(name: string, list:any) {
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].name == name) {
+        setIniciative(list[i]);
+      }
+    }
+    return null;
+  }
+
+
   const getDetail = async () => {
-    console.log('Obteniendo detalle del objetivo',params.id)
+    console.log('Obteniendo detalle del objetivo', params.id)
     await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/objective/'+params.id, {
       method: 'GET',
       headers: {
@@ -164,9 +173,9 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
 
   const onSave = async (info : Array<string>) : Promise<boolean> =>{
     //handle saving organization
-
-    createIniciative(info[3].toString());
+    getIniciatives();
     getDetail();
+    matchIniciative(info[3], iniciatives);
     console.log(info);
     var result = false 
     const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/keyResult',{
@@ -198,12 +207,11 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
     //handle edition
     const id = info[0]
     var result = false
-    const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/keyResult',{
-      method: "POST" , headers : {
+    const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/matrix/'+params.id,{
+      method: "GET" , 
+      headers : {
                 "Authorization": "Bearer "+cookies.access_token,
-                "type" : "text"} , 
-      body : JSON.stringify({keyResult: info[1], keyIndicator: info[2], iniciative:info[3], 
-        iniciativeType_id: info[4], objetiveDetail: [parseInt(params.id)]}),})
+                "type" : "text"} ,})
       .then((res) => {
         return res.json();
       })
