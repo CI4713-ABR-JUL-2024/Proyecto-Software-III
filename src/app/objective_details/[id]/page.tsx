@@ -100,9 +100,12 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
       },
     }).then((res) => res.json()
     ).then((data) => {
+      console.log('Se obtuvieron las iniciativas')
       console.log(data);
       setIniciatives(data);
     });
+
+    return true;
   }
 
   function matchIniciative(name: string, list:any) {
@@ -115,12 +118,8 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
   }
 
   function getNames(list: any) {
-    var names = new Array();
-    for (var i = 0; i < list.length; i++) {
-      names.push(list[i].name);
-    }
-    setListOfNames(names);
-    return ;
+    const names = list.map((item: any) => item.name);
+    return names;
   }
 
   const getDetail = async () => {
@@ -137,6 +136,7 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
       console.log('Se obtuvo el detalle del objetivo')
       console.log(data);
     });
+    return true;
   }
 
 
@@ -180,8 +180,16 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
     console.log(value);
   }
 
+  useEffect(() => {
+    if (cookies.access_token) { 
+      getIniciatives();
+    }
+  }, [cookies.access_token]); 
+
   const onSave = async (info : Array<string>) : Promise<boolean> =>{
     //handle saving organization
+    
+    console.log("iniciativas:",iniciatives);
     getIniciatives();
     getNames(iniciatives);
     getDetail();
@@ -193,7 +201,7 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
                 "Authorization": "Bearer "+cookies.access_token,
                 "type" : "text"} , // se pasa la contrasena encriptada
       body : JSON.stringify({keyResult: info[1], keyIndicator: info[2], iniciative: info[3],
-        iniciativeType: info[4], iniciativeType_id: 1, objetiveDetail: "objective"}
+        iniciativeType: info[4], iniciativeType_id: iniciative, objetiveDetail: objetive}
       )})
       .then((res) => {
         return res.json();
@@ -267,10 +275,15 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
   const page = () => {
     console.log(role);
     console.log(role === 'admin')
+    console.log(role === 'project_leader')
     if (role === 'admin' || role === 'project_leader'){
+      console.log(iniciatives)
+      console.log('esto es una', iniciatives[0])
+      console.log('esto es nombre', iniciatives[0].name)
+      console.log('lista de nombres:',listOfNames)
       return(<TablePage information={settings.organization} data={tableInfo} buttons={[FaBorderNone,FaPen,FaTrash]}
         click = {handleClick} search={onSearch} save={onSave} editF={onEdit} deleteF={onDelete} role={role} subtitle={subtitle} 
-        iniciatives={listOfNames}/>)
+        iniciatives={getNames(iniciatives)}/>)
     }
     else if (role === ''){
       return (<LoadingPage role={role}/>) 
