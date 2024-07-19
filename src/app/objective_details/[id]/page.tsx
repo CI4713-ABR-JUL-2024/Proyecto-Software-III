@@ -250,15 +250,16 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
     return result;
   }
   const onEdit = async (info : Array<string>) : Promise<boolean> => {
-    console.log(info)
+    console.log("iNFORMACION DE EDICION",info)
     //handle edition
     const id = info[0]
     var result = false
-    const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/matrix/'+params.id,{
-      method: "GET" , 
-      headers : {
+    const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/keyResult/'+info[0],{
+      method: "PUT" , headers : {
                 "Authorization": "Bearer "+cookies.access_token,
-                "type" : "text"} ,})
+                "type" : "text"} , // se pasa la contrasena encriptada
+      body : JSON.stringify({keyResult: info[1], keyIndicator: info[2], initiative: info[3], initiativeType_id: iniciative,}
+      )})
       .then((res) => {
         return res.json();
       })
