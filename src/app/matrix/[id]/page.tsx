@@ -14,12 +14,44 @@ import { useSearchParams } from "next/navigation";
 
 import settings from '../info.json';
 
+function zip(arr1: any[], arr2: any[]) {
+  return arr1.map((k, i) => [k, arr2[i]]);
+}
+
+
+
 export default function Matrix({params} : {params : {id : string}}) {
-  var iniciativas = [["matrix"],["Iniciativas / Resultados Clave"],["Iniciativa 1","float"],["Iniciativa 2","float"],["Iniciativa 3","float"],["Iniciativa 4","float"],["Prioridad"]]
   
   const resultadosClave = ["Resultado 1","Resultado 2","Resultado 3","Resultado 4"]
 
+  const [iniciatives, setIniciatives] = useState<string[]>(["Iniciativa 1","Iniciativa 2","Iniciativa 3","Iniciativa 4"]);
+  const [results, setResults] = useState<string[]>(["Resultado 1","Resultado 2","Resultado 3","Resultado 4"]);
+  const [resultsTypes, setResultsTypes] = useState<any[][]>([["matrix"],["Iniciativas / Resultados Clave"],["Resultado 1","float"],["Resultado 2","float"],["Resultado 3","float"],["Resultado 4","float"],["Prioridad"]]);
+
   const [S, setS] = useState(settings.matrix);
+  const [matrix, setMatrix] = useState<{ [key: string]: any }>({ });
+
+  const fetchMatrix = async () => {
+    try {
+      console.log('params:', params.id);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/matrix/${params.id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${cookies.access_token}`,
+        },
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        setMatrix(data);
+      } else {
+        console.error('Error al obtener los datos de la matrix');
+      }
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    }
+  };
 
   const createIniciative = (i : Array<string>, t : Array<string>) : Array<Array<string>> => {
     var iniciativa = [["matrix"],["Iniciativas / Resultados Clave"]]
@@ -30,35 +62,74 @@ export default function Matrix({params} : {params : {id : string}}) {
     return iniciativa
   }
 
+  useEffect(() => {
+    fetchMatrix();
+  }, []);
+  
+
+
   //Como inicializar la tabla
   //En resultadosClave son una lista de los resultados (los valores de cada fila)
   //en las iniciativas introducir los valores de las columnas y los tipos (con la funcion anterior luego de llamar al endpoint)
   //crear iniciativas luego de llamar al endpoint y antes de generar la tabla
   //luego al crear la tabla llamar a crearTable y modificar la funcion para que se llene con los valores del back
 
-  const createTable = (editing : any) => {
+
+  const createTable2 = (editing : any) => {
     var lista = [];
-    for (var res in resultadosClave){
+    for (var i of iniciatives){
+      const ini = matrix ? matrix[i] : null;
       var a = []
       if (editing){
-        a = Array(iniciativas.length-3).fill("input 4")
+        // a = Array(iniciativas.length-3).fill("input 4")
       }
       else{
-        a = Array(iniciativas.length-3).fill("4")
+        // resultTypes pero sin los dos primeros elementos
+        for (var res of results){
+          a.push(ini? ini[res].toString(): '4');
+        }
       }
-      a.unshift(resultadosClave[res]);
-      a.push("priority 1");
+      console.log('a', a);
+      a.unshift(i);
+      a.push(`priority ${ini ? matrix[i]['prioridad'] : '0'}`);
       lista.push(a)      
     }
     //lista.push(["priority 1"])
-    console.log(lista)
+    //(lista)
     return lista
   }
+  const [tableInfo, setTableInfo] = useState(createTable2(false));
 
-  const [tableInfo, setTableInfo] = useState(createTable(false));
+    useEffect(() => {
+    if (matrix && matrix['tipos']) {
+      console.log('Imprimiendo matrix', matrix);
+      const inicitivas = Object.keys(matrix).filter((key) => key !== 'tipos');
+      const tipos = Object.values(matrix['tipos']);
+      console.log('Imprimiendo iniciativas', inicitivas);
+      console.log('Imprimiendo matriz de resultados', matrix[inicitivas[0]]);
+      const resultss = Object.keys(matrix[inicitivas[0]]).filter((key) => key !== 'prioridad');
+      setIniciatives(inicitivas);
+
+      console.log('Imprimiendo tipos', tipos);
+      console.log('Imprimiendo resultados', results);
+      setResults(resultss);
+      const resultTypess = zip(resultss, tipos);
+      resultTypess.unshift(["Iniciativas / Resultados Clave"]);
+      resultTypess.unshift(["matrix"]);
+      resultTypess.push(["Prioridad"]);
+      setResultsTypes(resultTypess);
+      console.log('Imprimiendo tipos de resultados', resultTypess);
+      const table = createTable2(false);
+      if (table.length > 0){
+        setTableInfo(table);
+      }
+      
+      
+    }
+  }, [matrix]);
 
   const updateTable = (editing : any) => {
-    console.log(S);
+    //(S);
     const nextInfo = tableInfo.map((c, r) => {
       const x = c.map((p,c) => {
         if (p.includes("input") && editing == false){
@@ -77,10 +148,14 @@ export default function Matrix({params} : {params : {id : string}}) {
     return nextInfo;
   }
 
+  useEffect(() => {
+    console.log('Imprimiendo tableInfo',tableInfo);
+  }, [tableInfo]);
+
   const updateRow = (editing : any, row : number) => {
-    console.log(tableInfo);
+    //(tableInfo);
     const nextInfo = tableInfo.map((c, r) => {
-      console.log(r==row)
+      //(r==row)
       const x = c.map((p,s) => {
         if (p.includes("input") && !p.includes("inputpriority") && editing == false && r == row){
           const val = p.split(/(\s+)/);
@@ -108,19 +183,19 @@ export default function Matrix({params} : {params : {id : string}}) {
       })
       return x
     });
-    console.log(nextInfo);
+    //(nextInfo);
     return nextInfo;
   }
 
 
   function updateInfo(value : string,row : number,col : number) {
-    console.log(value)
-    console.log(row)
-    console.log(col)
+    //(value)
+    //(row)
+    //(col)
     const nextInfo = tableInfo.map((c, r) => {
       const x = c.map((p,c) => {
         if (r === row && c === col){
-          console.log("this is ")
+          //("this is ")
           return "input "+value;
         }
         else{
@@ -129,9 +204,9 @@ export default function Matrix({params} : {params : {id : string}}) {
       })
       return x
     });
-    console.log(nextInfo)
+    //(nextInfo)
     setTableInfo(nextInfo);
-    console.log(tableInfo)
+    //(tableInfo)
   }
 
   
@@ -146,13 +221,13 @@ export default function Matrix({params} : {params : {id : string}}) {
   let property2 = searchParams.get("id");
   //PASAR AQUI LOS PARAMETROS DE CONSOLA ANTES DE LLAMAR AL ENDPOINT Y ENTRAR PARA SABER QUE MATRIZ SE ABRIO
 
-  console.log(property1);
-  console.log(property2);
+  //(property1);
+  //(property2);
 
 
   useEffect(() => {
-    settings.matrix.tableHeader = iniciativas;
-    console.log(settings.matrix.tableHeader);
+    settings.matrix.tableHeader = resultsTypes;
+    //(settings.matrix.tableHeader);
     if (cookies.access_token) {
       try {
         const decoded = jwt.decode(cookies.access_token, {}) as JwtPayload;
@@ -167,7 +242,7 @@ export default function Matrix({params} : {params : {id : string}}) {
     }
     getOrganizationsData();
     
-  }, []);
+  }, [resultsTypes]);
 
   const getOrganizationsData = async () => {
      const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/organization',{
@@ -178,9 +253,9 @@ export default function Matrix({params} : {params : {id : string}}) {
         return res.json();
       })
       .then(data => {
-        console.log(data);
+        //(data);
         const values = handleInfo(data);
-        console.log(values);
+        //(values);
         //setTableInfo(values);
         setLoading(false);       
       }).catch(error => {
@@ -204,19 +279,22 @@ export default function Matrix({params} : {params : {id : string}}) {
 
     var Z = S.tableHeader
 
-    Z[pos+1][1] = value;
+    if (typeof value === 'string'){
+      Z[pos+1][1] = value;
+    }
 
     //Z[pos+1][1] = value;
-    console.log(iniciativas);
+    //(iniciativas);
     var c = S
+    console.log('c',c);
+    console.log('Z',Z);
     c.tableHeader = Z;
-    console.log(c);
+    //(c);
     return c;
   }
 
   const changePriority = (row : any, value : any) => {
     const nextInfo = tableInfo.map((c, r) => {
-      console.log(r==row)
       const x = c.map((p,s) => {
         if (p.includes("inputpriority") && r==row){
           const val = p.split(/(\s+)/);
@@ -232,8 +310,8 @@ export default function Matrix({params} : {params : {id : string}}) {
   }
 
   const handleClick = async (e: any,id: any) => {
-    console.log(e)
-    console.log(id)
+    //(e)
+    //(id)
     if (typeof id === 'object'){
       if (id[0]=="priority"){
         setTableInfo(changePriority(id[1],e));
@@ -242,7 +320,7 @@ export default function Matrix({params} : {params : {id : string}}) {
     if (typeof e === 'number' && typeof id === 'number'){
       if (e == 0){
         setTableInfo(updateRow(true,id));
-        console.log(tableInfo);
+        //(tableInfo);
       }
       else{
         setTableInfo(updateRow(false,id));
@@ -250,7 +328,7 @@ export default function Matrix({params} : {params : {id : string}}) {
     }
     else{
       if (e == -1 && id=="back"){
-        console.log("backtopage");
+        //("backtopage");
         const name = "objetivo"
         const id = "12"
         router.push(`/objective_details/${params.id}`);
@@ -261,7 +339,7 @@ export default function Matrix({params} : {params : {id : string}}) {
       }
       else if (e == "Editar"){
         //se esta guardando
-        console.log(S)
+        //(S)
         setTableInfo(updateTable(false))
 
       }
@@ -269,13 +347,13 @@ export default function Matrix({params} : {params : {id : string}}) {
         if (typeof id === 'object'){
           //header que id sea arreglo
           //headerTypes[id[1]] = e
-          console.log("header")
+          //("header")
           setS(updateType(id[1],e))
-          console.log(S);
+          //(S);
           
         }
         else{
-          console.log("val of matrix")
+          //("val of matrix")
           const col = e[0];
           const row = e[1];
           const value = e[2];
@@ -283,12 +361,12 @@ export default function Matrix({params} : {params : {id : string}}) {
         }
       }
     }
-    console.log("HANDLING")
+    //("HANDLING")
   }
 
   const onSearch = async (value : string) => {
     //handle search after pressing button
-    console.log(value);
+    //(value);
     const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/organization?search='+value,{
       method: "GET" , headers : {
                 "Authorization": "Bearer "+cookies.access_token,
@@ -297,20 +375,20 @@ export default function Matrix({params} : {params : {id : string}}) {
         return res.json();
       })
       .then(data => {
-        console.log(data);
+        //(data);
         const values = handleInfo(data);
         //setTableInfo(values);
       }).catch(error => {
         console.error('error', error);
     })
-    console.log(value);
+    //(value);
   }
 
   const onSave = async (info : Array<string>) : Promise<boolean> =>{
     //handle saving organization
 
     // ["ID","Nombre","País","Estado","Responsable","Teléfono","Correo electrónico"]
-    console.log(info);
+    //(info);
     var result = false 
     const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/organization',{
       method: "POST" , headers : {
@@ -322,7 +400,7 @@ export default function Matrix({params} : {params : {id : string}}) {
         return res.json();
       })
       .then((data) => {
-        console.log(data);
+        //(data);
         if (data.error_code){
           result=false;
           return result;
@@ -333,11 +411,11 @@ export default function Matrix({params} : {params : {id : string}}) {
         }
       });
     getOrganizationsData();
-    console.log(tableInfo);
+    //(tableInfo);
     return response;
   }
   const onEdit = async (info : Array<string>) : Promise<boolean> => {
-    console.log(info)
+    //(info)
     //handle edition
     const id = info[0]
     var result = false
@@ -350,7 +428,7 @@ export default function Matrix({params} : {params : {id : string}}) {
         return res.json();
       })
       .then((data) => {
-        console.log(data);
+        //(data);
         if (data.error_code){
           result=false;
           return result;
@@ -375,8 +453,8 @@ export default function Matrix({params} : {params : {id : string}}) {
         return res.json();
       })
       .then((data) => {
-        console.log(data);
-        console.log(data);
+        //(data);
+        //(data);
         if (data.error_code){
           result=false;
           return result;
@@ -391,8 +469,8 @@ export default function Matrix({params} : {params : {id : string}}) {
   }
 
   const page = () => {
-    console.log(role);
-    console.log(role === 'admin')
+    //(role);
+    //(role === 'admin')
     if (role === 'admin' || role === 'project_leader'){
       return(<TablePage information={S} data={tableInfo} buttons={[FaPen,FaCircle]}
         click = {handleClick} search={onSearch} save={onSave} editF={onEdit} deleteF={onDelete} role={role} subtitle={""} iniciatives={[]}/>)

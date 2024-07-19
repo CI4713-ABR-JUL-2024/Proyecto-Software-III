@@ -99,11 +99,11 @@ const Table = ({props, onClick} : TableProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   var pageNumber = Math.ceil(props.info.length/currentAmount);
 
-  console.log(props.info);
+  //(props.info);
 
   useEffect(() => {
-      console.log("props")
-      console.log(props);
+      //("props")
+      //(props);
     });  
   const options = [
     {
@@ -222,8 +222,8 @@ const Table = ({props, onClick} : TableProps) => {
             return (<td key={j} style={{width : "8%", paddingTop : "2%",border: "2px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}>{header} </td>)
           }
           else{
-            const types = ["tipo1","tipo2"]
-            console.log(header)
+            const types = ["entero","flotante","porcentaje"]
+            //(header)
             if (header[0]=="Prioridad"){
               return (<td key={j} style={{width : "8%", paddingTop : "2%",border: "2px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}>{header[0]} </td>)
             }
@@ -244,7 +244,7 @@ const Table = ({props, onClick} : TableProps) => {
       </tr>
 
       {tableProps.info.map((info,j) =>{
-        console.log(info);
+        //(info);
 
         if (getPages[j] == currentPage){
           return (<tr key={"tr2"+j}>
@@ -252,8 +252,8 @@ const Table = ({props, onClick} : TableProps) => {
           {info.map((value,i) => 
 
             
-            { console.log(value);
-              console.log(info);
+            { //(value);
+              //(info);
               if (value != "date" && !value.toString().includes("input") && !String(value).includes("priority")){
                 return (<td key={"info_"+i+"_"+j} style={{width : "8%", paddingTop : "2%", border: "1px solid white", borderCollapse: "collapse", paddingLeft : "2%", paddingBottom:"2%"}}> {value} </td>)
               }
