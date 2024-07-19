@@ -111,7 +111,7 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
   function matchIniciative(name: string, list:any) {
     for (var i = 0; i < list.length; i++) {
       if (list[i].name == name) {
-        setIniciative(list[i]);
+        setIniciative(list[i].id);
       }
     }
     return null;
@@ -122,15 +122,6 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
     return names;
   }
 
-  function objetiveToJSON(object: any) {
-    const obj = [{
-      id: object.id,
-      name: object.name,
-      okrDesignId: object.okrDesignId,
-      completed: object.completed,
-    }]
-    return obj;
-  }
 
   const getDetail = async () => {
     console.log('Obteniendo detalle del objetivo', params.id)
@@ -215,7 +206,7 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
       iniciativeType_id: iniciative, 
       objetiveDetail: objetive
     });
-    const detalleJSON = objetiveToJSON(objetive);
+
     console.log('bodyContent:', bodyContent);
     console.log(objetive);
     const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/keyResult',{
@@ -223,7 +214,8 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
                 "Authorization": "Bearer "+cookies.access_token,
                 "type" : "text"} , // se pasa la contrasena encriptada
       body : JSON.stringify({keyResult: info[1], keyIndicator: info[2], initiative: info[3],
-        initiativeType: info[4], initiativeType_id: iniciative, objectiveDetail: objetive}
+        initiativeType: info[4], initiativeType_id: iniciative, 
+        objectiveDetail: objetive}
       )})
       .then((res) => {
         return res.json();
