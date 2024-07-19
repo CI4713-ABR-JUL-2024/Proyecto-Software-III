@@ -14,7 +14,7 @@ def login_with_user(page: Page, user: User, close_session: bool = False) -> None
     expect(page.get_by_text(user.email)).to_be_visible(timeout=15000)
 
     if close_session:
-        page.get_by_text("Cerrar Sesion").click()
+        page.get_by_text("Cerrar Sesión").click()
 
 
 def register_user(
@@ -59,7 +59,7 @@ def change_password(page: Page, user: User, close_session: bool = False) -> None
     expect(page.get_by_text("Actualización exitosa")).to_be_visible()
     page.goto(f"{page_home_url}/profile")
     if close_session:
-        page.get_by_text("Cerrar Sesion").click()
+        page.get_by_text("Cerrar Sesión").click()
 
 
 def test_register_user(page: Page):

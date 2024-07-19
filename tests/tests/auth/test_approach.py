@@ -5,14 +5,14 @@ from ...utils.fixtures import admin  # noqa: F401
 from ...conf import page_home_url
 
 
-def create_approach(page: Page, approach: Approach) -> None:
-    page.get_by_text("Proyectos").click()   
+def create_approach(page: Page, approach: Approach) -> None:    
+    page.get_by_role("button", name="Proyectos").click()   
     page.get_by_text("Modificar abordajes").click()
     page.get_by_text("Agregar").click()
 
     page.get_by_placeholder("Nuevo tipo de abordaje").fill(approach.name)
     page.get_by_text("Guardar").click()
-    page.wait_for_timeout(2000)
+    page.wait_for_timeout(700)
     page.reload()    
 
 def test_create_approach(page: Page, admin: User):  # noqa: F811

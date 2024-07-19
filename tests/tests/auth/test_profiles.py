@@ -34,7 +34,7 @@ def test_create_user_in_profiles(page: Page, admin: User):  # noqa: F811
     # TODO: Usar la barra de busqueda para encontrar al usuario
     # recien agregado y garantizar que ha sido creado
 
-    page.get_by_text("Cerrar Sesion").click()
+    page.get_by_text("Cerrar Sesión").click()
     login_with_user(page, new_user)
 
 
