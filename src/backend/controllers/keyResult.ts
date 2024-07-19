@@ -135,10 +135,33 @@ const updateKeyResults = async (req: NextRequest, id: number) => {
   }
 };
 
+const deleteKeyResult = async (req: NextRequest, id: number) => {
+  try {
+    const accessToken = headers().get('Authorization');
+    if (!accessToken) throw new Error('No autorizado');
+
+    const deletedKeyResults = await keyResultService.deleteKeyResult(
+      id,
+      accessToken
+    );
+
+    return deletedKeyResults;
+  } catch (error: any) {
+    const handle_err: error_object = handle_error_http_response(error, '0000');
+    throw new custom_error(
+      handle_err.error_message,
+      handle_err.error_message_detail,
+      handle_err.error_code,
+      handle_err.status
+    );
+  }
+};
+
 export const keyResultController = {
   postKeyResult,
   getKeyResultsByObjective,
   getMatrixKeyResults,
   updateMatrixKeyResults,
   updateKeyResults,
+  deleteKeyResult,
 };

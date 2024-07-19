@@ -279,8 +279,9 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
   }
   const onDelete = async (x : any) : Promise<boolean> => {
     //handle edition
+    console.log("BORRANDO",x)
     var result=false;
-    const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/organization/'+x,{
+    const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/keyResult/'+x,{
       method: "DELETE" , headers : {
                 "Authorization": "Bearer "+cookies.access_token,
                 "type" : "text"} ,})
