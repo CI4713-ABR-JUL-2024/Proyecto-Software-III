@@ -28,7 +28,7 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
   const [tableInfo, setTableInfo] = useState<Array<Array<string>>>([]);
   const [iniciatives, setIniciatives] = useState<Array<IniciativeProps>>([]);
   const [iniciative, setIniciative] = useState<IniciativeProps>();
-  const [objetive, setObjetive] = useState();
+  const [objetive, setObjetive] = useState<any>();
   const [listOfNames, setListOfNames] = useState<Array<string>>([]);
 
   const fetchKeyResult = async () => {
@@ -195,8 +195,22 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
     getIniciatives();
     getNames(iniciatives);
     getDetail();
-    matchIniciative(info[3], iniciatives);
+    matchIniciative(info[4], iniciatives);
     console.log(info); 
+
+    const objetiveD = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/objectiveDetail',{
+      method: "POST" , headers : {
+                "Authorization": "Bearer "+cookies.access_token,
+                "type" : "text"} , // se pasa la contrasena encriptada
+      body : JSON.stringify({"objective_id": objetive?.id}
+      )}).then((res) => res.json()
+    ).then((data) => {
+      console.log('Se obtuvo el detalle del objetivo')
+      console.log(data);
+      return data;
+    });
+
+    const objectivedid = objetiveD.id;
     var result = false 
     const bodyContent = JSON.stringify({
       keyResult: info[1], 
@@ -204,10 +218,11 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
       iniciative: info[3],
       iniciativeType: info[4], 
       iniciativeType_id: iniciative, 
-      objetiveDetail: objetive
+      objetiveDetail: [objetive?.id]
     });
 
     console.log('bodyContent:', bodyContent);
+    console.log('objectidetailid:', objectivedid);
     console.log(objetive);
     const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/keyResult',{
       method: "POST" , headers : {
@@ -215,7 +230,7 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
                 "type" : "text"} , // se pasa la contrasena encriptada
       body : JSON.stringify({keyResult: info[1], keyIndicator: info[2], initiative: info[3],
         initiativeType: info[4], initiativeType_id: iniciative, 
-        objectiveDetail: objetive}
+        objectiveDetail: [objectivedid]}
       )})
       .then((res) => {
         return res.json();
