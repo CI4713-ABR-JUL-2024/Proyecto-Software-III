@@ -122,6 +122,16 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
     return names;
   }
 
+  function objetiveToJSON(object: any) {
+    const obj = [{
+      id: object.id,
+      name: object.name,
+      okrDesignId: object.okrDesignId,
+      completed: object.completed,
+    }]
+    return obj;
+  }
+
   const getDetail = async () => {
     console.log('Obteniendo detalle del objetivo', params.id)
     await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/objective/'+params.id, {
@@ -140,6 +150,7 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
   }
 
 
+
   const handleInfo = (data : any) : Array<Array<string>> => {
       var infoChanged = new Array();
       for (var val of data) {
@@ -155,7 +166,7 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
     console.log(id)
     console.log("HANDLING")
     if (e == 0){
-      router.push('/matrix');
+      router.push('/matrix/'+params.id);
       //router.push("/");
     } 
   }
@@ -196,12 +207,23 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
     matchIniciative(info[3], iniciatives);
     console.log(info); 
     var result = false 
+    const bodyContent = JSON.stringify({
+      keyResult: info[1], 
+      keyIndicator: info[2], 
+      iniciative: info[3],
+      iniciativeType: info[4], 
+      iniciativeType_id: iniciative, 
+      objetiveDetail: objetive
+    });
+    const detalleJSON = objetiveToJSON(objetive);
+    console.log('bodyContent:', bodyContent);
+    console.log(objetive);
     const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/keyResult',{
       method: "POST" , headers : {
                 "Authorization": "Bearer "+cookies.access_token,
                 "type" : "text"} , // se pasa la contrasena encriptada
-      body : JSON.stringify({keyResult: info[1], keyIndicator: info[2], iniciative: info[3],
-        iniciativeType: info[4], iniciativeType_id: iniciative, objetiveDetail: objetive}
+      body : JSON.stringify({keyResult: info[1], keyIndicator: info[2], initiative: info[3],
+        initiativeType: info[4], initiativeType_id: iniciative, objectiveDetail: objetive}
       )})
       .then((res) => {
         return res.json();
@@ -279,7 +301,7 @@ export default function ObjectiveDetails({params} : {params : {id : string}}) {
     if (role === 'admin' || role === 'project_leader'){
       console.log(iniciatives)
       console.log('esto es una', iniciatives[0])
-      console.log('esto es nombre', iniciatives[0].name)
+      //console.log('esto es nombre', iniciatives[0].name)
       console.log('lista de nombres:',listOfNames)
       return(<TablePage information={settings.organization} data={tableInfo} buttons={[FaBorderNone,FaPen,FaTrash]}
         click = {handleClick} search={onSearch} save={onSave} editF={onEdit} deleteF={onDelete} role={role} subtitle={subtitle} 

@@ -6,15 +6,15 @@ import { useCookies } from 'react-cookie';
 import { FaRegUser, FaPen, FaCircle, FaTrash} from "react-icons/fa";
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
-import { PageTable } from "../components/PageWithTable";
+import { PageTable } from "../../components/PageWithTable";
 const TablePage = PageTable.TablePage;
 const LoadingPage = PageTable.LoadingPage;
 const NoPermissionsPage = PageTable.NoPermissionsPage;
 import { useSearchParams } from "next/navigation";
 
-import settings from './info.json';
+import settings from '../info.json';
 
-export default function Matrix() {
+export default function Matrix({params} : {params : {id : string}}) {
   var iniciativas = [["matrix"],["Iniciativas / Resultados Clave"],["Iniciativa 1","float"],["Iniciativa 2","float"],["Iniciativa 3","float"],["Iniciativa 4","float"],["Prioridad"]]
   
   const resultadosClave = ["Resultado 1","Resultado 2","Resultado 3","Resultado 4"]
@@ -253,7 +253,7 @@ export default function Matrix() {
         console.log("backtopage");
         const name = "objetivo"
         const id = "12"
-        router.push(`/objective_details?name=${name}&id=${id}`);
+        router.push(`/objective_details/${params.id}`);
       }
       if (e == "Guardar"){
         //se esta editando
@@ -341,12 +341,11 @@ export default function Matrix() {
     //handle edition
     const id = info[0]
     var result = false
-    const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/organization/'+id,{
-      method: "PUT" , headers : {
+    const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL+'/api/matrix/'+params.id,{
+      method: "GET" , 
+      headers : {
                 "Authorization": "Bearer "+cookies.access_token,
-                "type" : "text"} , // se pasa la contrasena encriptada
-      body : JSON.stringify({name : info[1], country : info[2], estate : info[3], email : info[6], 
-        cellphone:info[5], personResponsible : info[4]}),})
+                "type" : "text"} ,})
       .then((res) => {
         return res.json();
       })
@@ -361,8 +360,9 @@ export default function Matrix() {
           return result;
         }       
       });
-      getOrganizationsData();
-      return response;
+
+      return result;
+
   }
   const onDelete = async (x : any) : Promise<boolean> => {
     //handle edition
